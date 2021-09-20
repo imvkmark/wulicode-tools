@@ -1,0 +1,43 @@
+{
+    "$schema": "https://raw.githubusercontent.com/JetBrains/web-types/master/schema/web-types.json",
+    "framework": "vue",
+    "name": "types",
+    "version": "2.2.2",
+    "contributions": {
+        "html": {
+            "tags": [
+                {
+                    "name": "a-row",
+                    "slots": [],
+                    "events": [],
+                    "attributes": [
+                        {
+                            "name": "safe-area-inset-bottom",
+                            "default": "`true`",
+                            "value": {
+                                "type": "boolean",
+                                "kind": "expression"
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": "a-col",
+                    "slots": [],
+                    "events": [],
+                    "attributes": [
+                        {
+                            "name": "span",
+                            "value": {
+                                "type": "int",
+                                "kind": "expression"
+                            }
+                        }
+                    ]
+                }
+            ],
+            "attributes": [],
+            "types-syntax": "typescript"
+        }
+    }
+}
