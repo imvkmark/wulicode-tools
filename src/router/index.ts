@@ -9,7 +9,8 @@ const routes: Array<RouteRecordRaw> = [
         children: [
             { path: 'login', component: () => import('@/views/pc/Login.vue'), name: 'pc.login' },
             { path: 'chat/:tid?', component: () => import('@/views/pc/Chat.vue'), name: 'pc.chat', meta: { auth: true } },
-            { path: 'info', component: () => import('@/views/pc/Info.vue'), name: 'pc.info', meta: { auth: true } }
+            { path: 'info', component: () => import('@/views/pc/Info.vue'), name: 'pc.info', meta: { auth: true } },
+            { path: 'tool/:zone', component: () => import('@/views/tool/Tool.vue'), name: 'tool.home' }
         ]
     }
 ]

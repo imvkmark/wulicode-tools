@@ -1,9 +1,14 @@
 <template>
-    <div class="root">
-        <div class="container">
-            <router-view/>
-        </div>
+    <div id="side">
+
     </div>
+    <div id="top">
+
+    </div>
+    <div id="content">
+        <router-view/>
+    </div>
+
 </template>
 
 <script lang="ts" setup>
@@ -16,15 +21,40 @@ useInit();
 useClearCache()
 useAuth();
 </script>
-<style scoped>
-.root {
-    width: 100%;
+<style scoped lang="less">
+#side {
+    display: flex;
+    align-items: center;
+    background-color: #081736;
+    flex-direction: column;
+    grid-area: sidebar;
     height: 100vh;
-    background: #FFF;
+    padding-top: 0;
+    padding-bottom: 0;
+    width: 5em;
+    overflow-y: auto;
 }
-.container {
-    margin: 0 auto;
-    width: 1346px;
-    box-shadow: 0 0 18px 0 rgba(0, 0, 0, 0.20);
+
+#top {
+    display: flex;
+    -webkit-box-align: center;
+    align-items: center;
+    -webkit-box-pack: end;
+    justify-content: flex-end;
+    background-color: #FFF;
+    border-top-left-radius: 8px;
+    height: 4rem;
+    padding-right: 1.25rem;
+    width: 100%;
+    border-color: #CCC;
+    grid-area: topbar;
+    border-bottom: 1px solid #E1EDFF;
 }
+
+#content {
+    height: calc(100vh - 4rem);
+    grid-area: content;
+    display: flex;
+}
+
 </style>

@@ -8,14 +8,6 @@ import { defineComponent } from 'vue'
 export default defineComponent({
     name: 'App'
 })
-
-var _hmt = _hmt || [];
-(function () {
-    var hm = document.createElement('script');
-    hm.src = 'https://hm.baidu.com/hm.js?f5b9493b0690fe0ae102753dfd125d17';
-    var s = document.getElementsByTagName('script')[0];
-    s.parentNode.insertBefore(hm, s);
-})();
 </script>
 
 <style lang="less">
@@ -23,6 +15,7 @@ var _hmt = _hmt || [];
 
 body {
     background: @mainBgColor;
+    margin: 0;
 }
 
 #app {
@@ -31,7 +24,13 @@ body {
     -moz-osx-font-smoothing: grayscale;
     box-sizing: border-box;
     position: relative;
-    width: 100%;
-    height: 100%;
+    height: 100vh;
+    width: 100vw;
+    display: grid;
+    overflow: hidden;
+    grid-template-columns: 5rem auto;
+    grid-template-areas:
+        "sidebar topbar"
+        "sidebar content";
 }
 </style>

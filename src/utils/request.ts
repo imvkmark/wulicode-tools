@@ -2,7 +2,6 @@ import axios, { AxiosInstance } from 'axios';
 import { appUrl, appVersion, storageKey } from '@/utils/conf';
 import { localStore } from '@/utils/utils';
 import { each, forEach, get, isNaN, isNil, isObject, keys, set, trim } from 'lodash-es';
-import { Toast } from 'vant';
 import { MD5 } from 'crypto-js';
 import { store } from '@/store';
 
@@ -154,14 +153,9 @@ export default function request(options: RequestOptions) {
 
                 if (code === 401) {
                     const from = options.from;
-                    if (from === 'pc') {
-                        store.dispatch('poppy/Logout', {
-                            from: 'api'
-                        }).then()
-                    } else {
-                        store.commit('poppy/SET_401', true);
-                        Toast.fail('无权访问, 请登录后重试');
-                    }
+                    store.dispatch('poppy/Logout', {
+                        from: 'api'
+                    }).then()
 
                     return Promise.resolve({
                         success: false,

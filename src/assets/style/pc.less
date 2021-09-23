@@ -1,5 +1,4 @@
 @import 'vars.less';
-@import "vant";
 @import "node_modules/@popjs/util/dist/less/index";
 
 .px--container {
@@ -8,4 +7,26 @@
 
 .px--block {
 	width: 100%;
+}
+
+.px--tool {
+	padding: 20px 40px;
+	display: flex;
+	flex-direction: column;
+	width: 100%;
+	h2 {
+		font-size: 1.45rem;
+		line-height: 2rem;
+		height: 3rem;
+		margin: 0;
+	}
+	.tool-area {
+		flex: auto;
+		background: #FFF;
+		border-radius: 8px;
+		padding: 10px 20px;
+		.tool-content {
+			text-align: right;
+		}
+	}
 }
