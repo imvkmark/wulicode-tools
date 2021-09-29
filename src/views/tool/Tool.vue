@@ -11,7 +11,8 @@
         </el-menu>
     </div>
     <div id="main" class="px--tool">
-        <component :is="zoneMap[zone]"/>
+        <router-view/>
+<!--        <component :is="zoneMap[zone]"/>-->
     </div>
 </template>
 
@@ -30,7 +31,7 @@ const value = reactive({
 
 const router = useRouter();
 const zone = computed(() => {
-    return router.currentRoute.value.params.zone || 'index'
+    return router.currentRoute.value.params.zone || 'apidoc'
 })
 const zoneMap = {
     apidoc: defineAsyncComponent(() => import('@/views/Tool/Apidoc.vue'))

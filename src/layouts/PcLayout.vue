@@ -31,7 +31,6 @@ useAuth();
     height: 100vh;
     padding-top: 0;
     padding-bottom: 0;
-    width: 5em;
     overflow-y: auto;
 }
 
@@ -42,9 +41,9 @@ useAuth();
     -webkit-box-pack: end;
     justify-content: flex-end;
     background-color: #FFF;
-    border-top-left-radius: 8px;
     height: 4rem;
     padding-right: 1.25rem;
+    box-sizing: border-box;
     width: 100%;
     border-color: #CCC;
     grid-area: topbar;

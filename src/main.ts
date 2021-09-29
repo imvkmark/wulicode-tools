@@ -30,9 +30,8 @@ Sentry.init({
     /**
      * 线上环境捕捉 1%, 开发环境捕捉完整
      * https://docs.sentry.io/platforms/javascript/guides/vue/configuration/sampling/#setting-a-sampling-function
-     * @param samplingContext
      */
-    tracesSampler: samplingContext => {
+    tracesSampler: () => {
         if (appIsProd && appMode === 'dev') {
             return 1;
         }

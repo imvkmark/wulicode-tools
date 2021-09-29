@@ -13,6 +13,24 @@ const instance: AxiosInstance = axios.create({
     timeout: 20000 // 请求超时 20s
 });
 
+// 添加请求拦截器
+/*
+instance.interceptors.request.use(
+    (config) => {
+        // 在发送请求之前做些什么 token
+        if (Session.get('token')) {
+            config.headers.common['Authorization'] = `${Session.get('token')}`;
+        }
+        return config;
+    },
+    (error) => {
+        // 对请求错误做些什么
+        return Promise.reject(error);
+    }
+);
+ */
+
+
 /**
  * 加密串生成
  * @param {object} params 请求接口时的参数
@@ -45,7 +63,7 @@ const requestSign = (params: any, token = '') => {
 
 // 请求方法
 const fetch = (options: RequestOptions) => {
-    let { method = 'post', params: oriParams = {}, url, headers = {}, from = 'app' } = options;
+    let { method = 'post', params: oriParams = {}, url, headers = {} } = options;
 
     let params: any;
     if (oriParams instanceof FormData) {
@@ -120,10 +138,10 @@ const fetch = (options: RequestOptions) => {
 };
 
 export default function request(options: RequestOptions) {
-    console.log('req', new Date());
+    // @ts-ignore
     return fetch(options)
         .then((response) => {
-            console.log('req-over', new Date());
+            store.dispatch('Loaded').then()
             const { data = {}, status, message } = response.data;
             console.info(options.url, status, message, response.data);
             if (status === 0) {
@@ -133,18 +151,27 @@ export default function request(options: RequestOptions) {
                     success: true,
                     message: message,
                     status: status,
-                    data: data
+                    data: data,
+                    resp: {
+                        status,
+                        message
+                    }
                 });
             } else {
                 return Promise.resolve({
                     success: false,
                     status: status,
                     message: message,
-                    data: data
+                    data: data,
+                    resp: {
+                        status,
+                        message
+                    }
                 });
             }
         })
         .catch((error) => {
+            store.dispatch('Loaded').then()
             const { response } = error;
             let msg;
             if (response && response instanceof Object) {
@@ -152,7 +179,6 @@ export default function request(options: RequestOptions) {
                 msg = data.message || statusText;
 
                 if (code === 401) {
-                    const from = options.from;
                     store.dispatch('poppy/Logout', {
                         from: 'api'
                     }).then()
@@ -161,7 +187,11 @@ export default function request(options: RequestOptions) {
                         success: false,
                         status: code,
                         message: '无权访问, 请登录后重试',
-                        data: {}
+                        data: {},
+                        resp: {
+                            status: code,
+                            message: '无权访问, 请登录后重试'
+                        }
                     });
                 }
 
@@ -175,7 +205,11 @@ export default function request(options: RequestOptions) {
                     success: false,
                     status: code,
                     message: msg,
-                    data: {}
+                    data: {},
+                    resp: {
+                        status: code,
+                        message: msg
+                    }
                 });
             } else {
                 msg = error.message || '未知错误(一般是访问超时)';
@@ -197,7 +231,11 @@ export default function request(options: RequestOptions) {
                     success: false,
                     status: 520,
                     message: msg,
-                    data: {}
+                    data: {},
+                    resp: {
+                        status: 520,
+                        message: msg
+                    }
                 });
             }
         });

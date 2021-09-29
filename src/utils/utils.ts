@@ -5,6 +5,7 @@ import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime'
 import locale from 'dayjs/locale/zh-cn'
 import { ElMessage } from 'element-plus';
+import { isString } from 'lodash-es';
 
 
 /**
@@ -108,15 +109,29 @@ export const ossImage = (url: string, size: number) => {
     return `${url}?x-oss-process=image/resize,l_${size}`;
 }
 
-
-export const toast = (message: string, success: boolean, warning?: boolean) => {
-    if (success) {
-        ElMessage.success(message)
-    } else {
-        if (warning) {
-            ElMessage.warning(message);
+/**
+ * 封装 ele 的状态显示
+ * @param {string|object} resp
+ * @param {boolean|string} warning
+ */
+export const toast = (resp: any, warning: any = true) => {
+    if (isString(resp)) {
+        if (warning === true) {
+            ElMessage.success(resp);
+        } else if (warning === false) {
+            ElMessage.warning(resp);
         } else {
-            ElMessage.error(message);
+            ElMessage.error(resp);
+        }
+
+    } else {
+        const { message, status } = resp;
+        if (status === 0) {                         // 成功
+            ElMessage.success(message)
+        } else if (status > 0 && status <= 1000) {  // http error
+            ElMessage.error(message)
+        } else {                                    // project error
+            ElMessage.warning(message);
         }
     }
 }

@@ -11,6 +11,7 @@
 
 .px--tool {
 	padding: 20px 40px;
+	box-sizing: border-box;
 	display: flex;
 	flex-direction: column;
 	width: 100%;
@@ -25,8 +26,21 @@
 		background: #FFF;
 		border-radius: 8px;
 		padding: 10px 20px;
-		.tool-content {
-			text-align: right;
+		min-width: 828px;
+	}
+	.tool-content {
+		padding-top: 10px;
+		text-align: right;
+		padding-bottom: 10px;
+	}
+	.tool-pointer {
+		textarea{
+			&:hover{
+				cursor: pointer !important;
+			}
 		}
+	}
+	.tool-mono {
+		font-family: Menlo, monospace;
 	}
 }

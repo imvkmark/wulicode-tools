@@ -6,13 +6,25 @@ import poppy from './modules/poppy'
 
 export const store = createStore<RootStateTypes>({
     state: {
-        text: 'This is Vuex Root.state.text'
+        text: 'This is Vuex Root.state.text',
+        loading: false
     },
-    getters: {},
+    getters: {
+        loading(state: any) {
+            return state.loading;
+        }
+    },
     mutations: {},
-    actions: {},
+    actions: {
+        Loading({ state }) {
+            state.loading = true
+        },
+        Loaded({ state }) {
+            state.loading = false
+        }
+    },
     modules: {
-        poppy,
+        poppy
     }
 })
 

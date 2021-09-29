@@ -1,5 +1,6 @@
 import { createRouter, createWebHashHistory, Router, RouteRecordRaw } from 'vue-router'
 import PcLayout from '@/layouts/PcLayout.vue';
+import Tool from '@/views/tool/Tool.vue';
 import { get } from 'lodash-es';
 
 const routes: Array<RouteRecordRaw> = [
@@ -7,10 +8,11 @@ const routes: Array<RouteRecordRaw> = [
         path: '/',
         component: PcLayout,
         children: [
-            { path: 'login', component: () => import('@/views/pc/Login.vue'), name: 'pc.login' },
-            { path: 'chat/:tid?', component: () => import('@/views/pc/Chat.vue'), name: 'pc.chat', meta: { auth: true } },
-            { path: 'info', component: () => import('@/views/pc/Info.vue'), name: 'pc.info', meta: { auth: true } },
-            { path: 'tool/:zone', component: () => import('@/views/tool/Tool.vue'), name: 'tool.home' }
+            {
+                path: 'tool', component: Tool, children: [
+                    { path: 'apidoc', component: () => import('@/views/tool/Apidoc.vue'), name: 'tool.apidoc' }
+                ]
+            }
         ]
     }
 ]
