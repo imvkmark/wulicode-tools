@@ -1,5 +1,5 @@
 <template>
-    <h2>文档工具</h2>
+    <h2>ApiDoc注释生成</h2>
     <div class="tool-area tool-mono">
         <div class="tool-content">
             <el-row :gutter="20">
