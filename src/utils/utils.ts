@@ -1,5 +1,5 @@
 import { MD5 } from 'crypto-js';
-import { appMode, appVersion, storageKey } from '@/utils/conf';
+import { appMode, storageKey } from '@/utils/conf';
 import { localStore as _localStore, sessionStore as _sessionStore, uniqueId } from '@popjs/util';
 import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime'
@@ -46,7 +46,7 @@ export const deviceId = (): string => {
  * @returns {*}
  */
 export const hashKey = (key: string) => {
-    let genKey = `${appMode}-${appVersion}:${key}`;
+    let genKey = `${appMode}:${key}`;
     if (genKey.indexOf(':') < 0) {
         console.error('生成的KEY不包含 :, 会导致清理缓存异常');
     }
@@ -102,11 +102,6 @@ export const formatUnixTimestamp = (timestamp: any, format = 'YYYY-MM-DD HH:mm:s
     }
     dayjs.locale(locale.name);
     return dayjs(timestamp * 1000).format(format);
-}
-
-
-export const ossImage = (url: string, size: number) => {
-    return `${url}?x-oss-process=image/resize,l_${size}`;
 }
 
 /**

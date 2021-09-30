@@ -82,8 +82,8 @@ const onInput = debounce(function () {
         }
     })
 }, 300, {
-    'leading': false,
-    'trailing': true
+    leading: false,
+    trailing: true
 })
 
 

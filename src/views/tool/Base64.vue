@@ -1,0 +1,119 @@
+<template>
+    <h2>Base64 转解码</h2>
+    <div class="tool-area tool-mono">
+        <div class="tool-handle">
+            <el-switch v-model="trans.type" active-text="解码" inactive-text="转码" @change="onInput"/>
+        </div>
+        <div class="tool-content">
+            <el-row :gutter="20">
+                <el-col :span="12">
+                    <el-form :model="value" :rules="rules" ref="form">
+                        <el-form-item prop="text">
+                            <el-input @input="onInput" @change="onInput" v-model="value.text"
+                                :rows="8" type="textarea" placeholder="输入内容"/>
+                        </el-form-item>
+                    </el-form>
+                </el-col>
+                <el-col :span="12">
+                    <el-tooltip content="点击复制">
+                        <el-input readonly v-model="trans.result" v-loading="trans.loading" class="tool-pointer"
+                            :autosize="{ minRows: 8, maxRows: 16 }" @click="onCopy"
+                            :rows="8" type="textarea" placeholder="转换后内容"/>
+                    </el-tooltip>
+                </el-col>
+            </el-row>
+        </div>
+    </div>
+</template>
+<script lang="ts" setup>
+import { computed, onMounted, reactive, ref } from 'vue'
+import { useStore } from '@/store';
+import { useRouter } from 'vue-router';
+import { localStore, toast } from '@/utils/utils';
+import { ElForm } from 'element-plus';
+import { copyText } from 'vue3-clipboard'
+import { debounce, get } from 'lodash-es';
+
+const store = useStore();
+const router = useRouter();
+const trans = reactive({
+    loading: computed(() => store.getters.loading),
+    type: false,
+    result: '',
+    key: 'tool-base64'
+})
+const value = reactive({
+    text: 'wulicode.com'
+})
+const form: any = ref<InstanceType<typeof ElForm>>();
+
+const rules = reactive({
+    text: [
+        { required: true, message: '输入需要转换的内容', trigger: 'change' }
+    ]
+})
+
+const onInput = debounce(function () {
+    // 解码
+    if (trans.type === true) {
+        if (value.text === 'wulicode.com') {
+            value.text = 'd3VsaWNvZGUuY29t'
+        }
+    } else {
+        if (value.text === 'd3VsaWNvZGUuY29t') {
+            value.text = 'wulicode.com'
+        }
+    }
+    if (!value.text) {
+        trans.result = '';
+    }
+    if (trans.type) {
+        // decode
+        try {
+            trans.result = window.atob(value.text);
+        } catch (e) {
+            trans.result = '';
+            toast(e);
+        }
+
+    } else {
+        // encode
+        trans.result = window.btoa(value.text);
+    }
+
+    // 这里保存原始输入
+    localStore(trans.key, {
+        type: trans.type,
+        text: value.text
+    })
+}, 100, {
+    leading: false,
+    trailing: true
+})
+
+
+const onCopy = function () {
+    copyText(trans.result, undefined, (error: any) => {
+        if (error) {
+            toast('无法复制:' + error, false)
+        } else {
+            toast('已复制')
+        }
+    })
+}
+
+onMounted(onInput);
+onMounted(() => {
+    // recovery
+    let content = localStore(trans.key);
+    if (content) {
+        value.text = get(content, 'text');
+        trans.type = get(content, 'type');
+    }
+})
+
+</script>
+
+<style scoped lang="less">
+@import '../../assets/style/vars';
+</style>
