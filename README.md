@@ -1,4 +1,4 @@
-# 氪金兽 1.0
+# Wulicode - App
 
 Vite2.x + Vue3.x + TypeScript Starter
 
@@ -38,5 +38,5 @@ $ yarn build:<env>
 NODE_ENV=development
 ```
 
-MIT Copyright © 2021 duoli<zhaody901<AT>126.com>
+MIT Copyright © 2021 duoli<zhaody901@126.com>
 

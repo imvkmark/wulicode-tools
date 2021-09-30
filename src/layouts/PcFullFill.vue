@@ -2,13 +2,9 @@
     <div class="px--side">
         <side/>
     </div>
-    <div class="px--top">
-
-    </div>
-    <div class="px--content">
+    <div class="px--content content-full-fill">
         <router-view/>
     </div>
-
 </template>
 
 <script lang="ts" setup>

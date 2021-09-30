@@ -10,9 +10,9 @@
             </el-sub-menu>
         </el-menu>
     </div>
-    <div id="main" class="px--tool">
+    <div class="px--tool">
         <router-view/>
-<!--        <component :is="zoneMap[zone]"/>-->
+        <!--        <component :is="zoneMap[zone]"/>-->
     </div>
 </template>
 
@@ -40,7 +40,7 @@ const zoneMap = {
 </script>
 
 <style scoped lang="less">
-@import '../../assets/style/vars';
+@import '../assets/style/vars';
 
 .el-menu {
     border-right: none;
