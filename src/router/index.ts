@@ -11,6 +11,7 @@ const routes: Array<RouteRecordRaw> = [
             {
                 path: 'tool', component: Tool, children: [
                     { path: 'apidoc', component: () => import('@/views/tool/Apidoc.vue'), name: 'tool.apidoc' },
+                    { path: 'img', component: () => import('@/views/tool/Image.vue'), name: 'tool.img' },
                     { path: 'base64', component: () => import('@/views/tool/Base64.vue'), name: 'tool.base64' }
                 ]
             }
