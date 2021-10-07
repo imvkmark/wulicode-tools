@@ -1,12 +1,16 @@
 <template>
     <ul>
         <li class="active">
-            <icon-font type="icon-tool"/>
-            <span class="side-text">工具</span>
+            <router-link :to="{name : 'tool.apidoc'}">
+                <icon-font type="icon-tool"/>
+                <span class="side-text">工具</span>
+            </router-link>
         </li>
         <li>
-            <icon-font type="icon-user"/>
-            <span class="side-text">用户</span>
+            <router-link :to="{name : 'user.login'}">
+                <icon-font type="icon-user"/>
+                <span class="side-text">用户</span>
+            </router-link>
         </li>
     </ul>
 

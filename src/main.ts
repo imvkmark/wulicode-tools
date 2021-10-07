@@ -7,7 +7,7 @@ import * as Sentry from '@sentry/vue';
 import { Integrations } from '@sentry/tracing';
 import { appIsProd, appMode, appVersion, sentryDsnUrl } from '@/utils/conf';
 import ElementPlus from 'element-plus'
-import '@/assets/style/index.less';
+import '@/assets/style/style.less';
 
 const app = createApp(App)
 

@@ -1,18 +1,28 @@
 <template>
-    <div id="menu">
-        <el-menu default-active="2">
-            <el-sub-menu index="1">
-                <template #title>
-                    <i class="el-icon-document"></i>
-                    <span>文档</span>
-                </template>
-                <el-menu-item index="1-4-1">文档工具</el-menu-item>
-            </el-sub-menu>
-        </el-menu>
-    </div>
-    <div class="px--tool">
-        <router-view/>
-        <!--        <component :is="zoneMap[zone]"/>-->
+    <div class="tool">
+        <div id="menu">
+            <el-menu default-active="1">
+                <el-sub-menu index="1">
+                    <template #title>
+                        <i class="el-icon-document"></i>
+                        <span>文档</span>
+                    </template>
+                    <el-menu-item index="tool.apidoc">
+                        <router-link :to="{name:'tool.apidoc'}">ApiDoc</router-link>
+                    </el-menu-item>
+                    <el-menu-item index="tool.base64">
+                        <router-link :to="{name:'tool.base64'}">Base64</router-link>
+                    </el-menu-item>
+                    <el-menu-item index="tool.img">
+                        <router-link :to="{name:'tool.img'}">图片占位符</router-link>
+                    </el-menu-item>
+                </el-sub-menu>
+            </el-menu>
+        </div>
+        <div class="px--tool">
+            <router-view/>
+            <!--        <component :is="zoneMap[zone]"/>-->
+        </div>
     </div>
 </template>
 
@@ -41,6 +51,11 @@ const zoneMap = {
 
 <style scoped lang="less">
 @import '../assets/style/vars';
+
+.tool {
+    display: flex;
+    height: calc(100vh - 4rem);
+}
 
 .el-menu {
     border-right: none;
