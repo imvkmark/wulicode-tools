@@ -39,7 +39,6 @@
         "element-plus": "^1.1.0-beta.18",
         "lodash-es": "^4.17.21",
         "vue": "^3.0.5",
-        "vue-class-component": "^7.2.6",
         "vue-router": "^4.0.6",
         "vue3-clipboard": "^1.0.0",
         "vuex": "^4.0.0"
