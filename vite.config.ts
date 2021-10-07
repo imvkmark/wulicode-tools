@@ -33,7 +33,7 @@ export default defineConfig(({ mode }) => {
                 url: process.env.VITE_SENTRY_URL,
                 authToken: process.env.VITE_SENTRY_TOKEN,
                 org: 'dadi',
-                project: 'kejinshou-h5',
+                project: 'wulicode-webapp',
                 release: `${mode}-${pkgJson.version}`,
                 deploy: {
                     env: `${mode}`
@@ -66,7 +66,6 @@ export default defineConfig(({ mode }) => {
                 output: {
                     manualChunks: {
                         lodash: ['lodash-es'],
-                        antdv: ['ant-design-vue'],
                         crypto: ['crypto-js']
                     }
                 }
