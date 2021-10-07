@@ -44,7 +44,7 @@ const zone = computed(() => {
     return router.currentRoute.value.params.zone || 'apidoc'
 })
 const zoneMap = {
-    apidoc: defineAsyncComponent(() => import('@/views/Tool/Apidoc.vue'))
+    apidoc: defineAsyncComponent(() => import('@/views/tool/Apidoc.vue'))
 }
 
 </script>
