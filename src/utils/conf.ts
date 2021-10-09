@@ -21,11 +21,7 @@ export const appIsProd = import.meta.env.PROD;
 export const storageKey = {
     PY_DEVICE_ID: 'x-device-id',
     PY_CORE_INFO: 'x-core',
-    PY_TOKEN: 'x-token',
-    APP_USER: 'app-user',
-    PC_TOKEN: 'pc-token',
-    PC_IM_TOKEN: 'pc-im-token',
-    PC_USER: 'pc-user'
+    PY_TOKEN: 'x-token'
 }
 
 // sentryDsn

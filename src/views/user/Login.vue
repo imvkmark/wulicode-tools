@@ -31,9 +31,9 @@ import { apiPySystemAuthLogin } from '@/services/poppy';
 import { useStore } from '@/store';
 import { get } from 'lodash-es';
 import { useRouter } from 'vue-router';
-import { localStore, toast } from '@/utils/utils';
-import { storageKey } from '@/utils/conf';
+import { toast } from '@/utils/utils';
 import { ElForm } from 'element-plus';
+import useUserUtil from '@/composables/useUserUtil';
 
 const form: any = ref<InstanceType<typeof ElForm>>();
 const value = reactive({
@@ -52,6 +52,8 @@ const rules = reactive({
 const router = useRouter();
 const store = useStore();
 
+const { userLogin } = useUserUtil();
+
 const onSubmit = () => {
     form.value.validate((valid: boolean) => {
         if (valid) {
@@ -62,17 +64,9 @@ const onSubmit = () => {
             }).then(({ success, data, resp }) => {
                 toast(resp)
                 if (success) {
-                    localStore(storageKey.PC_TOKEN, get(data, 'token'));
-                    // set store
-                    store.dispatch('pc/Login', {
+                    userLogin({
                         token: get(data, 'token')
-                    });
-                    const go = get(router.currentRoute.value, 'query.go', '');
-                    if (!go) {
-                        router.push({ name: 'pc.info' })
-                    } else {
-                        router.push({ path: window.atob(go) })
-                    }
+                    })
                 }
             })
         }

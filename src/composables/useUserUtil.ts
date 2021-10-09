@@ -2,11 +2,13 @@ import { useStore } from '@/store';
 import { get } from 'lodash-es';
 import { useRouter } from 'vue-router';
 import { isUrl } from '@popjs/util';
+import { apiPySystemAuthLogout } from '@/services/poppy';
+import { toast } from '@/utils/utils';
 
 /**
  * 登录和 Token 的保存以及跳转
  */
-export default function usePcUserUtil() {
+export default function useUserUtil() {
     const store = useStore();
     const router = useRouter();
 
@@ -17,12 +19,12 @@ export default function usePcUserUtil() {
     const userLogin = function (data: any) {
         const { token } = data;
         // set store
-        store.dispatch('pc/Login', {
+        store.dispatch('poppy/Login', {
             token
         }).then();
         const go = get(router.currentRoute.value, 'query.go', '');
         if (!go) {
-            router.push({ name: 'pc.info' }).then()
+            router.push({ name: 'user.cp' }).then()
         } else {
             let to = window.atob(go);
             if (isUrl(to)) {
@@ -35,8 +37,13 @@ export default function usePcUserUtil() {
 
 
     const userLogout = function () {
-        store.dispatch('pc/Logout').then();
-        router.push({ name: 'pc.login' }).then()
+        apiPySystemAuthLogout().then(({ success, message }) => {
+            toast(message, success)
+            if (success) {
+                store.dispatch('poppy/Logout').then();
+                router.push({ name: 'user.login' }).then()
+            }
+        })
     }
 
     /**

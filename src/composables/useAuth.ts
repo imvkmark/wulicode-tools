@@ -4,7 +4,8 @@ import { useStore } from '@/store';
 import { get } from 'lodash-es';
 import { useRouter } from 'vue-router';
 import { onMounted, watch } from 'vue';
-import usePcUserUtil from '@/composables/usePcUserUtil';
+import useUserUtil from '@/composables/useUserUtil';
+import { EM_USER_LOGIN, emitter } from '@/bus/mitt';
 
 /**
  * 登录和 Token 的保存以及跳转
@@ -12,7 +13,7 @@ import usePcUserUtil from '@/composables/usePcUserUtil';
 export default function useAuth() {
     const store = useStore();
     const router = useRouter();
-    const { userToLogin } = usePcUserUtil();
+    const { userToLogin } = useUserUtil();
 
     // 处理 token, 存在 qs Token , 则覆盖本地的 token, 否则用户登录之后的token 也是可以使用的
     let token = localStore(storageKey.PY_TOKEN) ? localStore(storageKey.PY_TOKEN) : '';
@@ -30,6 +31,12 @@ export default function useAuth() {
         return;
     }
 
+
+    // 尝试另外方法来触发 event
+    emitter.on(EM_USER_LOGIN, () => {
+        store.dispatch('poppy/Fetch').then()
+    })
+
     // 监听 token 的变化
     watch(
         () => store.state.poppy.token,
@@ -40,9 +47,6 @@ export default function useAuth() {
                     userToLogin()
                 }
             }
-            if (!oldVal && newVal) {
-                store.dispatch('pc/Fetch').then()
-            }
         }, { deep: true }
     );
 
@@ -50,7 +54,7 @@ export default function useAuth() {
     // Login With Token
     onMounted(() => {
         if (token) {
-            store.dispatch('pc/Login', {
+            store.dispatch('poppy/Login', {
                 token
             }).then();
         }

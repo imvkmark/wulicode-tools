@@ -107,31 +107,27 @@ const fetch = (options: RequestOptions) => {
     // stip : 这里使用 data = {...params, token : token || ''}, 则会丢失form表单的数据
 
     let xApp = {
-        os: 'h5',
+        os: 'webapp',
         version: appVersion
     }
     switch (method.toLowerCase()) {
         case 'get':
             set(params, 'token', token ? token : '');
-            instance.defaults.headers.get['X-APP'] = JSON.stringify(xApp);
             return instance.get(url, {
-                params
+                params,
+                headers: {
+                    'X-APP': JSON.stringify(xApp)
+                }
             });
         case 'post':
         default:
-            instance.defaults.headers.common['Authorization'] = token
-                ? `Bearer ${token}`
-                : '';
-            instance.defaults.headers.common['X-APP'] = JSON.stringify(xApp);
-            if (get(headers, 'Content-Type')) {
-                instance.defaults.headers.post['Content-Type'] = get(
-                    headers,
-                    'Content-Type'
-                );
-            } else {
-                instance.defaults.headers.post['Content-Type'] = 'application/json';
-            }
-            return instance.post(url, params);
+            return instance.post(url, params, {
+                headers: {
+                    'X-APP': JSON.stringify(xApp),
+                    'Content-Type': get(headers, 'Content-Type') ? get(headers, 'Content-Type') : 'application/json',
+                    'Authorization': token ? `Bearer ${token}` : ''
+                }
+            });
         case 'put':
             return instance.put(url, params);
     }

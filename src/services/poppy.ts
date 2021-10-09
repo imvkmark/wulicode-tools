@@ -28,7 +28,7 @@ export async function apiPySystemAuthLogin(params: object) {
 /**
  *上传图片
  */
-export function apiPySystemUploadImage(image) {
+export function apiPySystemUploadImage(image: any) {
     const data = new FormData()
     data.set('image', image, image.name)
     return request({
@@ -43,21 +43,19 @@ export function apiPySystemUploadImage(image) {
 /**
  * 登录访问
  */
-export async function apiPySystemAuthAccess(params = {}, from = 'app') {
+export async function apiPySystemAuthAccess(params = {}) {
     return request({
         url: '/api_v1/system/auth/access',
-        params,
-        from
+        params
     });
 }
 
 /**
  * 退出登录
  */
-export async function apiPySystemAuthLogout(from = 'app') {
+export async function apiPySystemAuthLogout() {
     return request({
-        url: '/api_v1/system/auth/logout',
-        from
+        url: '/api_v1/system/auth/logout'
     });
 }
 

@@ -3,7 +3,8 @@ import { PoppyTypes, RootStateTypes } from '@/store/types'
 import { get } from 'lodash-es';
 import { deviceId, localStore, sessionStore, toast } from '@/utils/utils';
 import { storageKey } from '@/utils/conf';
-import { apiPySystemCoreInfo } from '@/services/poppy';
+import { apiPySystemAuthAccess, apiPySystemCoreInfo } from '@/services/poppy';
+import { EM_USER_LOGIN, emitter } from '@/bus/mitt'
 
 // Create a new store Modules.
 const poppy: Module<PoppyTypes, RootStateTypes> = {
@@ -12,26 +13,30 @@ const poppy: Module<PoppyTypes, RootStateTypes> = {
         appId: '',
         token: '',
         core: {},
-        is401: false
+        user: {}
     },
     mutations: {
-        SET_X_APP_ID(state: PoppyTypes, obj) {
-            state.appId = get(obj, 'appId')
-        },
-        SET_401(state: PoppyTypes) {
-            state.is401 = true
+        SET_APP_ID(state: PoppyTypes, deviceId) {
+            state.appId = deviceId
         },
         SET_TOKEN(state: PoppyTypes, obj) {
             state.token = get(obj, 'token')
         },
         SET_CORE(state: PoppyTypes, obj) {
             state.core = obj
+        },
+        SET_USER(state: PoppyTypes, obj) {
+            state.user = obj
         }
     },
     actions: {
-        Init({ state, commit }) {
+        /**
+         * 系统初始化
+         * @constructor
+         */
+        Init({ commit }) {
             // 设备ID
-            state.appId = deviceId()
+            commit('SET_APP_ID', deviceId())
 
             // 系统信息
             let info: any = sessionStore(storageKey.PY_CORE_INFO);
@@ -46,14 +51,37 @@ const poppy: Module<PoppyTypes, RootStateTypes> = {
                 })
             }
         },
-        // 有 token 则认定为登录
+
+        /**
+         * 获取用户信息
+         * @param commit
+         * @constructor
+         */
+        Fetch({ commit }) {
+            apiPySystemAuthAccess({}).then(({ success, data }) => {
+                if (success) {
+                    commit('SET_USER', data);
+                }
+            })
+        },
+
+        /**
+         * 登录, 有 token 则认定为登录
+         * @constructor
+         */
         Login({ commit, state, dispatch }, { token }) {
             // 保存用户的Token
             localStore(storageKey.PY_TOKEN, token);
-            commit('SET_TOKEN', { token })
-            dispatch('Fetch');
+            // token 变化在监听中触发获取信息
+            commit('SET_TOKEN', { token });
+            // 另一种方式触发事件
+            emitter.emit(EM_USER_LOGIN, { token })
         },
 
+        /**
+         * 退出登录
+         * @constructor
+         */
         Logout({ state, commit }, options) {
             let from = get(options, 'from');
             if (from === 'api') {
@@ -61,6 +89,7 @@ const poppy: Module<PoppyTypes, RootStateTypes> = {
             }
             localStore(storageKey.PY_TOKEN, null);
             commit('SET_TOKEN', { token: '' })
+            commit('SET_USER', {})
         }
 
     }

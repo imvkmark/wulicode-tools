@@ -4,7 +4,7 @@ export interface RootStateTypes {
 }
 
 export interface PoppyTypes {
-    is401: boolean,
+    user: object,
     appId: string,
     core: object,
     token: string,

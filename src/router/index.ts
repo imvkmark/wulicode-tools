@@ -1,16 +1,16 @@
 import { createRouter, createWebHashHistory, Router, RouteRecordRaw } from 'vue-router'
-import PcLayout from '@/layouts/PcLayout.vue';
-import ToolLayout from '@/layouts/ToolLayout.vue';
-import PcFullFill from '@/layouts/PcFullFill.vue';
+import SideLayout from '@/layouts/SideLayout.vue';
+import ToolCompLayout from '@/layouts/ToolCompLayout.vue';
+import EmptyLayout from '@/layouts/EmptyLayout.vue';
 import { get } from 'lodash-es';
 
 const routes: Array<RouteRecordRaw> = [
     {
         path: '/',
-        component: PcLayout,
+        component: SideLayout,
         children: [
             {
-                path: 'tool', component: ToolLayout, children: [
+                path: 'tool', component: ToolCompLayout, children: [
                     { path: 'apidoc', component: () => import('@/views/tool/Apidoc.vue'), name: 'tool.apidoc' },
                     { path: 'img', component: () => import('@/views/tool/Image.vue'), name: 'tool.img' },
                     { path: 'base64', component: () => import('@/views/tool/Base64.vue'), name: 'tool.base64' }
@@ -19,8 +19,17 @@ const routes: Array<RouteRecordRaw> = [
         ]
     },
     {
-        path: '/user', component: PcFullFill, children: [
-            { path: 'login', component: () => import('@/views/user/Login.vue'), name: 'user.login' }
+        path: '/user', component: EmptyLayout, children: [
+            {
+                path: 'login', component: () => import('@/views/user/Login.vue'), name: 'user.login', meta: {
+                    title: '登录'
+                }
+            },
+            {
+                path: 'cp', component: () => import('@/views/user/Cp.vue'), name: 'user.cp', meta: {
+                    title: '用户控制中心'
+                }
+            }
         ]
     }
 ]

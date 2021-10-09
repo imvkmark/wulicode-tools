@@ -12,6 +12,9 @@ export const store = createStore<RootStateTypes>({
     getters: {
         loading(state: any) {
             return state.loading;
+        },
+        core(state: any) {
+            return state.poppy.core;
         }
     },
     mutations: {},

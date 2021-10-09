@@ -10,11 +10,12 @@
 <script lang="ts" setup>
 import useAuth from '@/composables/useAuth';
 import useClearCache from '@/composables/useClearCache';
-import 'element-plus/dist/index.css'
 import useInit from '@/composables/useInit';
 import Side from '@/components/base/Side.vue';
+import useTkd from '@/composables/useTkd';
 
 useClearCache()
 useInit();
 useAuth();
+useTkd();
 </script>
