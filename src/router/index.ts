@@ -8,12 +8,18 @@ const routes: Array<RouteRecordRaw> = [
     {
         path: '/',
         component: SideLayout,
+        redirect: '/tool/base64'
+    },
+    {
+        path: '/',
+        component: SideLayout,
         children: [
             {
                 path: 'tool', component: ToolCompLayout, children: [
                     { path: 'apidoc', component: () => import('@/views/tool/Apidoc.vue'), name: 'tool.apidoc' },
                     { path: 'img', component: () => import('@/views/tool/Image.vue'), name: 'tool.img' },
-                    { path: 'base64', component: () => import('@/views/tool/Base64.vue'), name: 'tool.base64' }
+                    { path: 'base64', component: () => import('@/views/tool/Base64.vue'), name: 'tool.base64' },
+                    { path: 'url-decode', component: () => import('@/views/tool/UrlDecode.vue'), name: 'tool.url-decode' }
                 ]
             }
         ]
