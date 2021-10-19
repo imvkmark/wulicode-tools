@@ -46,7 +46,7 @@ export default defineConfig(({ mode }) => {
                         `build/wulicode-${mode}/assets`
                     ],
                     ignore: ['node_modules'],
-                    urlPrefix: '~/assets'
+                    urlPrefix: '~/webapp/assets'
                 }
             })
         ],
@@ -61,7 +61,7 @@ export default defineConfig(({ mode }) => {
         },
         build: {
             outDir: `build/wulicode-${mode}`,
-            sourcemap: (mode === 'prod' || mode === 'dev'),
+            sourcemap: (mode === 'prod' || mode === 'dev' || mode === 'self'),
             rollupOptions: {
                 output: {
                     manualChunks: {

@@ -21,10 +21,7 @@ const router = useRouter();
 const trans = reactive({
     name: router.currentRoute.value.name,
     side: [
-        { name: 'tool.apidoc', title: 'ApiDoc' },
-        { name: 'tool.base64', title: 'Base64' },
-        { name: 'tool.img', title: '图片占位符' },
-        { name: 'tool.url-decode', title: 'Url 解码' }
+        { name: 'demo.sentry', title: '异常' }
     ]
 })
 

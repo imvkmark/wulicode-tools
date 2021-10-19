@@ -12,6 +12,12 @@
                 <span class="side-text">用户</span>
             </router-link>
         </li>
+        <li>
+            <router-link :to="{name : 'demo.sentry'}">
+                <icon-font type="icon-go"/>
+                <span class="side-text">Demo</span>
+            </router-link>
+        </li>
     </ul>
 
 </template>

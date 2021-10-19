@@ -2,6 +2,7 @@ import { createRouter, createWebHashHistory, Router, RouteRecordRaw } from 'vue-
 import SideLayout from '@/layouts/SideLayout.vue';
 import ToolCompLayout from '@/layouts/ToolCompLayout.vue';
 import EmptyLayout from '@/layouts/EmptyLayout.vue';
+import DemoCompLayout from '@/layouts/DemoCompLayout.vue';
 import { get } from 'lodash-es';
 
 const routes: Array<RouteRecordRaw> = [
@@ -20,6 +21,11 @@ const routes: Array<RouteRecordRaw> = [
                     { path: 'img', component: () => import('@/views/tool/Image.vue'), name: 'tool.img' },
                     { path: 'base64', component: () => import('@/views/tool/Base64.vue'), name: 'tool.base64' },
                     { path: 'url-decode', component: () => import('@/views/tool/UrlDecode.vue'), name: 'tool.url-decode' }
+                ]
+            },
+            {
+                path: 'demo', component: DemoCompLayout, children: [
+                    { path: 'sentry', component: () => import('@/views/demo/Sentry.vue'), name: 'demo.sentry' }
                 ]
             }
         ]
