@@ -1,7 +1,7 @@
 <template>
     <h2>Url解码</h2>
-    <div class="tool-area tool-mono">
-        <div class="tool-content">
+    <div class="main-area main-mono">
+        <div class="main-content">
             <el-row :gutter="20">
                 <el-col :span="12">
                     <el-form :model="value" :rules="rules" ref="form">
@@ -13,7 +13,7 @@
                 </el-col>
                 <el-col :span="12">
                     <el-tooltip content="点击复制">
-                        <el-input readonly v-model="trans.result" v-loading="trans.loading" class="tool-pointer"
+                        <el-input readonly v-model="trans.result" v-loading="trans.loading" class="main-pointer"
                             :autosize="{ minRows: 8, maxRows: 16 }" @click="onCopy"
                             :rows="8" type="textarea" placeholder="转换后内容"/>
                     </el-tooltip>

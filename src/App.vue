@@ -23,7 +23,6 @@ body {
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     box-sizing: border-box;
-    position: relative;
     height: 100vh;
     width: 100vw;
     display: grid;

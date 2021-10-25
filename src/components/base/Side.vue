@@ -2,19 +2,25 @@
     <ul>
         <li class="active">
             <router-link :to="{name : 'tool.apidoc'}">
-                <icon-font type="icon-tool"/>
+                <el-icon>
+                    <fork-spoon/>
+                </el-icon>
                 <span class="side-text">工具</span>
             </router-link>
         </li>
         <li>
             <router-link :to="{name : 'user.login'}">
-                <icon-font type="icon-user"/>
+                <el-icon>
+                    <user/>
+                </el-icon>
                 <span class="side-text">用户</span>
             </router-link>
         </li>
         <li>
             <router-link :to="{name : 'demo.sentry'}">
-                <icon-font type="icon-go"/>
+                <el-icon>
+                    <sugar/>
+                </el-icon>
                 <span class="side-text">Demo</span>
             </router-link>
         </li>
@@ -24,9 +30,9 @@
 
 <script lang="ts" setup>
 import { defineComponent } from 'vue';
-import IconFont from '@/components/base/IconFont';
+import { ForkSpoon, Sugar, User } from '@element-plus/icons';
 
 defineComponent({
-    IconFont
+    User, Sugar, ForkSpoon
 })
 </script>

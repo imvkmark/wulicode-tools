@@ -1,7 +1,7 @@
 <template>
     <h2>图片占位符</h2>
-    <div class="tool-area tool-mono">
-        <div class="tool-content">
+    <div class="main-area main-mono">
+        <div class="main-content">
             <el-form :inline="true">
                 <el-form-item label="背景色">
                     <el-color-picker v-model="trans.bg" size="small"/>

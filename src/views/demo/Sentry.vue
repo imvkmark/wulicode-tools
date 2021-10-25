@@ -1,7 +1,7 @@
 <template>
     <h2>异常处理</h2>
-    <div class="tool-area tool-mono">
-        <div class="tool-content">
+    <div class="main-area main-mono">
+        <div class="main-content">
             <el-row :gutter="20">
                 <el-col :span="12">
                     <el-button @click="onException">触发异常</el-button>

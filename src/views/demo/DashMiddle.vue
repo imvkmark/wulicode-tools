@@ -1,7 +1,7 @@
 <template>
     <h2>居中线</h2>
-    <div class="tool-area tool-mono">
-        <div class="tool-content">
+    <div class="main-area main-mono">
+        <div class="main-content">
             <p class="align--dash_middle">
                 <span>duoli</span>
             </p>

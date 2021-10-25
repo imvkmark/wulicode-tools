@@ -40,7 +40,7 @@
 
 			}
 			&:hover {
-				.anticon {
+				.el-icon {
 					background: var(--wc-color-light-cyan);
 				}
 			}
@@ -57,11 +57,11 @@
 					top: 3px;
 					height: 36px;
 				}
-				.anticon {
+				.el-icon {
 					background: var(--wc-color-blue);
 				}
 			}
-			.anticon {
+			.el-icon {
 				font-size: 20px;
 				padding: 8px;
 				margin-bottom: 5px;
@@ -99,42 +99,78 @@
 		height: 100vh;
 		width: calc(100vw - 5em);
 	}
+	&.content-with-menu {
+		display: flex;
+	}
 }
 
-.px--tool {
-	padding: 20px 40px;
+.px--menu {
+	background: #FFF;
+	min-width: 240px;
+	box-sizing: border-box;
+	border-right: 1px solid #E1EDFF;
+	ul {
+		list-style: none;
+		padding-left: 0.8rem;
+		li {
+			padding-left: 1rem;
+			height: 18px;
+			line-height: 18px;
+			margin-bottom: 8px;
+			font-size: 14px;
+			border-left: 2px solid transparent;
+			&.active {
+				border-left: 2px solid @primaryColor;
+			}
+			a {
+				color: var(--wc-color-dark-blue);
+				text-decoration: none;
+				display: block;
+			}
+		}
+	}
+}
+
+.px--main {
+	padding: 1rem 2rem;
 	box-sizing: border-box;
 	display: flex;
 	flex-direction: column;
 	width: 100%;
+	height: calc(100vh - 4rem);
+	overflow-y: auto;
 	h2 {
 		font-size: 1.45rem;
 		line-height: 2rem;
-		height: 3rem;
 		margin: 0;
+		height: 2rem;
+		padding-bottom: 1rem;
 	}
-	.tool-handle {
+	.main-handle {
 		padding-top: 10px;
 	}
-	.tool-area {
+	.main-area {
 		flex: auto;
 		background: #FFF;
 		border-radius: 8px;
-		padding: 10px 20px;
+		padding: .75rem 1rem;
 		min-width: 828px;
 	}
-	.tool-content {
+	.main-content {
 		padding-top: 10px;
 		padding-bottom: 10px;
 	}
-	.tool-pointer {
+	.main-pointer {
 		textarea {
 			&:hover {
 				cursor: pointer !important;
 			}
 		}
 	}
-	.tool-mono {
+	.main-mono {
 		font-family: Menlo, monospace;
+	}
+	.main-fixed {
+		max-height: calc(100vh - 10.5rem);
 	}
 }

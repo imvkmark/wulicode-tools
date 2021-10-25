@@ -5,7 +5,7 @@
     <div class="px--top">
 
     </div>
-    <div class="px--content">
+    <div class="px--content content-with-menu">
         <router-view/>
     </div>
 

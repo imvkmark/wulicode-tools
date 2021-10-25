@@ -1,7 +1,7 @@
 <template>
     <h2>异常处理</h2>
-    <div class="tool-area tool-mono">
-        <div class="tool-content">
+    <div class="main-area main-mono">
+        <div class="main-content">
             <div class="custom-box">
                 <label>One
                     <input type="checkbox" checked="checked">
