@@ -21,7 +21,9 @@ const router = useRouter();
 const trans = reactive({
     name: router.currentRoute.value.name,
     side: [
-        { name: 'demo.sentry', title: '异常' }
+        { name: 'demo.sentry', title: '异常' },
+        { name: 'demo.custom-box', title: '自定义Checkbox' },
+        { name: 'demo.dash-middle', title: '居中线' }
     ]
 })
 

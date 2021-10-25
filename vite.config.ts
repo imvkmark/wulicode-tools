@@ -61,7 +61,7 @@ export default defineConfig(({ mode }) => {
         },
         build: {
             outDir: `build/wulicode-${mode}`,
-            sourcemap: (mode === 'prod' || mode === 'dev' || mode === 'self'),
+            sourcemap: true,
             rollupOptions: {
                 output: {
                     manualChunks: {

@@ -25,7 +25,9 @@ const routes: Array<RouteRecordRaw> = [
             },
             {
                 path: 'demo', component: DemoCompLayout, children: [
-                    { path: 'sentry', component: () => import('@/views/demo/Sentry.vue'), name: 'demo.sentry' }
+                    { path: 'sentry', component: () => import('@/views/demo/Sentry.vue'), name: 'demo.sentry' },
+                    { path: 'custom-box', component: () => import('@/views/demo/CustomBox.vue'), name: 'demo.custom-box' },
+                    { path: 'dash-middle', component: () => import('@/views/demo/DashMiddle.vue'), name: 'demo.dash-middle' },
                 ]
             }
         ]
