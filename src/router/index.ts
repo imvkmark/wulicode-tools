@@ -3,6 +3,7 @@ import SideLayout from '@/layouts/SideLayout.vue';
 import ToolCompLayout from '@/layouts/ToolCompLayout.vue';
 import EmptyLayout from '@/layouts/EmptyLayout.vue';
 import DemoCompLayout from '@/layouts/DemoCompLayout.vue';
+import FormCompLayout from '@/layouts/FormCompLayout.vue';
 import { get } from 'lodash-es';
 
 const routes: Array<RouteRecordRaw> = [
@@ -29,6 +30,11 @@ const routes: Array<RouteRecordRaw> = [
                     { path: 'custom-box', component: () => import('@/views/demo/CustomBox.vue'), name: 'demo.custom-box' },
                     { path: 'dash-middle', component: () => import('@/views/demo/DashMiddle.vue'), name: 'demo.dash-middle' },
                     { path: 'scroll', component: () => import('@/views/demo/Scroll.vue'), name: 'demo.scroll' }
+                ]
+            },
+            {
+                path: 'form', component: FormCompLayout, children: [
+                    { path: 'text', component: () => import('@/views/form/Text.vue'), name: 'form.text' }
                 ]
             }
         ]
