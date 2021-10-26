@@ -1,28 +1,40 @@
 <template>
-    <el-row>
-        <el-col :span="12" :offset="6">
-            <div class="login-ctr">
-                <div class="form">
-                    <div class="logo">
-                        <img src="@/assets/app/logo.png" alt="WuliCode">
-                        <h4>WuliCode Webapp</h4>
-                        <p>开发中的前后端分离框架</p>
-                    </div>
-                    <el-form :model="value" :rules="rules" ref="form" label-width="100px">
-                        <el-form-item label="通行证" prop="passport">
-                            <el-input v-model="value.passport"></el-input>
-                        </el-form-item>
-                        <el-form-item label="密码" prop="password">
-                            <el-input v-model="value.password"></el-input>
-                        </el-form-item>
-                        <el-form-item>
-                            <el-button type="primary" class="px--block" @click="onSubmit()">登录</el-button>
-                        </el-form-item>
-                    </el-form>
+    <div class="px--content content-full-no-side login">
+        <ul class="top">
+            <li>
+                <router-link :to="{name:'demo.scroll'}">工具</router-link>
+                <router-link :to="{name:'tool.apidoc'}">Demo</router-link>
+            </li>
+        </ul>
+        <el-row :gutter="40">
+            <el-col :span="12">
+                <div class="logo">
+                    <img src="@/assets/app/logo.png" alt="WuliCode"> Wulicode
                 </div>
-            </div>
-        </el-col>
-    </el-row>
+            </el-col>
+            <el-col :span="12">
+                <div class="login-ctr">
+                    <div class="form">
+                        <div class="form-desc">
+                            <h4>登录</h4>
+                            <p>开发中的前后端分离框架</p>
+                        </div>
+                        <el-form :model="value" :rules="rules" ref="form" label-width="100px" label-position="top">
+                            <el-form-item label="通行证" prop="passport">
+                                <el-input v-model="value.passport"></el-input>
+                            </el-form-item>
+                            <el-form-item label="密码" prop="password">
+                                <el-input v-model="value.password"></el-input>
+                            </el-form-item>
+                            <el-form-item>
+                                <el-button type="primary" class="px--block" @click="onSubmit()">登录</el-button>
+                            </el-form-item>
+                        </el-form>
+                    </div>
+                </div>
+            </el-col>
+        </el-row>
+    </div>
 </template>
 
 <script lang="ts" setup>
@@ -78,6 +90,23 @@ const onSubmit = () => {
 <style scoped lang="less">
 @import '../../assets/style/vars';
 
+.top {
+    a {
+        color: #FFF;
+        text-decoration: none;
+        display: inline-block;
+        min-width: 4rem;
+        transition: all 0.3s;
+        &:hover {
+            color: var(--wc-color-light-cyan);
+        }
+    }
+}
+
+.login {
+    background: #081836;
+}
+
 .login-ctr {
     display: flex;
     width: 100%;
@@ -87,21 +116,10 @@ const onSubmit = () => {
     height: 100vh;
 }
 
-.form {
-    width: 100%;
-    background: #FFF;
-    padding: 30px;
-    box-shadow: 0 0 18px 0 rgba(0, 0, 0, 0.20);
-}
-
-.logo {
+.form-desc {
     display: flex;
     flex-direction: column;
     align-items: center;
-    padding-top: 55px;
-    img {
-        width: 55px;
-    }
     h4 {
         height: 40px;
         line-height: 40px;
@@ -115,6 +133,29 @@ const onSubmit = () => {
         color: @assistColor;
         text-align: center;
         margin-top: 0;
+    }
+}
+
+.form {
+    width: 100%;
+    background: #FFF;
+    padding: 30px;
+    box-sizing: border-box;
+    box-shadow: 0 0 18px 0 rgba(0, 0, 0, 0.20);
+    border-radius: 5px;
+    max-width: 40rem;
+}
+
+.logo {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    color: #FFF;
+    font-size: 30px;
+    img {
+        width: 55px;
+        margin-right: 10px;
     }
 }
 </style>

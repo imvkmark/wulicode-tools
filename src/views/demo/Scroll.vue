@@ -3,9 +3,9 @@
     <div class="main-area main-mono">
         <el-row :gutter="20">
             <el-col :span="12">
-                <h3>基于 x--list 的页面滚动</h3>
+                <h3>基于页面的滚动</h3>
                 <p>
-                    当前每个元素高度 200, x--list 是页面容器 <br>
+                    当前每个元素高度 200 <br>
                     Offset-Y:{{ trans.top }} Height : {{ trans.height }} <br>
                     这里的平滑滚动用到了
                     <a href="https://developer.mozilla.org/zh-CN/docs/Web/CSS/scroll-behavior" target="_blank">

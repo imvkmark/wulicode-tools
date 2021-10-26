@@ -36,16 +36,14 @@ const routes: Array<RouteRecordRaw> = [
     {
         path: '/user', component: EmptyLayout, children: [
             {
-                path: 'login', component: () => import('@/views/user/Login.vue'), name: 'user.login', meta: {
-                    title: '登录'
-                }
-            },
-            {
                 path: 'cp', component: () => import('@/views/user/Cp.vue'), name: 'user.cp', meta: {
                     title: '用户控制中心'
                 }
             }
         ]
+    },
+    {
+        path: '/user/login', component: () => import('@/views/user/Login.vue'), name: 'user.login'
     }
 ]
 
