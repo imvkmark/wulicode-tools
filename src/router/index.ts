@@ -26,6 +26,7 @@ const routes: Array<RouteRecordRaw> = [
                 path: 'css', component: SideNavLayout, children: [
                     { path: 'custom-box', component: () => import('@/views/css/CustomBox.vue'), name: 'css.custom-box' },
                     { path: 'dash-middle', component: () => import('@/views/css/DashMiddle.vue'), name: 'css.dash-middle' },
+                    { path: 'animation', component: () => import('@/views/css/Animation.vue'), name: 'css.animation' },
                 ]
             },
             {

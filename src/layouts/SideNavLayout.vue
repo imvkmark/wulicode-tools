@@ -36,7 +36,7 @@ const routes = {
     css: [
         { name: 'css.custom-box', title: '自定义Checkbox' },
         { name: 'css.dash-middle', title: '居中线' },
-        { name: 'css.animation', title: '居中线' }
+        { name: 'css.animation', title: '动画' }
     ]
 }
 
