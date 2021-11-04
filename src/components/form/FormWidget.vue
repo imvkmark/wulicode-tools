@@ -1,33 +1,74 @@
 <template>
-    <div class="form--widget">
-        <h3>{{ title }}</h3>
-        <el-form :model="transModel">
-            <el-form-item v-for="item in props.items" :key="get(item , 'item.prop')" :label="get(item , 'item.label')"
-                :prop="get(item , 'item.prop')">
-                <field-text :attr="get(item, 'field')" v-if="get(item , 'type') === 'text'" @change="onChange"
-                    :value="get(transModel, get(item, 'field.name'))"/>
+    <div class="widget--form">
+        <h3 class="form-title" v-if="title">
+            {{ title }}
+            <small v-if="description">{{ description }}</small>
+        </h3>
+        <!-- 表格数据 -->
+        <el-form :model="transModel" :rules="rules" ref="formRef"
+            :label-width="get(attr, 'label-width')" :label-position="get(attr, 'label-position', 'right')"
+            :label-suffix="get(attr, 'label-suffix', '')" :hide-required-asterisk="get(attr, 'hide-required-asterisk', false)"
+            :show-message="get(attr, 'show-message', true)" :inline-message="get(attr, 'inline-message', false)"
+            :status-icon="get(attr, 'status-icon', false)" :size="get(attr, 'size', '')"
+            :validate-on-rule-change="get(attr, 'validate-on-rule-change', true)"
+            :inline="get(attr, 'inline', false)" :disabled="get(attr, 'disabled', false)">
 
+            <template v-for="item in props.items" :key="get(item , 'field.name')">
+                <!--  hidden 不进行处理, 因为不修改模型数据  -->
+                <el-form-item :label="get(item , 'item.label')" v-if="!includes(['hidden'], get(item , 'type'))"
+                    :rules="get(item, 'item.rules')"
+                    :prop="get(item , 'field.name')">
+                    <!--  text -->
+                    <field-text :attr="get(item, 'field')" v-if="get(item , 'type') === 'text'" @change="onChange"
+                        :value="get(transModel, get(item, 'field.name'))"/>
+                </el-form-item>
+            </template>
+
+            <el-form-item>
+                <el-button type="primary" v-if="indexOf(buttons, 'submit')" @click="onSubmit">确认</el-button>
+                <el-button v-if="indexOf(buttons, 'reset')" @click="onReset">重置</el-button>
             </el-form-item>
         </el-form>
     </div>
 </template>
 <script lang="ts" setup>
 import { defineProps, ref, watch } from 'vue';
-import { clone, get, set } from 'lodash-es';
+import { clone, get, indexOf, set, includes } from 'lodash-es';
 import FieldText from '@/components/form/FieldText.vue';
+import { ElForm } from 'element-plus';
 
 const props = defineProps({
     title: String,
+    description: String,
+    attr: Object,
     items: Array,
-    model: Object
+    rules: Object,
+    model: Object,
+    buttons: Array
 })
 
+
 const transModel = ref();
+const formRef: any = ref<InstanceType<typeof ElForm>>();
+const emit = defineEmits([
+    'submit'
+])
 
 const onChange = (field: any) => {
     let inter = clone(transModel.value)
     set(inter, get(field, 'name'), get(field, 'value'));
     transModel.value = inter;
+}
+
+const onSubmit = () => {
+    formRef.value.validate().then((success: any) => {
+        console.log(success, transModel.value);
+        emit('submit', transModel.value);
+    })
+}
+
+const onReset = () => {
+    formRef.value.resetFields();
 }
 watch(() => props.model, (newVal) => {
     transModel.value = newVal;

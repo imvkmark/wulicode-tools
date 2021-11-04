@@ -4,7 +4,9 @@
         <div class="main-content">
             <el-row :gutter="20">
                 <el-col :span="24">
-                    <form-widget :items="trans.items" :title="trans.title" :model="trans.model"></form-widget>
+                    <form-widget :attr="trans.attr" :description="trans.description" :items="trans.items" :title="trans.title"
+                        :model="trans.model"
+                        :rules="trans.rules"></form-widget>
                 </el-col>
             </el-row>
         </div>
@@ -18,15 +20,21 @@ import { get } from 'lodash-es';
 
 const trans = reactive({
     title: '',
+    description: '',
     items: [],
-    model: {}
+    rules: [],
+    model: {},
+    attr: {}
 })
 onMounted(() => {
     apiDemoFormText({}, 'get').then(({ data }) => {
         console.log(data);
         trans.title = get(data, 'title');
+        trans.description = get(data, 'description');
         trans.items = get(data, 'items');
         trans.model = get(data, 'model');
+        trans.rules = get(data, 'rules');
+        trans.attr = get(data, 'attr');
     })
 })
 </script>

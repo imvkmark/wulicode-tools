@@ -1,6 +1,7 @@
 export interface RootStateTypes {
     text: string,
-    loading: boolean
+    loading: boolean,
+    prefix: string,
 }
 
 export interface PoppyTypes {

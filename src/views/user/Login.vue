@@ -2,8 +2,7 @@
     <div class="px--content content-full-no-side login">
         <ul class="top">
             <li>
-                <router-link :to="{name:'demo.scroll'}">工具</router-link>
-                <router-link :to="{name:'tool.apidoc'}">Demo</router-link>
+                <router-link :to="{name:'tool.apidoc'}">&lt;</router-link>
             </li>
         </ul>
         <el-row :gutter="40">

@@ -38,5 +38,5 @@ $ yarn build:<env>
 NODE_ENV=development
 ```
 
-MIT Copyright © 2021 duoli<zhaody901@126.com>
+MIT Copyright © 2021 duoli zhaody901@126.com
 

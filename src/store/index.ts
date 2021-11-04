@@ -7,7 +7,8 @@ import poppy from './modules/poppy'
 export const store = createStore<RootStateTypes>({
     state: {
         text: 'This is Vuex Root.state.text',
-        loading: false
+        loading: false,
+        prefix: ''
     },
     getters: {
         loading(state: any) {
@@ -24,6 +25,9 @@ export const store = createStore<RootStateTypes>({
         },
         Loaded({ state }) {
             state.loading = false
+        },
+        SetPrefix({ state }, { prefix }) {
+            state.prefix = prefix
         }
     },
     modules: {
