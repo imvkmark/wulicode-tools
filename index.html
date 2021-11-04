@@ -16,9 +16,30 @@
 	<meta name="description" content="Wulicode 是一个爱好者的自我博客">
 	<meta name="keywords" content="Wulicode,blog,博客,duoli,系统,man,文档,手册,工具">
 	<title>Wulicode</title>
+	<style>
+        body {
+            margin: 0;
+            background: #F3F5F9;
+        }
+        .loading {
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-content: center;
+            align-items: center;
+        }
+        .loading img {
+            width: 20vw;
+            height: 20vw;
+        }
+	</style>
 </head>
 <body>
 <div id="app">
+	<div class="loading">
+		<img src="/assets/icon/loading.svg" alt="加载中">
+	</div>
 	<img src="https://wulicode.com/app/images/logo.png" style="opacity:0;" alt="Wulicode Description">
 </div>
 <script type="module" src="/src/main.ts"></script>
