@@ -1,7 +1,7 @@
 import { createRouter, createWebHashHistory, Router, RouteRecordRaw } from 'vue-router'
-import SideLayout from '@/layouts/SideLayout.vue';
 import EmptyLayout from '@/layouts/EmptyLayout.vue';
-import SideNavLayout from '@/layouts/SideNavLayout.vue';
+import SiteLayout from '@/layouts/SiteLayout.vue';
+import SideLayout from '@/layouts/SideLayout.vue';
 import { get } from 'lodash-es';
 
 const routes: Array<RouteRecordRaw> = [
@@ -12,34 +12,19 @@ const routes: Array<RouteRecordRaw> = [
     },
     {
         path: '/',
-        component: SideLayout,
+        component: SiteLayout,
         children: [
-            {
-                path: 'tool', component: SideNavLayout, children: [
-                    { path: 'apidoc', component: () => import('@/views/tool/Apidoc.vue'), name: 'tool.apidoc' },
-                    { path: 'img', component: () => import('@/views/tool/Image.vue'), name: 'tool.img' },
-                    { path: 'base64', component: () => import('@/views/tool/Base64.vue'), name: 'tool.base64' },
-                    { path: 'url-decode', component: () => import('@/views/tool/UrlDecode.vue'), name: 'tool.url-decode' }
-                ]
-            },
-            {
-                path: 'css', component: SideNavLayout, children: [
-                    { path: 'custom-box', component: () => import('@/views/css/CustomBox.vue'), name: 'css.custom-box' },
-                    { path: 'dash-middle', component: () => import('@/views/css/DashMiddle.vue'), name: 'css.dash-middle' },
-                    { path: 'animation', component: () => import('@/views/css/Animation.vue'), name: 'css.animation' },
-                ]
-            },
-            {
-                path: 'js', component: SideNavLayout, children: [
-                    { path: 'sentry', component: () => import('@/views/js/Sentry.vue'), name: 'js.sentry' },
-                    { path: 'scroll', component: () => import('@/views/js/Scroll.vue'), name: 'js.scroll' }
-                ]
-            },
-            {
-                path: 'form', component: SideNavLayout, children: [
-                    { path: 'text', component: () => import('@/views/form/Text.vue'), name: 'form.text' }
-                ]
-            }
+            { path: 'home', component: () => import('@/views/home/Home.vue'), name: 'home.index' },
+            { path: 'tool/apidoc', component: () => import('@/views/tool/Apidoc.vue'), name: 'tool.apidoc' },
+            { path: 'tool/img', component: () => import('@/views/tool/Image.vue'), name: 'tool.img' },
+            { path: 'tool/base64', component: () => import('@/views/tool/Base64.vue'), name: 'tool.base64' },
+            { path: 'tool/url-decode', component: () => import('@/views/tool/UrlDecode.vue'), name: 'tool.url-decode' },
+            { path: 'css/custom-box', component: () => import('@/views/css/CustomBox.vue'), name: 'css.custom-box' },
+            { path: 'css/dash-middle', component: () => import('@/views/css/DashMiddle.vue'), name: 'css.dash-middle' },
+            { path: 'css/animation', component: () => import('@/views/css/Animation.vue'), name: 'css.animation' },
+            { path: 'js/sentry', component: () => import('@/views/js/Sentry.vue'), name: 'js.sentry' },
+            { path: 'js/scroll', component: () => import('@/views/js/Scroll.vue'), name: 'js.scroll' },
+            { path: 'form/text', component: () => import('@/views/form/Text.vue'), name: 'form.text' }
         ]
     },
     {

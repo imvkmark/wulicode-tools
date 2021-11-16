@@ -14,7 +14,6 @@ const app = createApp(App)
 
 app.use(ElementPlus);
 
-
 Sentry.init({
     app,
     dsn: sentryDsnUrl,

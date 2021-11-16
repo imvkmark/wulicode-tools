@@ -8,7 +8,12 @@ export const store = createStore<RootStateTypes>({
     state: {
         text: 'This is Vuex Root.state.text',
         loading: false,
-        prefix: ''
+        prefix: '',
+        size: '',
+        navs: [],
+        nav: {},
+        navActive: false,
+        sidebars: []
     },
     getters: {
         loading(state: any) {
@@ -28,6 +33,15 @@ export const store = createStore<RootStateTypes>({
         },
         SetPrefix({ state }, { prefix }) {
             state.prefix = prefix
+        },
+        SetNav({ state }, { nav }) {
+            state.nav = nav
+        },
+        SetSize({ state }, { size }) {
+            state.size = size
+        },
+        SetNavActive({ state }, status) {
+            state.navActive = status
         }
     },
     modules: {

@@ -1,7 +1,12 @@
 export interface RootStateTypes {
     text: string,
     loading: boolean,
+    navActive: boolean,
     prefix: string,
+    navs: object,
+    size: string,
+    nav: object,
+    sidebars: object,
 }
 
 export interface PoppyTypes {

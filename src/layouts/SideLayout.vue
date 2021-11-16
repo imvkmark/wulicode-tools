@@ -1,6 +1,6 @@
 <template>
     <div class="px--side">
-        <side/>
+        <Nav/>
     </div>
     <div class="px--top">
 
@@ -15,8 +15,8 @@
 import useAuth from '@/composables/useAuth';
 import useClearCache from '@/composables/useClearCache';
 import useInit from '@/composables/useInit';
-import Side from '@/components/base/Side.vue';
 import useTkd from '@/composables/useTkd';
+import Nav from '@/components/base/Nav.vue';
 
 useClearCache()
 useInit();

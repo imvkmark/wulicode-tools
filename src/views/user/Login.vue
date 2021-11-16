@@ -1,5 +1,5 @@
 <template>
-    <div class="px--content content-full-no-side login">
+    <div class="px--content login">
         <ul class="top">
             <li>
                 <router-link :to="{name:'tool.apidoc'}">&lt;</router-link>
