@@ -1,11 +1,15 @@
 <template>
     <div class="content">
-        <div class="logo">
-            <img src="@/assets/app/logo.png" alt="WuliCode"> Wulicode
-        </div>
-        <div class="input">
-            <ElInput/>
-        </div>
+        <el-row justify="center">
+            <el-col :lg="12" :md="{span:16}" :sm="{span:18}" :xs="{span:22}" :span="12">
+                <div class="logo">
+                    <img src="@/assets/app/logo.png" alt="WuliCode"> Wulicode
+                </div>
+                <div class="input">
+                    <ElInput/>
+                </div>
+            </el-col>
+        </el-row>
     </div>
     <div class="footer">
         Copyright 2021 - present zhaody901(At)126.com &nbsp;
@@ -22,13 +26,6 @@ const trans = reactive({
     top: 0,
     height: 0
 })
-const onScroll = function (e) {
-    trans.top = e.target.scrollTop;
-    trans.height = e.target.scrollHeight;
-}
-const onScrollTo = function () {
-    refList.value.scrollTop = 200 * 4;
-}
 
 const initValue = function () {
     trans.height = refList.value.scrollHeight;
@@ -40,9 +37,10 @@ onMounted(initValue);
 .content {
     display: flex;
     align-items: center;
-    justify-content: center;
-    flex-direction: column;
     min-height: calc(100vh - 8rem);
+    .el-row {
+        flex: 1;
+    }
     .logo {
         display: flex;
         align-items: center;

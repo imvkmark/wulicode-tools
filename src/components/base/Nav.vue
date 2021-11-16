@@ -1,13 +1,15 @@
 <template>
     <div :class="{'px--nav' : true, ...sizeClass(trans.size), active:trans.active}">
         <ul>
-            <li :class="{active:trans.prefix === nav.name.split('.')[0]}" v-for="nav in navs" :key="nav.name">
-                <router-link :to="{name : nav.name}">
+            <li :class="{active:trans.prefix === nav.name.split('.')[0]}" v-for="nav in navs" :key="nav.name"
+                @click="jumpTo(nav.name)"
+            >
+                <em>
                     <ElIcon>
                         <component :is="navDefs[prefix(nav.name)]"/>
                     </ElIcon>
                     <span class=" side-text">{{ nav.text }}</span>
-                </router-link>
+                </em>
             </li>
         </ul>
     </div>
@@ -56,6 +58,15 @@ const navs = [
         text: '用户'
     }
 ];
+
+const jumpTo = (name: string) => {
+    router.push({
+        name
+    });
+    if (trans.active) {
+        store.dispatch('SetNavActive', false);
+    }
+}
 const setPrefix = function () {
     let name = String(router.currentRoute.value.name);
     let prefix = name.split('.')[0];
@@ -66,7 +77,7 @@ const setPrefix = function () {
 onMounted(() => {
     setPrefix()
 })
-watch(() => router.currentRoute.value.name, (newVal) => {
+watch(() => router.currentRoute.value.name, () => {
     setPrefix();
 })
 </script>

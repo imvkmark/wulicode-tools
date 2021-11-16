@@ -25,7 +25,7 @@
 		padding-left: 0;
 		width: 100%;
 		li {
-			a {
+			em {
 				cursor: pointer;
 				display: flex;
 				flex-direction: column;
@@ -38,14 +38,14 @@
 				position: relative;
 				color: #FFF;
 				text-decoration: none;
-
+				font-style: normal;
 			}
 			&:hover {
 				.el-icon {
 					background: var(--wc-color-light-cyan);
 				}
 			}
-			&.active a {
+			&.active em {
 				&:before {
 					content: ' ';
 					border-radius: 3px;
@@ -81,6 +81,8 @@
 	height: calc(100vh - 4rem);
 	box-sizing: border-box;
 	flex: 1;
+	min-width: 320px;
+	width: 100%;
 }
 
 .px--main {

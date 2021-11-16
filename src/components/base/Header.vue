@@ -59,12 +59,14 @@ header {
         justify-content: center;
         transition: background-color 0.3s;
         .logo {
+            cursor: pointer;
             img {
                 height: 2rem;
             }
         }
         .icon {
             width: 100%;
+            cursor: pointer;
             height: 4rem;
             display: flex;
             align-items: center;

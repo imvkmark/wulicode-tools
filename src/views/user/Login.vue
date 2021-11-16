@@ -1,17 +1,7 @@
 <template>
-    <div class="px--content login">
-        <ul class="top">
-            <li>
-                <router-link :to="{name:'tool.apidoc'}">&lt;</router-link>
-            </li>
-        </ul>
-        <el-row :gutter="40">
-            <el-col :span="12">
-                <div class="logo">
-                    <img src="@/assets/app/logo.png" alt="WuliCode"> Wulicode
-                </div>
-            </el-col>
-            <el-col :span="12">
+    <div class="login">
+        <el-row justify="center">
+            <el-col :span="12" :xs="{span:22}" :sm="{span:18}">
                 <div class="login-ctr">
                     <div class="form">
                         <div class="form-desc">
@@ -89,21 +79,14 @@ const onSubmit = () => {
 <style scoped lang="less">
 @import '../../assets/style/vars';
 
-.top {
-    a {
-        color: #FFF;
-        text-decoration: none;
-        display: inline-block;
-        min-width: 4rem;
-        transition: all 0.3s;
-        &:hover {
-            color: var(--wc-color-light-cyan);
-        }
-    }
-}
-
 .login {
     background: #081836;
+    min-height: calc(100vh - 4rem);
+    display: flex;
+    align-items: center;
+    .el-row {
+        flex: 1;
+    }
 }
 
 .login-ctr {
@@ -112,7 +95,6 @@ const onSubmit = () => {
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    height: 100vh;
 }
 
 .form-desc {
@@ -143,18 +125,5 @@ const onSubmit = () => {
     box-shadow: 0 0 18px 0 rgba(0, 0, 0, 0.20);
     border-radius: 5px;
     max-width: 40rem;
-}
-
-.logo {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    height: 100vh;
-    color: #FFF;
-    font-size: 30px;
-    img {
-        width: 55px;
-        margin-right: 10px;
-    }
 }
 </style>

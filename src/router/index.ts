@@ -1,13 +1,11 @@
 import { createRouter, createWebHashHistory, Router, RouteRecordRaw } from 'vue-router'
-import EmptyLayout from '@/layouts/EmptyLayout.vue';
 import SiteLayout from '@/layouts/SiteLayout.vue';
-import SideLayout from '@/layouts/SideLayout.vue';
 import { get } from 'lodash-es';
 
 const routes: Array<RouteRecordRaw> = [
     {
         path: '/',
-        component: SideLayout,
+        component: SiteLayout,
         redirect: '/tool/base64'
     },
     {
@@ -28,16 +26,10 @@ const routes: Array<RouteRecordRaw> = [
         ]
     },
     {
-        path: '/user', component: EmptyLayout, children: [
-            {
-                path: 'cp', component: () => import('@/views/user/Cp.vue'), name: 'user.cp', meta: {
-                    title: '用户控制中心'
-                }
-            }
+        path: '/user', component: SiteLayout, children: [
+            { path: 'cp', component: () => import('@/views/user/Cp.vue'), name: 'user.cp', meta: { title: '用户控制中心' } },
+            { path: 'login', component: () => import('@/views/user/Login.vue'), name: 'user.login', meta: { title: '登录' } }
         ]
-    },
-    {
-        path: '/user/login', component: () => import('@/views/user/Login.vue'), name: 'user.login'
     }
 ]
 
