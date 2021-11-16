@@ -13,6 +13,7 @@ export const store = createStore<RootStateTypes>({
         navs: [],
         nav: {},
         navActive: false,
+        sidebarActive: false,
         sidebars: []
     },
     getters: {
@@ -34,14 +35,14 @@ export const store = createStore<RootStateTypes>({
         SetPrefix({ state }, { prefix }) {
             state.prefix = prefix
         },
-        SetNav({ state }, { nav }) {
-            state.nav = nav
-        },
         SetSize({ state }, { size }) {
             state.size = size
         },
         SetNavActive({ state }, status) {
             state.navActive = status
+        },
+        SetSidebarActive({ state }, status) {
+            state.sidebarActive = status
         }
     },
     modules: {

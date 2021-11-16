@@ -1,11 +1,11 @@
 <template>
     <header>
-        <div :class="{nav:true, active:trans.active}" v-if="trans.prefix">
+        <div :class="{nav:true, active:trans.navActive}" v-if="trans.prefix">
             <div v-if="sizeGt(trans.size, 'md')" class="logo">
                 <img src="@/assets/app/logo.png" alt="Wulicode">
             </div>
             <div v-else class="icon">
-                <ElIcon v-if="!trans.active" @click="showNav">
+                <ElIcon v-if="!trans.navActive" @click="showNav">
                     <component :is="navDefs[trans.prefix]"/>
                 </ElIcon>
                 <ElIcon v-else @click="showNav">
@@ -13,26 +13,35 @@
                 </ElIcon>
             </div>
         </div>
+        <div v-if="sizeLte(trans.size, 'md')" class="sidebar" @click="showSidebar">
+            <ElIcon>
+                <Menu/>
+            </ElIcon>
+        </div>
     </header>
 </template>
 
 <script lang="ts" setup>
 import { useStore } from '@/store';
 import { computed, defineComponent, reactive } from 'vue';
-import { navDefs, sizeGt } from '@/utils/defs';
-import { ArrowLeft } from '@element-plus/icons';
+import { navDefs, sizeGt, sizeLte } from '@/utils/defs';
+import { ArrowLeft, Menu } from '@element-plus/icons';
 
 const store = useStore();
 const trans = reactive({
     prefix: computed(() => store.state.prefix),
-    active: computed(() => store.state.navActive),
+    navActive: computed(() => store.state.navActive),
+    sidebarActive: computed(() => store.state.sidebarActive),
     size: computed(() => store.state.size)
 })
 const showNav = () => {
-    store.dispatch('SetNavActive', !trans.active)
+    store.dispatch('SetNavActive', !trans.navActive)
+}
+const showSidebar = () => {
+    store.dispatch('SetSidebarActive', !trans.sidebarActive)
 }
 defineComponent({
-    ArrowLeft
+    ArrowLeft, Menu
 })
 </script>
 
@@ -51,6 +60,12 @@ header {
     width: 100%;
     border-color: #CCC;
     border-bottom: 1px solid var(--wc-header-border-color);
+    justify-content: space-between;
+    .sidebar {
+        .el-icon {
+            font-size: 2rem;
+        }
+    }
     .nav {
         width: 5rem;
         height: 4rem;
@@ -58,6 +73,7 @@ header {
         align-items: center;
         justify-content: center;
         transition: background-color 0.3s;
+
         .logo {
             cursor: pointer;
             img {

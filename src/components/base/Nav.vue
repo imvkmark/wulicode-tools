@@ -84,7 +84,8 @@ watch(() => router.currentRoute.value.name, () => {
 
 <style scoped lang="less">
 .px--nav {
-    transition: margin-left 0.3s;
+    transition: all 0.3s;
+    margin-left: -5rem;
     &.active {
         margin-left: 0;
     }
@@ -93,6 +94,5 @@ watch(() => router.currentRoute.value.name, () => {
 .md, .sm, .xs {
     position: absolute;
     margin-left: -5rem;
-
 }
 </style>

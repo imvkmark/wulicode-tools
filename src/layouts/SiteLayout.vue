@@ -27,6 +27,8 @@ useFluid();
 </script>
 <style scoped lang="less">
 .container {
+    position: relative;
+    overflow: hidden;
     display: flex;
     box-sizing: border-box;
 }

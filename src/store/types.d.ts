@@ -2,6 +2,7 @@ export interface RootStateTypes {
     text: string,
     loading: boolean,
     navActive: boolean,
+    sidebarActive: boolean,
     prefix: string,
     navs: object,
     size: string,

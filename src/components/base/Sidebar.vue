@@ -1,5 +1,5 @@
 <template>
-    <div class="sidebar" v-if="trans.side.length">
+    <div :class="{sidebar:true, ...sizeClass(trans.size), active:trans.active}" v-if="trans.side.length">
         <ul>
             <li :class="{active: item.name === trans.name}" v-for="item in trans.side" v-bind:key="item">
                 <router-link :to="{name:item.name}">{{ item.title }}</router-link>
@@ -12,6 +12,7 @@ import { computed, onMounted, reactive, watch } from 'vue'
 import { useRouter } from 'vue-router';
 import { get } from 'lodash-es';
 import { useStore } from '@/store';
+import { sizeClass } from '@/utils/defs';
 
 const router = useRouter();
 const store = useStore();
@@ -38,6 +39,8 @@ const routes = {
 
 const trans = reactive({
     name: computed(() => router.currentRoute.value.name),
+    active: computed(() => store.state.sidebarActive),
+    size: computed(() => store.state.size),
     side: [
         { name: 'tool.apidoc', title: 'ApiDoc' }
     ]
@@ -59,8 +62,19 @@ onMounted(() => {
 <style scoped lang="less">
 @import '../../assets/style/vars';
 
+.md, .sm, .xs {
+    position: absolute;
+    right: -240px;
+    transition: right 0.3s;
+    &.active {
+        right: 0;
+    }
+}
+
 .sidebar {
     background: #FFF;
+    height: calc(100vh - 4rem);
+    z-index: 5;
     min-width: 240px;
     box-sizing: border-box;
     border-right: 1px solid #E1EDFF;
