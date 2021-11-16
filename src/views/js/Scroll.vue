@@ -1,6 +1,5 @@
 <template>
-    <h2>滚动</h2>
-    <div class="main-area main-mono">
+    <PxMain title="滚动">
         <el-row :gutter="20">
             <el-col :span="12">
                 <h3>基于页面的滚动</h3>
@@ -23,11 +22,12 @@
                 </div>
             </el-col>
         </el-row>
-    </div>
+    </PxMain>
 </template>
 
 <script lang="ts" setup>
 import { onMounted, reactive, ref } from 'vue'
+import PxMain from '@/components/base/PxMain.vue';
 
 const refList: any = ref(null);
 const trans = reactive({

@@ -1,10 +1,10 @@
 <template>
-    <Header/>
+    <PxHeader/>
     <router-view/>
 </template>
 
 <script lang="ts" setup>
-import Header from '@/components/base/Header.vue';
+import PxHeader from '@/components/base/PxHeader.vue';
 </script>
 
 <style lang="less">

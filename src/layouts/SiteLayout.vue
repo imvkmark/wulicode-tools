@@ -1,7 +1,7 @@
 <template>
     <div class="container">
-        <Nav/>
-        <Sidebar/>
+        <PxNav/>
+        <PxSidebar/>
         <div class="px--content">
             <ElScrollbar>
                 <router-view/>
@@ -15,9 +15,9 @@ import useAuth from '@/composables/useAuth';
 import useClearCache from '@/composables/useClearCache';
 import useInit from '@/composables/useInit';
 import useTkd from '@/composables/useTkd';
-import Nav from '@/components/base/Nav.vue';
-import Sidebar from '@/components/base/Sidebar.vue';
 import useFluid from '@/composables/useFluid';
+import PxNav from '@/components/base/PxNav.vue';
+import PxSidebar from '@/components/base/PxSidebar.vue';
 
 useClearCache()
 useInit();

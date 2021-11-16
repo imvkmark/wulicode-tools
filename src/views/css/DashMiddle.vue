@@ -1,14 +1,14 @@
 <template>
-    <h2>居中线</h2>
-    <div class="main-area main-mono">
+    <PxMain title="居中线">
         <div class="main-content">
             <p class="align--dash_middle">
                 <span>duoli</span>
             </p>
         </div>
-    </div>
+    </PxMain>
 </template>
-<script setup>
+<script lang="ts" setup>
+import PxMain from '../../components/base/PxMain.vue';
 </script>
 
 // url : https://www.yudouyudou.com/jiaochengheji/Html_css/1248.html

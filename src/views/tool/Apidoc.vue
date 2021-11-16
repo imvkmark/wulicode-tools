@@ -1,6 +1,5 @@
 <template>
-    <h2>ApiDoc注释生成</h2>
-    <div class="main-area main-mono">
+    <PxMain title="ApiDoc注释生成">
         <div class="main-content">
             <el-row :gutter="20">
                 <el-col :span="12">
@@ -20,7 +19,7 @@
                 </el-col>
             </el-row>
         </div>
-    </div>
+    </PxMain>
 </template>
 <script lang="ts" setup>
 import { computed, onMounted, reactive, ref } from 'vue'
@@ -31,6 +30,7 @@ import { apiOpToolApidoc } from '@/services/op';
 import { toast } from '@/utils/utils';
 import { ElForm } from 'element-plus';
 import { copyText } from 'vue3-clipboard'
+import PxMain from '@/components/base/PxMain.vue';
 
 const store = useStore();
 const router = useRouter();

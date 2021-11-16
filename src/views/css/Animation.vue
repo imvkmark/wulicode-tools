@@ -1,6 +1,5 @@
 <template>
-    <h2>动画</h2>
-    <div class="main-area main-mono">
+    <PxMain title="动画">
         <el-row :gutter="20">
             <el-col :span="12">
                 <h3>持续转动</h3>
@@ -12,11 +11,12 @@
 
             </el-col>
         </el-row>
-    </div>
+    </PxMain>
 </template>
 
 <script lang="ts" setup>
 import { onMounted, reactive, ref } from 'vue'
+import PxMain from '@/components/base/PxMain.vue';
 
 const refList: any = ref(null);
 const trans = reactive({

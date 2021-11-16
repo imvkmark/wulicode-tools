@@ -1,12 +1,11 @@
 <template>
-    <h2>Base64 转解码</h2>
-    <div class="main-area main-mono">
+    <PxMain title="Base64 转解码">
         <div class="main-handle">
             <el-switch v-model="trans.type" active-text="解码" inactive-text="转码" @change="onInput"/>
         </div>
         <div class="main-content">
             <el-row :gutter="20">
-                <el-col :span="12">
+                <el-col :lg="{span:12}" :md="{span:12}" :sm="{span:24}">
                     <el-form :model="value" :rules="rules" ref="form">
                         <el-form-item prop="text">
                             <el-input @input="onInput" @change="onInput" v-model="value.text"
@@ -14,7 +13,7 @@
                         </el-form-item>
                     </el-form>
                 </el-col>
-                <el-col :span="12">
+                <el-col :lg="{span:12}" :md="{span:12}" :sm="{span:24}">
                     <el-tooltip content="点击复制">
                         <el-input readonly v-model="trans.result" v-loading="trans.loading" class="main-pointer"
                             :autosize="{ minRows: 8, maxRows: 16 }" @click="onCopy"
@@ -23,7 +22,7 @@
                 </el-col>
             </el-row>
         </div>
-    </div>
+    </PxMain>
 </template>
 <script lang="ts" setup>
 import { computed, onMounted, reactive, ref } from 'vue'
@@ -33,6 +32,7 @@ import { localStore, toast } from '@/utils/utils';
 import { ElForm } from 'element-plus';
 import { copyText } from 'vue3-clipboard'
 import { debounce, get } from 'lodash-es';
+import PxMain from '@/components/base/PxMain.vue';
 
 const store = useStore();
 const router = useRouter();

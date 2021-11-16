@@ -1,6 +1,5 @@
 <template>
-    <h2>图片占位符</h2>
-    <div class="main-area main-mono">
+    <PxMain title="图片占位符">
         <div class="main-content">
             <el-form :inline="true">
                 <el-form-item label="背景色">
@@ -26,7 +25,7 @@
                 <p @click="onCopy">{{ value.url }}</p>
             </el-tooltip>
         </div>
-    </div>
+    </PxMain>
 </template>
 <script lang="ts" setup>
 import { trimEnd, trimStart } from 'lodash-es';
@@ -34,6 +33,8 @@ import { onMounted, reactive, watch } from 'vue';
 import { appUrl } from '@/utils/conf';
 import { copyText } from 'vue3-clipboard';
 import { toast } from '@/utils/utils';
+import PxMain from '@/components/base/PxMain.vue';
+
 
 const trans = reactive({
     bg: '#282828',

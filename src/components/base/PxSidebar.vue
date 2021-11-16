@@ -62,16 +62,10 @@ onMounted(() => {
 <style scoped lang="less">
 @import '../../assets/style/vars';
 
-.md, .sm, .xs {
-    position: absolute;
-    right: -240px;
-    transition: right 0.3s;
-    &.active {
-        right: 0;
-    }
-}
 
 .sidebar {
+    position: absolute;
+    right: -240px;
     background: #FFF;
     height: calc(100vh - 4rem);
     z-index: 5;
@@ -98,5 +92,19 @@ onMounted(() => {
             }
         }
     }
+}
+
+.md, .sm, .xs {
+    position: absolute;
+    right: -240px;
+    transition: right 0.3s;
+    &.active {
+        right: 0;
+    }
+}
+
+.xl, .lg, .xxl {
+    position: relative;
+    right: 0;
 }
 </style>

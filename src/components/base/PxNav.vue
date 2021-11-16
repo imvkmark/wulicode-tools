@@ -95,4 +95,9 @@ watch(() => router.currentRoute.value.name, () => {
     position: absolute;
     margin-left: -5rem;
 }
+
+.lg, .xl, .xxl {
+    position: relative;
+    margin-left: 0;
+}
 </style>

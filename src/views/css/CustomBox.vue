@@ -1,6 +1,5 @@
 <template>
-    <h2>异常处理</h2>
-    <div class="main-area main-mono">
+    <PxMain title="自定义Checkbox / Radio">
         <div class="main-content">
             <div class="custom-box">
                 <label>One
@@ -32,9 +31,12 @@
                 </label>
             </div>
         </div>
-    </div>
+    </PxMain>
 </template>
+<script lang="ts" setup>
+import PxMain from '../../components/base/PxMain.vue';
 
+</script>
 <style lang="less">
 /* Create the cb-checkbox/indicator (hidden when not checked) */
 /* Show the checkmark when checked */

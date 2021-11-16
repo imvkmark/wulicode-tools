@@ -1,6 +1,5 @@
 <template>
-    <h2>文本输入</h2>
-    <div class="main-area main-mono">
+    <PxMain title="文本输入">
         <div class="main-content">
             <el-row :gutter="20">
                 <el-col :span="24">
@@ -10,13 +9,14 @@
                 </el-col>
             </el-row>
         </div>
-    </div>
+    </PxMain>
 </template>
 <script lang="ts" setup>
 import { onMounted, reactive } from 'vue';
 import { apiDemoFormText } from '@/services/demo';
 import FormWidget from '@/components/form/FormWidget.vue';
 import { get } from 'lodash-es';
+import PxMain from '@/components/base/PxMain.vue';
 
 const trans = reactive({
     title: '',

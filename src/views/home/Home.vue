@@ -1,7 +1,7 @@
 <template>
     <div class="content">
         <el-row justify="center">
-            <el-col :lg="12" :md="{span:16}" :sm="{span:18}" :xs="{span:22}" :span="12">
+            <el-col :lg="{span:12}" :md="{span:16}" :sm="{span:18}" :xs="{span:22}" :span="12">
                 <div class="logo">
                     <img src="@/assets/app/logo.png" alt="WuliCode"> Wulicode
                 </div>
