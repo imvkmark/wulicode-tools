@@ -27,7 +27,7 @@ const routes: Array<RouteRecordRaw> = [
     },
     {
         path: '/user', component: SiteLayout, children: [
-            { path: 'cp', component: () => import('@/views/user/Cp.vue'), name: 'user.cp', meta: { title: '用户控制中心' } },
+            { path: 'cp', component: () => import('@/views/user/Cp.vue'), name: 'user.cp', meta: { title: '用户控制中心', auth: true } },
             { path: 'login', component: () => import('@/views/user/Login.vue'), name: 'user.login', meta: { title: '登录' } }
         ]
     }

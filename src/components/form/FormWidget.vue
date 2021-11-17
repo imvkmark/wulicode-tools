@@ -6,7 +6,7 @@
         </h3>
         <!-- 表格数据 -->
         <el-form :model="transModel" :rules="rules" ref="formRef"
-            :label-width="get(attr, 'label-width')" :label-position="get(attr, 'label-position', 'right')"
+            :label-position="get(attr, 'label-position', 'right')"
             :label-suffix="get(attr, 'label-suffix', '')" :hide-required-asterisk="get(attr, 'hide-required-asterisk', false)"
             :show-message="get(attr, 'show-message', true)" :inline-message="get(attr, 'inline-message', false)"
             :status-icon="get(attr, 'status-icon', false)" :size="get(attr, 'size', '')"
@@ -33,7 +33,7 @@
 </template>
 <script lang="ts" setup>
 import { defineProps, ref, watch } from 'vue';
-import { clone, get, indexOf, set, includes } from 'lodash-es';
+import { clone, get, includes, indexOf, set } from 'lodash-es';
 import FieldText from '@/components/form/FieldText.vue';
 import { ElForm } from 'element-plus';
 

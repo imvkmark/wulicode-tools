@@ -1,18 +1,21 @@
 <template>
-    <div :class="{sidebar:true, ...sizeClass(trans.size), active:trans.active}" v-if="trans.side.length">
-        <ul>
-            <li :class="{active: item.name === trans.name}" v-for="item in trans.side" v-bind:key="item">
-                <router-link :to="{name:item.name}">{{ item.title }}</router-link>
-            </li>
-        </ul>
-    </div>
+    <el-collapse v-model="trans.accordion" accordion v-if="includes(keys(routes), trans.prefix)"
+        :class="{'px--sidebar':true, sidebar:true, ...sizeClass(trans.size), active:trans.active}">
+        <el-collapse-item :title="key" :name="key" v-for="(item, key) in routes" :key="item">
+            <ul>
+                <li v-for="rt in item" :key="rt.name">
+                    <router-link :to="{name:rt.name}">{{ rt.title }}</router-link>
+                </li>
+            </ul>
+        </el-collapse-item>
+    </el-collapse>
 </template>
 <script lang="ts" setup>
 import { computed, onMounted, reactive, watch } from 'vue'
 import { useRouter } from 'vue-router';
-import { get } from 'lodash-es';
 import { useStore } from '@/store';
 import { sizeClass } from '@/utils/defs';
+import { includes, keys } from 'lodash-es';
 
 const router = useRouter();
 const store = useStore();
@@ -41,13 +44,12 @@ const trans = reactive({
     name: computed(() => router.currentRoute.value.name),
     active: computed(() => store.state.sidebarActive),
     size: computed(() => store.state.size),
-    side: [
-        { name: 'tool.apidoc', title: 'ApiDoc' }
-    ]
+    prefix: computed(() => store.state.prefix),
+    accordion: ''
 })
 
 const initSideBar = () => {
-    trans.side = get(routes, store.state.prefix, [])
+    trans.accordion = store.state.prefix;
 }
 
 watch(() => store.state.prefix, () => {
@@ -76,16 +78,16 @@ onMounted(() => {
         list-style: none;
         padding-left: 0.8rem;
         li {
-            padding-left: 1rem;
             height: 18px;
             line-height: 18px;
             margin-bottom: 8px;
             font-size: 14px;
             border-left: 2px solid transparent;
-            &.active {
-                border-left: 2px solid @primaryColor;
-            }
             a {
+                padding-left: 1rem;
+                &.router-link-active {
+                    border-left: 2px solid @primaryColor;
+                }
                 color: var(--wc-color-dark-blue);
                 text-decoration: none;
                 display: block;

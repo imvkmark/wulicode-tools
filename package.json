@@ -38,6 +38,7 @@
         "dotenv": "^10.0.0",
         "element-plus": "^1.1.0-beta.24",
         "lodash-es": "^4.17.21",
+        "meilisearch": "^0.22.3",
         "mitt": "^3.0.0",
         "qs": "^6.10.1",
         "vue": "^3.2.8",

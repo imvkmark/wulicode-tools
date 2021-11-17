@@ -12,16 +12,7 @@ export default function useUserUtil() {
     const store = useStore();
     const router = useRouter();
 
-    /**
-     * 用户登录成功之后调用
-     * @param data
-     */
-    const userLogin = function (data: any) {
-        const { token } = data;
-        // set store
-        store.dispatch('poppy/Login', {
-            token
-        }).then();
+    const goWithCb = () => {
         const go = get(router.currentRoute.value, 'query.go', '');
         if (!go) {
             router.push({ name: 'user.cp' }).then()
@@ -35,6 +26,26 @@ export default function useUserUtil() {
         }
     }
 
+    /**
+     * 用户登录成功之后调用
+     * @param data
+     */
+    const userLogin = function (data: any) {
+        const { token } = data;
+        // set store
+        store.dispatch('poppy/Login', {
+            token
+        }).then(() => {
+            goWithCb();
+        });
+    }
+
+    const userOnLogin = function () {
+        if (router.currentRoute.value.name !== 'user.login') {
+            return;
+        }
+        goWithCb();
+    }
 
     const userLogout = function () {
         apiPySystemAuthLogout().then(({ success, message }) => {
@@ -58,6 +69,7 @@ export default function useUserUtil() {
         }).then();
     }
     return {
+        userOnLogin,
         userLogin,
         userLogout,
         userToLogin

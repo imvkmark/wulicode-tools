@@ -39,19 +39,7 @@ const navs = [
     },
     {
         name: 'tool.apidoc',
-        text: '工具'
-    },
-    {
-        name: 'js.sentry',
-        text: 'Js'
-    },
-    {
-        name: 'form.text',
-        text: 'Form'
-    },
-    {
-        name: 'css.custom-box',
-        text: 'Css'
+        text: 'Demo'
     },
     {
         name: 'user.login',
