@@ -1,7 +1,6 @@
 import messages from './messages';
 
-class Validator
-{
+class Validator {
 
     constructor(rules, customMessages = {}, customNames = {}) {
         this.rules = this.parseRules(rules);
@@ -82,15 +81,16 @@ class Validator
         return arr;
     }
 
-    parseItemRules(itemRules: any) {
+    parseItemRules(itemRules: string | string[]) {
         let self = this;
-        let rules = [];
-
+        let rules: any[] = [];
+        let from;
         if (typeof itemRules === 'string') {
-            itemRules = itemRules.split('|');
+            from = itemRules.split('|');
+        } else {
+            from = itemRules;
         }
-
-        itemRules.forEach(function(ruleAndArgs) {
+        from.forEach(function (ruleAndArgs) {
             if (ruleAndArgs.trim()) {
                 let args = ruleAndArgs.split(':');
 
@@ -100,7 +100,6 @@ class Validator
                 });
             }
         });
-
         return rules;
     }
 
@@ -108,7 +107,7 @@ class Validator
         delimiter = delimiter || ' ';
         return str
             .split(delimiter)
-            .map(function(item) {
+            .map(function (item) {
                 return item[0].toUpperCase() + item.slice(1).toLowerCase();
             })
             .join('');
@@ -144,7 +143,7 @@ class Validator
     }
 
     getRule(name, rulesToCheck) {
-        let a = this.rules.filter(function(item) {
+        let a = this.rules.filter(function (item) {
             return item.name === name;
         });
 
@@ -158,7 +157,7 @@ class Validator
             rulesToCheck = [rulesToCheck];
         }
 
-        let b = a.rules.filter(function(rule) {
+        let b = a.rules.filter(function (rule) {
             return rulesToCheck.indexOf(rule.name) >= 0;
         });
 
@@ -199,7 +198,7 @@ class Validator
             return true;
         }
 
-        this.rules.forEach(function(item) {
+        this.rules.forEach(function (item) {
             let name = item.name;
 
             if (self.isEmptyValueAndContainsNullableRule(item)) {
@@ -208,7 +207,7 @@ class Validator
 
             item.rules
                 .filter((rule) => rule.name !== 'Nullable')
-                .forEach(function(rule) {
+                .forEach(function (rule) {
                     self.validate(name, rule);
                 });
         });
@@ -452,7 +451,7 @@ class Validator
         let self = this;
         let result = false;
 
-        names.forEach(function(name) {
+        names.forEach(function (name) {
             if (!self.validateRequired(name, self.getValue(name))) {
                 result = true;
                 return;
@@ -466,7 +465,7 @@ class Validator
         let self = this;
         let result = true;
 
-        names.forEach(function(name) {
+        names.forEach(function (name) {
             if (self.validateRequired(name, self.getValue(name))) {
                 result = false;
                 return;
@@ -543,7 +542,7 @@ class Validator
         let self = this;
         let count = 0;
 
-        names.forEach(function(name) {
+        names.forEach(function (name) {
             if (typeof self.data[name] !== 'undefined') {
                 count++;
             }
@@ -553,17 +552,17 @@ class Validator
     }
 
     validateMatch(name, value, params) {
-        if (!( params instanceof Array )) {
+        if (!(params instanceof Array)) {
             params = [params];
         }
 
-        if (!( value instanceof Array )) {
+        if (!(value instanceof Array)) {
             value = [value];
         }
 
         let re = params[0];
 
-        if (!( re instanceof RegExp )) {
+        if (!(re instanceof RegExp)) {
             re = re.split('/');
             re = new RegExp(re[1], re[2]);
         }
@@ -684,7 +683,7 @@ class Validator
 
     arrayDiff(arr1, arr2) {
         let diff = [];
-        arr1.forEach(function(item) {
+        arr1.forEach(function (item) {
             if (arr2.indexOf(item) < 0) {
                 diff.push(item);
             }
@@ -764,7 +763,7 @@ class Validator
         if (
             typeof value !== 'string' &&
             typeof value !== 'number' &&
-            !( value instanceof Date )
+            !(value instanceof Date)
         ) {
             return false;
         }
@@ -786,7 +785,7 @@ class Validator
         if (
             typeof value !== 'string' &&
             typeof value !== 'number' &&
-            !( value instanceof Date )
+            !(value instanceof Date)
         ) {
             return false;
         }
@@ -808,7 +807,7 @@ class Validator
         if (
             typeof value !== 'string' &&
             typeof value !== 'number' &&
-            !( value instanceof Date )
+            !(value instanceof Date)
         ) {
             return false;
         }
@@ -830,7 +829,7 @@ class Validator
         if (
             typeof value !== 'string' &&
             typeof value !== 'number' &&
-            !( value instanceof Date )
+            !(value instanceof Date)
         ) {
             return false;
         }
@@ -995,7 +994,7 @@ class Validator
 
     replaceIn(msg, name, rule, params) {
         let self = this;
-        params = params.map(function(value) {
+        params = params.map(function (value) {
             return self.getDisplayableValue(name, value);
         });
 

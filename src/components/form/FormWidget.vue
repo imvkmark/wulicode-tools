@@ -5,7 +5,7 @@
             <small v-if="description">{{ description }}</small>
         </h3>
         <!-- 表格数据 -->
-        <el-form :model="transModel" :rules="rules" ref="formRef"
+        <el-form :model="transModel" :rules="trans.rules" ref="formRef"
             :label-position="get(attr, 'label-position', 'right')"
             :label-suffix="get(attr, 'label-suffix', '')" :hide-required-asterisk="get(attr, 'hide-required-asterisk', false)"
             :show-message="get(attr, 'show-message', true)" :inline-message="get(attr, 'inline-message', false)"
@@ -32,19 +32,26 @@
     </div>
 </template>
 <script lang="ts" setup>
-import { defineProps, ref, watch } from 'vue';
+import { computed, defineProps, reactive, ref, watch } from 'vue';
 import { clone, get, includes, indexOf, set } from 'lodash-es';
 import FieldText from '@/components/form/FieldText.vue';
 import { ElForm } from 'element-plus';
+import AsyncRules from '@/utils/rules';
+import { mapModel } from '@/utils/form';
 
 const props = defineProps({
     title: String,
+    loading: Boolean,
     description: String,
     attr: Object,
     items: Array,
     rules: Object,
     model: Object,
     buttons: Array
+})
+
+const trans = reactive({
+    rules: {}
 })
 
 
@@ -72,6 +79,9 @@ const onReset = () => {
 }
 watch(() => props.model, (newVal) => {
     transModel.value = newVal;
+    // @ts-ignore
+    let Rules = new AsyncRules(props.rules, mapModel(props.items))
+    trans.rules = Rules.getRules();
 })
 
 </script>
