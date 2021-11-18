@@ -12,8 +12,6 @@ import '@/assets/style/style.less';
 
 const app = createApp(App)
 
-app.use(ElementPlus);
-
 Sentry.init({
     app,
     dsn: sentryDsnUrl,
@@ -32,15 +30,10 @@ Sentry.init({
      * https://docs.sentry.io/platforms/javascript/guides/vue/configuration/sampling/#setting-a-sampling-function
      */
     tracesSampler: () => {
-        if (appIsProd && appMode === 'dev') {
-            return 1;
-        }
-        if (appIsProd) {
-            return 0.3;
-        }
-        return 0;
+        return 0
     }
 });
-app.use(router)
+app.use(ElementPlus)
+    .use(router)
     .use(store, key)
     .mount('#app');

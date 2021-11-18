@@ -62,7 +62,7 @@ export default function useUserUtil() {
      */
     const userToLogin = function () {
         router.push({
-            name: 'pc.login',
+            name: 'user.login',
             query: {
                 go: window.btoa(router.currentRoute.value.fullPath)
             }

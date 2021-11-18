@@ -23,12 +23,8 @@ export default function useAuth() {
         token = qsToken;
     }
 
-    // 判定权限并进行跳转
+    // 判定权限
     const auth = get(router.currentRoute.value.meta, 'auth');
-    if (!token && auth) {
-        userToLogin();
-        return;
-    }
 
     // 尝试另外方法来触发 event
     emitter.on(EM_USER_LOGIN, () => {
@@ -65,10 +61,16 @@ export default function useAuth() {
 
     // Login With Token
     onMounted(() => {
+        // 有 Token, 进行登陆
         if (token) {
             store.dispatch('poppy/Login', {
                 token
             }).then();
+        } else {
+            console.log(auth);
+            if (auth) {
+                userToLogin();
+            }
         }
     })
 }
