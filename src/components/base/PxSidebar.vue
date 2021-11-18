@@ -38,7 +38,8 @@ const routes = {
     ],
     js: [
         { name: 'js.sentry', title: '异常' },
-        { name: 'js.scroll', title: '滚动' }
+        { name: 'js.scroll', title: '滚动' },
+        { name: 'js.info', title: '基本信息' }
     ],
     css: [
         { name: 'css.custom-box', title: '自定义Checkbox' },

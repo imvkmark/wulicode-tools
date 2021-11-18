@@ -1,5 +1,5 @@
 <template>
-    <div class="widget--form">
+    <div class="py--form">
         <h3 class="form-title" v-if="title">
             {{ title }}
             <small v-if="description">{{ description }}</small>

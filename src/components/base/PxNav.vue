@@ -1,5 +1,5 @@
 <template>
-    <div :class="{'px--nav' : true, ...sizeClass(trans.size), active:trans.active}">
+    <div :class="{'py--nav' : true, ...sizeClass(trans.size), active:trans.active}">
         <ul>
             <li :class="{active:trans.prefix === nav.name.split('.')[0]}" v-for="nav in navs" :key="nav.name"
                 @click="jumpTo(nav.name)"
@@ -71,7 +71,7 @@ watch(() => router.currentRoute.value.name, () => {
 </script>
 
 <style scoped lang="less">
-.px--nav {
+.py--nav {
     transition: all 0.3s;
     margin-left: -5rem;
     &.active {

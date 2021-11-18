@@ -1,5 +1,5 @@
 <template>
-    <div class="px--main">
+    <div class="py--main">
         <h2>{{ props.title }}</h2>
         <div class="main-area main-mono">
             <slot/>
@@ -28,7 +28,7 @@ defineComponent({
 <style scoped lang="less">
 @import '../../assets/style/vars';
 
-.px--main {
+.py--main {
     padding: 0.8rem 1.2rem;
     box-sizing: border-box;
     display: flex;

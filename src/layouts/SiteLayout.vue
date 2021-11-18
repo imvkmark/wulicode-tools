@@ -2,7 +2,7 @@
     <div class="container">
         <PxNav/>
         <PxSidebar/>
-        <div class="px--content">
+        <div class="py--content">
             <ElScrollbar>
                 <router-view/>
             </ElScrollbar>
