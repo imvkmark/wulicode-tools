@@ -17,11 +17,17 @@
 	--wc-color-cyan: #30C099;
 	--wc-color-light-cyan: #39DBB6;
 
+	--wc-text-color: @textColor;
+	--wc-link-color: @textLightColor;
+	--wc-link-active-color: @textColor;
 
 	--wc-bg-color: @mainBgColor;
 
 	// color
-	--wc-header-border-color: var(#E1EDFF);
+	--wc-header-border-color: @mainBgColor;
+
+	// side
+	--wc-side-border-color: @mainBgColor;
 
 	--wc-nav-bg-color: @darkNavBg;
 }

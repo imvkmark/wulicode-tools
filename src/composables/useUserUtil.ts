@@ -12,7 +12,10 @@ export default function useUserUtil() {
     const store = useStore();
     const router = useRouter();
 
-    const goWithCb = () => {
+    /**
+     * 跳转到指定界面或者用户中心
+     */
+    const goWith = () => {
         const go = get(router.currentRoute.value, 'query.go', '');
         if (!go) {
             router.push({ name: 'user.cp' }).then()
@@ -36,7 +39,7 @@ export default function useUserUtil() {
         store.dispatch('poppy/Login', {
             token
         }).then(() => {
-            goWithCb();
+            goWith();
         });
     }
 
@@ -44,16 +47,18 @@ export default function useUserUtil() {
         if (router.currentRoute.value.name !== 'user.login') {
             return;
         }
-        goWithCb();
+        goWith();
     }
 
     const userLogout = function () {
         apiPySystemAuthLogout().then(({ success, message }) => {
             toast(message, success)
-            if (success) {
-                store.dispatch('poppy/Logout').then();
-                router.push({ name: 'user.login' }).then()
+            if (!success) {
+                return;
             }
+            store.dispatch('poppy/Logout').then(() => {
+                router.push({ name: 'user.login' }).then()
+            });
         })
     }
 

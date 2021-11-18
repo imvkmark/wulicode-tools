@@ -1,14 +1,15 @@
 <template>
-    <el-collapse v-model="trans.accordion" accordion v-if="includes(keys(routes), trans.prefix)"
-        :class="{'px--sidebar':true, sidebar:true, ...sizeClass(trans.size), active:trans.active}">
-        <el-collapse-item :title="key" :name="key" v-for="(item, key) in routes" :key="item">
+    <div v-if="includes(keys(routes), trans.prefix)"
+        :class="{sidebar:true, ...sizeClass(trans.size), float:trans.active}">
+        <div v-for="(item, key) in routes" :key="item">
+            <h3>{{ key }}</h3>
             <ul>
-                <li v-for="rt in item" :key="rt.name">
-                    <router-link :to="{name:rt.name}">{{ rt.title }}</router-link>
+                <li v-for="rt in item" :key="rt.name" :class="{active : rt.name === trans.name}">
+                    <span @click="onLinkClick(rt.name)">{{ rt.title }}</span>
                 </li>
             </ul>
-        </el-collapse-item>
-    </el-collapse>
+        </div>
+    </div>
 </template>
 <script lang="ts" setup>
 import { computed, onMounted, reactive, watch } from 'vue'
@@ -19,6 +20,12 @@ import { includes, keys } from 'lodash-es';
 
 const router = useRouter();
 const store = useStore();
+const trans = reactive({
+    name: computed(() => router.currentRoute.value.name),
+    active: computed(() => store.state.sidebarActive),
+    size: computed(() => store.state.size),
+    prefix: computed(() => store.state.prefix)
+})
 const routes = {
     tool: [
         { name: 'tool.apidoc', title: 'ApiDoc' },
@@ -39,17 +46,14 @@ const routes = {
         { name: 'css.animation', title: '动画' }
     ]
 }
-
-const trans = reactive({
-    name: computed(() => router.currentRoute.value.name),
-    active: computed(() => store.state.sidebarActive),
-    size: computed(() => store.state.size),
-    prefix: computed(() => store.state.prefix),
-    accordion: ''
-})
-
+const onLinkClick = (name: string) => {
+    router.push({
+        name
+    })
+    store.dispatch('SwitchSidebar', false);
+}
 const initSideBar = () => {
-    trans.accordion = store.state.prefix;
+
 }
 
 watch(() => store.state.prefix, () => {
@@ -66,14 +70,38 @@ onMounted(() => {
 
 
 .sidebar {
-    position: absolute;
-    right: -240px;
+    left: -240px;
     background: #FFF;
     height: calc(100vh - 4rem);
     z-index: 5;
     min-width: 240px;
     box-sizing: border-box;
-    border-right: 1px solid #E1EDFF;
+    border-right: 1px solid var(--wc-side-border-color);
+    transition: left 0.3s;
+    .close {
+        padding: 0.8rem 1.2rem;
+        height: 2rem;
+        box-sizing: content-box;
+        display: none;
+    }
+    // 浮动显示
+    &.float {
+        left: 0;
+        .el-icon {
+            font-size: 2rem;
+            cursor: pointer;
+        }
+        .close {
+            display: flex;
+            justify-content: flex-start;
+        }
+    }
+    h3 {
+        font-size: 12px;
+        font-weight: normal;
+        padding-left: 1rem;
+        color: var(--wc-color-dark-blue);
+    }
     ul {
         list-style: none;
         padding-left: 0.8rem;
@@ -83,11 +111,15 @@ onMounted(() => {
             margin-bottom: 8px;
             font-size: 14px;
             border-left: 2px solid transparent;
-            a {
-                padding-left: 1rem;
-                &.router-link-active {
+            cursor: pointer;
+            &.active {
+                span {
                     border-left: 2px solid @primaryColor;
                 }
+            }
+            span {
+                padding-left: 1rem;
+                border-left: 2px solid transparent;
                 color: var(--wc-color-dark-blue);
                 text-decoration: none;
                 display: block;
@@ -98,15 +130,11 @@ onMounted(() => {
 
 .md, .sm, .xs {
     position: absolute;
-    right: -240px;
-    transition: right 0.3s;
-    &.active {
-        right: 0;
-    }
 }
 
 .xl, .lg, .xxl {
-    position: relative;
-    right: 0;
+    .close {
+        display: none;
+    }
 }
 </style>

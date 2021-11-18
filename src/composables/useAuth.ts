@@ -51,6 +51,7 @@ export default function useAuth() {
     watch(
         () => router.currentRoute.value.name,
         (newVal) => {
+            let token = store.state.poppy.token;
             if (newVal === 'user.login' && token) {
                 store.dispatch('poppy/Login', {
                     token
@@ -67,7 +68,6 @@ export default function useAuth() {
                 token
             }).then();
         } else {
-            console.log(auth);
             if (auth) {
                 userToLogin();
             }

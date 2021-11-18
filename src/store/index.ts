@@ -41,7 +41,7 @@ export const store = createStore<RootStateTypes>({
         SetNavActive({ state }, status) {
             state.navActive = status
         },
-        SetSidebarActive({ state }, status) {
+        SwitchSidebar({ state }, status) {
             state.sidebarActive = status
         }
     },

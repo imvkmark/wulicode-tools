@@ -197,7 +197,7 @@ export default function request(options: RequestOptions) {
                     msg = '错误码 = ' + code;
                 }
                 console.error(options.url, code, msg, response, error.toJSON());
-                return Promise.resolve({
+                return Promise.reject({
                     success: false,
                     status: code,
                     message: msg,
@@ -223,7 +223,7 @@ export default function request(options: RequestOptions) {
                 }
 
                 console.error(options.url, 520, msg, error.toJSON());
-                return Promise.resolve({
+                return Promise.reject({
                     success: false,
                     status: 520,
                     message: msg,

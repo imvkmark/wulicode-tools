@@ -13,9 +13,10 @@
                 </ElIcon>
             </div>
         </div>
-        <div v-if="sizeLte(trans.size, 'md')" class="sidebar" @click="showSidebar">
-            <ElIcon>
-                <Menu/>
+        <div class="sidebar">
+            <ElIcon v-if="sizeLte(trans.size, 'md')">
+                <Expand v-if="!trans.sidebarActive" @click="store.dispatch('SwitchSidebar', true)"/>
+                <Close v-else @click="store.dispatch('SwitchSidebar', false)"/>
             </ElIcon>
         </div>
     </header>
@@ -25,7 +26,7 @@
 import { useStore } from '@/store';
 import { computed, defineComponent, reactive } from 'vue';
 import { navDefs, sizeGt, sizeLte } from '@/utils/defs';
-import { ArrowLeft, Menu } from '@element-plus/icons';
+import { ArrowLeft, Close, Expand } from '@element-plus/icons';
 
 const store = useStore();
 const trans = reactive({
@@ -37,11 +38,8 @@ const trans = reactive({
 const showNav = () => {
     store.dispatch('SetNavActive', !trans.navActive)
 }
-const showSidebar = () => {
-    store.dispatch('SetSidebarActive', !trans.sidebarActive)
-}
 defineComponent({
-    ArrowLeft, Menu
+    ArrowLeft, Expand, Close
 })
 </script>
 
@@ -51,21 +49,11 @@ defineComponent({
 header {
     height: 4rem;
     display: flex;
-    -webkit-box-align: center;
     align-items: center;
-    -webkit-box-pack: end;
     background-color: #FFF;
-    padding-right: 1.25rem;
     box-sizing: border-box;
     width: 100%;
-    border-color: #CCC;
     border-bottom: 1px solid var(--wc-header-border-color);
-    justify-content: space-between;
-    .sidebar {
-        .el-icon {
-            font-size: 2rem;
-        }
-    }
     .nav {
         width: 5rem;
         height: 4rem;
@@ -73,7 +61,6 @@ header {
         align-items: center;
         justify-content: center;
         transition: background-color 0.3s;
-
         .logo {
             cursor: pointer;
             img {
@@ -100,7 +87,17 @@ header {
                 }
             }
         }
-
+    }
+    .sidebar {
+        height: 3rem;
+        width: 3rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        .el-icon {
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
     }
 }
 </style>
