@@ -32,7 +32,7 @@
     </div>
 </template>
 <script lang="ts" setup>
-import { computed, defineProps, reactive, ref, watch } from 'vue';
+import { computed, defineProps, onMounted, reactive, ref, watch } from 'vue';
 import { clone, get, includes, indexOf, set } from 'lodash-es';
 import FieldText from '@/components/form/FieldText.vue';
 import { ElForm } from 'element-plus';
@@ -80,8 +80,12 @@ const onReset = () => {
 watch(() => props.model, (newVal) => {
     transModel.value = newVal;
     // @ts-ignore
-    let Rules = new AsyncRules(props.rules, mapModel(props.items))
-    trans.rules = Rules.getRules();
+    trans.rules = AsyncRules.make(props.rules, mapModel(props.items));
+})
+
+onMounted(() => {
+    // @ts-ignore
+    trans.rules = AsyncRules.make(props.rules, mapModel(props.items));
 })
 
 </script>

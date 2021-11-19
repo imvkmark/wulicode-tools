@@ -1,5 +1,9 @@
 import messages from './messages';
 
+
+/**
+ *
+ */
 class Validator {
 
     constructor(rules, customMessages = {}, customNames = {}) {
