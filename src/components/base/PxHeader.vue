@@ -6,7 +6,7 @@
             </div>
             <div v-else class="icon">
                 <ElIcon v-if="!trans.navActive" @click="showNav">
-                    <component :is="navDefs[trans.prefix]"/>
+                    <component :is="appNavDefs[trans.prefix]"/>
                 </ElIcon>
                 <ElIcon v-else @click="showNav">
                     <ArrowLeft/>
@@ -25,7 +25,8 @@
 <script lang="ts" setup>
 import { useStore } from '@/store';
 import { computed, defineComponent, reactive } from 'vue';
-import { navDefs, sizeGt, sizeLte } from '@/utils/defs';
+import { sizeGt, sizeLte } from '@/utils/helper';
+import { appNavDefs } from '@/utils/conf';
 import { ArrowLeft, Close, Expand } from '@element-plus/icons';
 
 const store = useStore();

@@ -32,12 +32,13 @@
     </div>
 </template>
 <script lang="ts" setup>
-import { computed, defineProps, onMounted, reactive, ref, watch } from 'vue';
+import { defineProps, onMounted, reactive, ref, watch } from 'vue';
 import { clone, get, includes, indexOf, set } from 'lodash-es';
 import FieldText from '@/components/form/FieldText.vue';
 import { ElForm } from 'element-plus';
 import AsyncRules from '@/utils/rules';
-import { mapModel } from '@/utils/form';
+import Rules from '@/utils/rules';
+import { mapModel } from '@/utils/helper';
 
 const props = defineProps({
     title: String,
@@ -46,7 +47,12 @@ const props = defineProps({
     attr: Object,
     items: Array,
     rules: Object,
-    model: Object,
+    model: {
+        type: Object,
+        default: () => {
+            return {}
+        }
+    },
     buttons: Array
 })
 
@@ -55,7 +61,7 @@ const trans = reactive({
 })
 
 
-const transModel = ref();
+const transModel = ref({});
 const formRef: any = ref<InstanceType<typeof ElForm>>();
 const emit = defineEmits([
     'submit'
@@ -75,6 +81,24 @@ const onSubmit = () => {
 }
 
 const onReset = () => {
+    console.log((Rules.make({
+        name: ['required']
+    })));
+    console.log({
+        v: [
+            {
+                validator(rule, value, callback) {
+                    callback(new Error('e1'));
+                }
+            },
+            {
+                validator(rule, value, callback) {
+                    callback(new Error('e2'));
+                }
+            }
+        ]
+    });
+
     formRef.value.resetFields();
 }
 watch(() => props.model, (newVal) => {

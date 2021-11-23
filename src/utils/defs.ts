@@ -6,7 +6,6 @@
 */
 
 import { BrushFilled, Connection, ForkSpoon, HomeFilled, Sugar, User } from '@element-plus/icons';
-import { indexOf } from 'lodash-es';
 
 export const navDefs = {
     home: HomeFilled,
@@ -28,27 +27,3 @@ export const sizeClass = (size: string) => {
     }
 }
 
-const sizes = ['xs', 'sm', 'md', 'lg', 'xl', 'xxl'];
-
-export const sizeGt = (a: string, b: string) => {
-    let ia = indexOf(sizes, a);
-    let ib = indexOf(sizes, b);
-    return ia > ib;
-}
-export const sizeLt = (a: string, b: string) => {
-    let ia = indexOf(sizes, a);
-    let ib = indexOf(sizes, b);
-    return ia < ib;
-}
-
-export const sizeGte = (a: string, b: string) => {
-    let ia = indexOf(sizes, a);
-    let ib = indexOf(sizes, b);
-    return ia >= ib;
-}
-
-export const sizeLte = (a: string, b: string) => {
-    let ia = indexOf(sizes, a);
-    let ib = indexOf(sizes, b);
-    return ia <= ib;
-}
