@@ -5,7 +5,7 @@
             <small v-if="description">{{ description }}</small>
         </h3>
         <!-- 表格数据 -->
-        <el-form :model="transModel" :rules="trans.rules" ref="formRef"
+        <el-form :model="transModel" :rules="schema" ref="formRef"
             :label-position="get(attr, 'label-position', 'right')"
             :label-suffix="get(attr, 'label-suffix', '')" :hide-required-asterisk="get(attr, 'hide-required-asterisk', false)"
             :show-message="get(attr, 'show-message', true)" :inline-message="get(attr, 'inline-message', false)"
@@ -27,18 +27,17 @@
             <el-form-item>
                 <el-button type="primary" v-if="indexOf(buttons, 'submit')" @click="onSubmit">确认</el-button>
                 <el-button v-if="indexOf(buttons, 'reset')" @click="onReset">重置</el-button>
+                <el-button @click="onRules">规则</el-button>
             </el-form-item>
         </el-form>
     </div>
 </template>
 <script lang="ts" setup>
-import { defineProps, onMounted, reactive, ref, watch } from 'vue';
+import { defineProps, ref, toRef } from 'vue';
 import { clone, get, includes, indexOf, set } from 'lodash-es';
 import FieldText from '@/components/form/FieldText.vue';
 import { ElForm } from 'element-plus';
-import AsyncRules from '@/utils/rules';
-import Rules from '@/utils/rules';
-import { mapModel } from '@/utils/helper';
+import useValidation from '@/composables/useValidation';
 
 const props = defineProps({
     title: String,
@@ -55,10 +54,8 @@ const props = defineProps({
     },
     buttons: Array
 })
-
-const trans = reactive({
-    rules: {}
-})
+//ts-ignore
+const { schema } = useValidation(props)
 
 
 const transModel = ref({});
@@ -79,38 +76,15 @@ const onSubmit = () => {
         emit('submit', transModel.value);
     })
 }
+const onRules = () => {
+    console.log(schema.value, 'parsed');
+    console.log(props.rules, 'plain');
+}
 
 const onReset = () => {
-    console.log((Rules.make({
-        name: ['required']
-    })));
-    console.log({
-        v: [
-            {
-                validator(rule, value, callback) {
-                    callback(new Error('e1'));
-                }
-            },
-            {
-                validator(rule, value, callback) {
-                    callback(new Error('e2'));
-                }
-            }
-        ]
-    });
-
     formRef.value.resetFields();
 }
-watch(() => props.model, (newVal) => {
-    transModel.value = newVal;
-    // @ts-ignore
-    trans.rules = AsyncRules.make(props.rules, mapModel(props.items));
-})
 
-onMounted(() => {
-    // @ts-ignore
-    trans.rules = AsyncRules.make(props.rules, mapModel(props.items));
-})
 
 </script>
 

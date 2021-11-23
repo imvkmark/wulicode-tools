@@ -1,6 +1,6 @@
-import { each, find, get, includes, isBoolean, isString, map, set, toLower } from 'lodash-es';
+import { each, get, includes, isBoolean, isString, keys, map, set, toLower } from 'lodash-es';
 import type { Rule } from 'async-validator';
-import { isAlpha, isChid, isEmail, isIpV4, isNumeric, sprintf } from '@/utils/helper';
+import { isAlpha, isAlphaDash, isAlphaNum, isChid, isEmail, isIpV4, isNumeric, sprintf } from '@/utils/helper';
 
 /**
  * 参考Laravel的验证规则
@@ -26,9 +26,14 @@ class AsyncRules {
         email: '{0}必须是邮箱',
         string: '{0}必须是字符串类型',
         alpha: '{0}必须全部由字母构成',
+        alphaDash: '{0}必须全部由字母/数字/中杠线(-)/下划线(_)构成',
+        alphaNum: '{0}必须全部由字母/数字构成',
         ip: '{0}必须是正确的IP地址',
         chid: '{0}必须是正确的身份证号码',
-        numeric: '{0}必须是数字'
+        numeric: '{0}必须是数字',
+        // todo - not test
+        array: '{0}必须是数组',
+        before: '{0}日期必须在{1}日期之前',
     }
 
     /**
@@ -57,6 +62,7 @@ class AsyncRules {
 
     static make(rules: object, model = {}, customMessages = []) {
         let obj = new AsyncRules(rules, model, customMessages);
+        console.log('rule-string', obj.rules);
         return obj.combinedRules(obj.rules);
     }
 
@@ -115,14 +121,11 @@ class AsyncRules {
         let comp = {};
         each(rules, (filedRules, field: string) => {
             let ruleNames = map(filedRules, (rule) => get(rule, 'name'))
-            let fieldType = self.rulesType(ruleNames);
+            let type = self.rulesType(ruleNames);
 
             // 默认 String 类型, 但是没有规则, 添加 String 规则
-            if (fieldType === 'string' && !find(filedRules, { name: 'string' })) {
-                filedRules.push({ name: 'string', params: [] })
-            }
             set(comp, field, filedRules.map((rule: any) => {
-                return self.combineRule(fieldType, field, rule);
+                return self.combineRule(type, field, rule);
             }));
         });
         return comp;
@@ -137,23 +140,29 @@ class AsyncRules {
             return 'numeric';
         } else if (includes(ruleNames, 'array')) {
             return 'array';
+        } else if (includes(ruleNames, 'string')) {
+            return 'string';
         }
-        return 'string';
+        return '';
     }
 
     /**
      * 独立的规则, 不依附于其他字段的存在
      */
     independentRules() {
-        return [
-            'required',
-            'ip',
-            'numeric',
-            'alpha',
-            'chid',
-            'string',
-            'accepted'
-        ];
+        return {
+            'array': this.validateArray(),
+            'required': this.validateRequired(),
+            'ip': this.validateIp(),
+            'numeric': this.validateNumeric(),
+            'alpha': this.validateAlpha(),
+            'alpha_dash': this.validateAlphaDash(),
+            'alpha_num': this.validateAlphaNum(),
+            'email': this.validateEmail(),
+            'chid': this.validateChid(),
+            'string': this.validateString(),
+            'accepted': this.validateAccepted()
+        };
     }
 
     get dependentRules() {
@@ -185,7 +194,7 @@ class AsyncRules {
         let methodName = `validate${capitalName}`;
         let method = get(that, methodName)
 
-        if (includes(that.independentRules(), get(rule, 'name'))) {
+        if (includes(keys(that.independentRules()), get(rule, 'name'))) {
             if (typeof method !== 'function') {
                 console.error(
                     '"' + rule + '" validation rule does not exist!'
@@ -202,9 +211,26 @@ class AsyncRules {
     validateString(): Rule {
         let that = this;
         return {
+            type: 'string',
             validator(rule, value, callback) {
                 if (value && typeof value !== 'string') {
-                    callback(new Error(sprintf(that.defaultMessages.string, that.fieldTitle(rule.field))));
+                    callback(sprintf(that.defaultMessages.string, that.fieldTitle(rule.field)));
+                } else {
+                    callback();
+                }
+            }
+        }
+    }
+
+    validateArray(): Rule {
+        let that = this;
+        return {
+            type: 'array',
+            validator(rule, value, callback) {
+                if (value && !Array.isArray(value)) {
+                    callback(sprintf(that.defaultMessages.array, that.fieldTitle(rule.field)));
+                } else {
+                    callback();
                 }
             }
         }
@@ -219,6 +245,41 @@ class AsyncRules {
             validator(rule, value, callback) {
                 if (value && !isAlpha(value)) {
                     callback(sprintf(that.defaultMessages.alpha, that.fieldTitle(rule.field)));
+                } else {
+                    callback();
+                }
+            }
+        }
+    }
+
+    /**
+     * 验证字段可能包含字母、数字，以及破折号 (-) 和下划线 ( _ )。
+     */
+    validateAlphaDash(): Rule {
+        let that = this;
+        return {
+            validator(rule, value, callback) {
+                if (value && !isAlphaDash(value)) {
+                    callback(sprintf(that.defaultMessages.alphaDash, that.fieldTitle(rule.field)));
+                } else {
+                    callback();
+                }
+            }
+        }
+    }
+
+    /**
+     * 验证字段必须是完全是字母、数字
+     */
+    validateAlphaNum(): Rule {
+        let that = this;
+        return {
+            validator(rule, value, callback, source, options) {
+                console.log(rule, value, source, options, 'alpha-num')
+                if (value && !isAlphaNum(value)) {
+                    callback(sprintf(that.defaultMessages.alphaNum, that.fieldTitle(rule.field)));
+                } else {
+                    callback();
                 }
             }
         }
@@ -230,9 +291,12 @@ class AsyncRules {
     validateRequired(): Rule {
         let that = this;
         return {
+            required: true,
             validator(rule, value, callback) {
                 if (!value) {
-                    callback(new Error(sprintf(that.defaultMessages.required, that.fieldTitle(rule.field))));
+                    callback(sprintf(that.defaultMessages.required, that.fieldTitle(rule.field)));
+                } else {
+                    callback();
                 }
             }
         }
@@ -275,9 +339,11 @@ class AsyncRules {
     validateIp(): Rule {
         let that = this;
         return {
-            validator(rule, value, callback) {
+            validator: (rule, value, callback) => {
                 if (value && !isIpV4(value)) {
                     callback(sprintf(that.defaultMessages.ip, that.fieldTitle(rule.field)));
+                } else {
+                    callback();
                 }
             }
         }
@@ -301,7 +367,7 @@ class AsyncRules {
 
     /**
      * Accept : 必须是有值的
-     * 这里可用的值仅仅是 yes/on/1
+     * 这里值是 yes/on/1/true
      */
     validateAccepted(): Rule {
         return {

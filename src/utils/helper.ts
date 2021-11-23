@@ -137,6 +137,22 @@ export const isAlpha = (val: string) => {
     return regexTest(val, /^([a-z])+$/i)
 }
 
+/**
+ * 验证字段可能包含字母、数字，以及破折号 (-) 和下划线 ( _ )。
+ * @param val
+ */
+export const isAlphaDash = (val: string) => {
+    return regexTest(val, /^([a-z0-9-_])+$/i)
+}
+
+/**
+ * 验证字段必须是完全是字母、数字
+ * @param val
+ */
+export const isAlphaNum = (val: string) => {
+    return regexTest(val, /^([a-z0-9])+$/i)
+}
+
 
 export const sprintf = (...args: string[]) => {
     let replace = Array.prototype.slice.call(args, 1);
