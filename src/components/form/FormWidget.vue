@@ -33,7 +33,7 @@
     </div>
 </template>
 <script lang="ts" setup>
-import { defineProps, ref, toRef } from 'vue';
+import { defineProps, ref } from 'vue';
 import { clone, get, includes, indexOf, set } from 'lodash-es';
 import FieldText from '@/components/form/FieldText.vue';
 import { ElForm } from 'element-plus';
@@ -54,11 +54,13 @@ const props = defineProps({
     },
     buttons: Array
 })
-//ts-ignore
-const { schema } = useValidation(props)
-
 
 const transModel = ref({});
+
+//ts-ignore
+const { schema } = useValidation(props, transModel)
+
+
 const formRef: any = ref<InstanceType<typeof ElForm>>();
 const emit = defineEmits([
     'submit'

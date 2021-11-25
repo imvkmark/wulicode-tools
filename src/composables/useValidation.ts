@@ -1,17 +1,49 @@
-import { each, get, includes, isBoolean, isString, keys, map, set, toLower } from 'lodash-es';
-import { defaultMsgs, defTitle, fieldRules, rulesType } from '@/utils/validate';
-import { onMounted, ref, toRefs, watch } from 'vue';
+import { clone, each, get, includes, keys, map, set, union } from 'lodash-es';
+import {
+    defaultMsgs,
+    fieldRules,
+    rulesType,
+    validateAccepted,
+    validateAlpha,
+    validateAlphaDash,
+    validateAlphaNum,
+    validateArray,
+    validateBetween,
+    validateBoolean,
+    validateChid,
+    validateDate,
+    validateDigits,
+    validateDigitsBetween,
+    validateEmail,
+    validateIn,
+    validateInteger,
+    validateIp,
+    validateIpV4,
+    validateIpV6,
+    validateJson,
+    validateMax,
+    validateMin,
+    validateNotIn,
+    validateNotRegex,
+    validateNumeric,
+    validateRegex,
+    validateRequired,
+    validateSize,
+    validateString,
+    validateUrl
+} from '@/utils/validate';
+import { onMounted, Ref, ref, toRefs, watch } from 'vue';
 import { Rule } from 'async-validator';
-import { isAlpha, isAlphaDash, isAlphaNum, isChid, isEmail, isIpV4, isNumeric, sprintf } from '@/utils/helper';
+import { sprintf } from '@/utils/helper';
 
 /**
  * 参考Laravel的验证规则
  * https://learnku.com/docs/laravel/6.x/validation/5144#c58a91
  * https://github.com/yiminghe/async-validator/blob/master/src/messages.ts
  */
-export default function useValidation(props: any, defs = {}) {
+export default function useValidation(props: any, model = <Ref>{}) {
 
-    const { rules } = toRefs(props);
+    const { rules, items } = toRefs(props);
 
     /**
      * 所有的验证规则
@@ -20,179 +52,18 @@ export default function useValidation(props: any, defs = {}) {
     const schema = ref({});
 
     /**
+     * 追加的规则
+     */
+    const append = ref({});
+
+    /**
      * todo 待确定
      * 自定义的消息 { username : {required : '请填写用户名'} }
      */
 
-    /**
-     * 字串类型
-     */
-    const validateString = (): Rule => {
-        return {
-            type: 'string',
-            validator(rule, value, callback) {
-                if (value && typeof value !== 'string') {
-                    callback(sprintf(defaultMsgs.string, defTitle(defs, rule.field)));
-                } else {
-                    callback();
-                }
-            }
-        }
-    }
 
-    const validateArray = (): Rule => {
-        return {
-            type: 'array',
-            validator(rule, value, callback) {
-                if (value && !Array.isArray(value)) {
-                    callback(sprintf(defaultMsgs.array, defTitle(defs, rule.field)));
-                } else {
-                    callback();
-                }
-            }
-        }
-    }
-
-    /**
-     * 完全由字母构成
-     */
-    const validateAlpha = (): Rule => {
-        return {
-            validator(rule, value, callback) {
-                if (value && !isAlpha(value)) {
-                    callback(sprintf(defaultMsgs.alpha, defTitle(defs, rule.field)));
-                } else {
-                    callback();
-                }
-            }
-        }
-    }
-
-    /**
-     * 验证字段可能包含字母、数字，以及破折号 (-) 和下划线 ( _ )。
-     */
-    const validateAlphaDash = (): Rule => {
-        return {
-            validator(rule, value, callback) {
-                if (value && !isAlphaDash(value)) {
-                    callback(sprintf(defaultMsgs.alphaDash, defTitle(defs, rule.field)));
-                } else {
-                    callback();
-                }
-            }
-        }
-    }
-
-    /**
-     * 验证字段必须是完全是字母、数字
-     */
-    const validateAlphaNum = (): Rule => {
-        return {
-            validator(rule, value, callback) {
-                if (value && !isAlphaNum(value)) {
-                    callback(sprintf(defaultMsgs.alphaNum, defTitle(defs, rule.field)));
-                } else {
-                    callback();
-                }
-            }
-        }
-    }
-
-    /**
-     * 验证必填
-     */
-    const validateRequired = (): Rule => {
-        return {
-            required: true,
-            validator(rule, value, callback) {
-                if (!value) {
-                    callback(sprintf(defaultMsgs.required, defTitle(defs, rule.field)));
-                } else {
-                    callback();
-                }
-            }
-        }
-    }
-
-    /**
-     * 必须是邮箱
-     */
-    const validateEmail = (): Rule => {
-        return {
-            validator: (rule, value, callback) => {
-                if (value && !isEmail(value)) {
-                    callback(sprintf(defaultMsgs.email, defTitle(rule.field)));
-                } else {
-                    callback();
-                }
-            }
-        }
-    }
-
-    /**
-     * 正确的身份证信息
-     */
-    const validateChid = (): Rule => {
-        return {
-            validator(rule, value, callback) {
-                if (value && !isChid(value)) {
-                    callback(sprintf(defaultMsgs.chid, defTitle(defs, rule.field)));
-                } else {
-                    callback();
-                }
-            }
-        }
-    }
-
-    /**
-     * 验证IP
-     */
-    const validateIp = (): Rule => {
-        return {
-            validator: (rule, value, callback) => {
-                if (value && !isIpV4(value)) {
-                    callback(sprintf(defaultMsgs.ip, defTitle(defs, rule.field)));
-                } else {
-                    callback();
-                }
-            }
-        }
-    }
-
-    /**
-     * 数值类型
-     */
-    const validateNumeric = (): Rule => {
-        return {
-            validator(rule, value, callback) {
-                if (value && !isNumeric(value)) {
-                    callback(sprintf(defaultMsgs.numeric, defTitle(defs, rule.field)));
-                } else {
-                    callback();
-                }
-            }
-        }
-    }
-
-    /**
-     * Accept : 必须是有值的
-     * 这里值是 yes/on/1/true
-     */
-    const validateAccepted = (): Rule => {
-        return {
-            validator: (rule, value, callback) => {
-                let message = sprintf(defaultMsgs.accepted, defTitle(defs, rule.field));
-                if (isNumeric(value) && value === 1) {
-                    callback()
-                } else if (isString(value) && includes(['yes', 'on', '1'], toLower(value))) {
-                    callback();
-                } else if (isBoolean(value) && value === true) {
-                    callback();
-                } else {
-                    callback(message);
-                }
-            }
-        }
+    const hasData = (name: string) => {
+        return typeof get(model.value, name) !== 'undefined';
     }
 
     /**
@@ -202,15 +73,113 @@ export default function useValidation(props: any, defs = {}) {
         'array': validateArray,
         'required': validateRequired,
         'ip': validateIp,
+        'ipv4': validateIpV4,
+        'boolean': validateBoolean,
+        'regex': validateRegex,
+        'not_regex': validateNotRegex,
+        'date': validateDate,
+        'ipv6': validateIpV6,
         'numeric': validateNumeric,
+        'integer': validateInteger,
         'alpha': validateAlpha,
+        'url': validateUrl,
         'alpha_dash': validateAlphaDash,
+        'json': validateJson,
         'alpha_num': validateAlphaNum,
         'email': validateEmail,
+        'digits': validateDigits,
+        'digits_between': validateDigitsBetween,
         'chid': validateChid,
         'string': validateString,
         'accepted': validateAccepted
     };
+
+    const typedRules = {
+        'max': validateMax,
+        'min': validateMin,
+        'between': validateBetween,
+        'size': validateSize,
+        'in': validateIn,
+        'not_in': validateNotIn
+    };
+
+    /**
+     * 验证非正则匹配的数据
+     * @param type
+     * @param fieldRule
+     */
+    const validateSame = (type: string, fieldRule: {}): Rule => {
+        return {
+            validator: (rule, value, callback) => {
+                if (value) {
+                    let field = get(fieldRule, 'params')[0];
+                    let fieldVal = get(model.value, field);
+                    if (value !== fieldVal) {
+                        callback(sprintf(defaultMsgs.same, get(fieldRule, 'title')));
+                    }
+                }
+                callback();
+            }
+        }
+    }
+
+    /**
+     * 验证存在值并一致
+     * @param type
+     * @param fieldRule
+     */
+    const validateConfirmed = (type: string, fieldRule: {}): Rule => {
+        let fieldConfirm = `${get(fieldRule, 'field')}_confirmation`;
+        let cloneAppend = clone(append.value);
+        let ori: any = get(cloneAppend, fieldConfirm, []);
+        if (Array.isArray(ori)) {
+            /* 对之前数据的验证 [双向验证]
+             * ---------------------------------------- */
+            ori.push({
+                validator: (rule: any, value: any, callback: any) => {
+                    if (value) {
+                        let oriField = String(get(rule, 'field'))
+                        let thatField = oriField.slice(0, oriField.indexOf('_confirmation'));
+                        let defs = get(fieldRule, 'model');
+                        let fieldTitle = get(defs, oriField)
+                        let thatFieldTitle = get(defs, thatField)
+                        let fieldVal = get(model.value, thatField);
+                        if (value !== fieldVal) {
+                            callback(sprintf(defaultMsgs.same, fieldTitle, thatFieldTitle));
+                        }
+                    }
+                    callback();
+                }
+            })
+        }
+        set(cloneAppend, fieldConfirm, ori);
+        append.value = cloneAppend;
+
+        /* 当前验证 confirm
+         * ---------------------------------------- */
+        return {
+            validator: (rule, value, callback) => {
+                if (value) {
+                    let defs = get(fieldRule, 'model');
+                    let confirmFieldTitle = get(defs, fieldConfirm)
+                    let confirmFieldVal = get(model.value, fieldConfirm);
+                    if (!confirmFieldVal) {
+                        callback();
+                    }
+                    if (value !== confirmFieldVal) {
+                        callback(sprintf(defaultMsgs.same, get(fieldRule, 'title'), confirmFieldTitle));
+                    }
+                }
+                callback();
+            }
+        }
+    }
+
+    const dependentRules = {
+        'confirmed': validateConfirmed,
+        'same': validateSame
+    };
+
 
     /**
      * 查找验证规则
@@ -221,7 +190,11 @@ export default function useValidation(props: any, defs = {}) {
     const combineRule = (type: string, field: string, rule = {}) => {
         let name = get(rule, 'name');
         if (includes(keys(independentRules), name)) {
-            return get(independentRules, name)();
+            return get(independentRules, name)(rule);
+        } else if (includes(keys(typedRules), name)) {
+            return get(typedRules, name)(type, rule);
+        } else if (includes(keys(dependentRules), name)) {
+            return get(dependentRules, name)(type, rule);
         } else {
             console.error(
                 '"' + name + '" validation rule does not exist!'
@@ -243,18 +216,26 @@ export default function useValidation(props: any, defs = {}) {
                 return combineRule(type, field, rule);
             }));
         });
+
+        each(append.value, (rules, field: string) => {
+            let oriFieldRules = get(comp, field, []);
+            set(comp, field, union(oriFieldRules, rules));
+        })
+        console.log(comp, 'schema');
         return comp;
     }
 
-
-    watch(() => rules.value, (newVal) => {
-        let parsedRules = fieldRules(newVal);
+    const parseSchema = () => {
+        let parsedRules = fieldRules(rules.value, items.value);
         schema.value = combinedRules(parsedRules);
+    }
+
+    watch(() => rules.value, () => {
+        parseSchema();
     }, { deep: true })
 
     onMounted(() => {
-        let parsedRules = fieldRules(rules.value);
-        schema.value = combinedRules(parsedRules);
+        parseSchema();
     });
 
     return {

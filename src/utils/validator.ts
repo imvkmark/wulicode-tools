@@ -614,77 +614,6 @@ class Validator {
         return typeof other !== 'undefined' && value !== other;
     }
 
-    validateDigits(name, value, params) {
-        this.requireParameterCount(1, params, 'digits');
-
-        return (
-            this.validateNumeric(name, value) &&
-            value.toString().length == params[0]
-        );
-    }
-
-    validateDigitsBetween(name, value, params) {
-        this.requireParameterCount(2, params, 'digits_between');
-
-        let len = value.toString().length;
-
-        return (
-            this.validateNumeric(name, value) &&
-            len >= params[0] &&
-            len <= params[1]
-        );
-    }
-
-    validateSize(name, value, params) {
-        this.requireParameterCount(1, params, 'size');
-
-        return this.getSize(name, value) == params[0];
-    }
-
-    validateBetween(name, value, params) {
-        this.requireParameterCount(2, params, 'between');
-
-        let size = this.getSize(name, value);
-
-        return size >= params[0] && size <= params[1];
-    }
-
-    validateMin(name, value, params) {
-        this.requireParameterCount(1, params, 'min');
-
-        return this.getSize(name, value) >= params[0];
-    }
-
-    validateMax(name, value, params) {
-        this.requireParameterCount(1, params, 'max');
-
-        return this.getSize(name, value) <= params[0];
-    }
-
-    getSize(name, value) {
-        let hasNumeric = this.hasRule(name, this.numericRules);
-
-        if (!value) {
-            return 0;
-        }
-
-        if (hasNumeric && !isNaN(parseFloat(value))) {
-            return parseFloat(value);
-        }
-
-        // for array and string
-        return value.length;
-    }
-
-    validateIn(name, value, params) {
-        if (Array.isArray(value) && this.hasRule(name, 'Array')) {
-            let arr = this.arrayDiff(value, params);
-            return arr.length === 0;
-        }
-
-        return params.indexOf(value) >= 0;
-    }
-
     arrayDiff(arr1, arr2) {
         let diff = [];
         arr1.forEach(function (item) {
@@ -695,71 +624,6 @@ class Validator {
         return diff;
     }
 
-    validateNotIn(name, value, params) {
-        this.requireParameterCount(1, params, 'not_in');
-
-        return !this.validateIn(name, value, params);
-    }
-
-    validateNumeric(name, value) {
-        return this.validateMatch(name, value, /^-?\d+(\.\d*)?$/);
-    }
-
-    validateInteger(name, value) {
-        return this.validateMatch(name, value, /^-?\d+$/);
-    }
-
-    validateString(name, value) {
-        if (!this.hasData(name)) {
-            return true;
-        }
-
-        return value === null || typeof value === 'string';
-    }
-
-    validateEmail(name, value) {
-        return this.validateMatch(
-            name,
-            value,
-            /^[A-Z0-9._%+\-]+@[A-Z0-9.\-]+\.[A-Z]{2,8}$/i
-        );
-    }
-
-    validateIp(name, value) {
-        let segments = value.split('.');
-
-        if (
-            segments.length === 4 &&
-            this.validateBetween(name, segments[0], [1, 255]) &&
-            this.validateBetween(name, segments[1], [0, 255]) &&
-            this.validateBetween(name, segments[2], [0, 255]) &&
-            this.validateBetween(name, segments[3], [1, 255])
-        ) {
-            return true;
-        }
-
-        return false;
-    }
-
-    validateUrl(name, value) {
-        return this.validateMatch(
-            name,
-            value,
-            /^(https?|ftp):\/\/[^\s\/$.?#].[^\s]*$/i
-        );
-    }
-
-    validateAlpha(name, value) {
-        return this.validateMatch(name, value, /^([a-z])+$/i);
-    }
-
-    validateAlphaNum(name, value) {
-        return this.validateMatch(name, value, /^([a-z0-9])+$/i);
-    }
-
-    validateAlphaDash(name, value) {
-        return this.validateMatch(name, value, /^([a-z0-9_\-])+$/i);
-    }
 
     validateBefore(name, value, params) {
         this.requireParameterCount(1, params, 'before');
@@ -978,35 +842,6 @@ class Validator {
 
     replaceDifferent(msg, name, rule, params) {
         return this.replaceSame(msg, name, rule, params);
-    }
-
-    replaceDigits(msg, name, rule, params) {
-        return this.strReplace(':digits', params[0], msg);
-    }
-
-    replaceDigitsBetween(msg, name, rule, params) {
-        return this.replaceBetween(msg, name, rule, params);
-    }
-
-    replaceMin(msg, name, rule, params) {
-        return this.strReplace(':min', params[0], msg);
-    }
-
-    replaceMax(msg, name, rule, params) {
-        return this.strReplace(':max', params[0], msg);
-    }
-
-    replaceIn(msg, name, rule, params) {
-        let self = this;
-        params = params.map(function (value) {
-            return self.getDisplayableValue(name, value);
-        });
-
-        return this.strReplace(':values', params.join(', '), msg);
-    }
-
-    replaceNotIn(msg, name, rule, params) {
-        return this.replaceIn(msg, name, rule, params);
     }
 
     // replaceInArray()

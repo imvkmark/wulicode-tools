@@ -1,12 +1,5 @@
-import { get, indexOf, set } from 'lodash-es';
+import { indexOf } from 'lodash-es';
 
-export const mapModel = (item: any[]) => {
-    let model = {};
-    item.map(function (item: object) {
-        set(model, get(item, 'field.name'), get(item, 'item.label'))
-    });
-    return model;
-}
 
 /*
 |--------------------------------------------------------------------------
@@ -91,6 +84,15 @@ export const isIpV4 = (ip: string) => {
     return /^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/.test(ip);
 }
 
+
+/**
+ * 是否是 IpV6
+ * @param ip
+ */
+export const isIpV6 = (ip: string) => {
+    return /^([0-9A-Fa-f]{0,4}:){2,7}([0-9A-Fa-f]{1,4}$|((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)(\.|$)){4})$/gm.test(ip);
+}
+
 /**
  * 是否是中文身份证号
  * @param chId
@@ -154,7 +156,7 @@ export const isAlphaNum = (val: string) => {
 }
 
 
-export const sprintf = (...args: string[]) => {
+export const sprintf = (...args: string[] | any[]) => {
     let replace = Array.prototype.slice.call(args, 1);
     let format = args[0];
     return format.replace(/{(\d+)}/g, function (match: string, number: number) {
@@ -173,6 +175,24 @@ export const isNumeric = (n: any) => {
     return !isNaN(parseFloat(n)) && isFinite(n);
 }
 
+/**
+ * 是否是Url
+ * @param n
+ */
+export const isUrl = (n: any) => {
+    return regexTest(n, /^(https?|ftp):\/\/[^\s\/$.?#].[^\s]*$/i);
+}
+
+/**
+ * 是否是 Int 类型的数据
+ * @param n
+ */
+export const isInteger = (n: any) => {
+    if (isNaN(Math.round(n))) {
+        return false;
+    }
+    return Math.round(n).toString() === n.toString();
+}
 
 /**
  * RegexTest / 正则匹配
@@ -192,3 +212,22 @@ export const regexTest = (value: string[] | string, params: string[] | string | 
     return re.test(val);
 }
 
+/**
+ * 是否是空对象
+ * @param obj
+ */
+export const isEmptyObject = (obj: object) => {
+    return Object.getOwnPropertyNames(obj).length === 0;
+}
+
+export const isDate = (value: any) => {
+    if (value instanceof Date) {
+        return true;
+    }
+
+    if (typeof value !== 'string' && typeof value !== 'number') {
+        return false;
+    }
+
+    return !isNaN(Date.parse(String(value)));
+}
