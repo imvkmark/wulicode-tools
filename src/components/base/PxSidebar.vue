@@ -4,8 +4,8 @@
         <div v-for="(item, key) in routes" :key="item">
             <h3>{{ key }}</h3>
             <ul>
-                <li v-for="rt in item" :key="rt.name" :class="{active : rt.name === trans.name}">
-                    <span @click="onLinkClick(rt.name)">{{ rt.title }}</span>
+                <li v-for="rt in item" :key="rt.name" :class="{active : rt.name === trans.name && trans.params === get(rt, 'params', {})}">
+                    <span @click="onLinkClick(rt.name, get(rt, 'params', {}))">{{ rt.title }}</span>
                 </li>
             </ul>
         </div>
@@ -16,12 +16,13 @@ import { computed, onMounted, reactive, watch } from 'vue'
 import { useRouter } from 'vue-router';
 import { useStore } from '@/store';
 import { sizeClass } from '@/utils/defs';
-import { includes, keys } from 'lodash-es';
+import { get, includes, keys } from 'lodash-es';
 
 const router = useRouter();
 const store = useStore();
 const trans = reactive({
     name: computed(() => router.currentRoute.value.name),
+    params: {},
     active: computed(() => store.state.sidebarActive),
     size: computed(() => store.state.size),
     prefix: computed(() => store.state.prefix)
@@ -34,7 +35,9 @@ const routes = {
         { name: 'tool.url-decode', title: 'Url 解码' }
     ],
     form: [
-        { name: 'form.text', title: 'Text' }
+        { name: 'form.index', title: 'Text', params: { type: 'text' } },
+        { name: 'form.index', title: 'Required', params: { type: 'required' } },
+        { name: 'form.index', title: 'Date', params: { type: 'date' } }
     ],
     js: [
         { name: 'js.sentry', title: '异常' },
@@ -47,9 +50,11 @@ const routes = {
         { name: 'css.animation', title: '动画' }
     ]
 }
-const onLinkClick = (name: string) => {
+const onLinkClick = (name: string, params: any) => {
+    trans.params = params;
     router.push({
-        name
+        name,
+        params
     })
     store.dispatch('SwitchSidebar', false);
 }

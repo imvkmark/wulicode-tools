@@ -10,3 +10,11 @@ export async function apiDemoFormText(params: object, method: string) {
         method
     });
 }
+
+export async function apiDemoForm(type: string, params: object, method: string) {
+    return request({
+        url: '/api/demo/form/' + type,
+        params,
+        method
+    });
+}

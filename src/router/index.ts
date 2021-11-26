@@ -23,7 +23,7 @@ const routes: Array<RouteRecordRaw> = [
             { path: 'js/sentry', component: () => import('@/views/js/Sentry.vue'), name: 'js.sentry' },
             { path: 'js/scroll', component: () => import('@/views/js/Scroll.vue'), name: 'js.scroll' },
             { path: 'js/info', component: () => import('@/views/js/Info.vue'), name: 'js.info' },
-            { path: 'form/text', component: () => import('@/views/form/Text.vue'), name: 'form.text' }
+            { path: 'form/:type', component: () => import('@/views/form/Index.vue'), name: 'form.index' }
         ]
     },
     {

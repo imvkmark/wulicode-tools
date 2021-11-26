@@ -479,69 +479,6 @@ class Validator {
         return result;
     }
 
-    validateRequiredWith(name, value, params) {
-        if (!this.allFailingRequired(params)) {
-            return this.validateRequired(name, value);
-        }
-
-        return true;
-    }
-
-    validateRequiredWithAll(name, value, params) {
-        if (!this.anyFailingRequired(params)) {
-            return this.validateRequired(name, value);
-        }
-
-        return true;
-    }
-
-    validateRequiredWithout(name, value, params) {
-        if (this.anyFailingRequired(params)) {
-            return this.validateRequired(name, value);
-        }
-
-        return true;
-    }
-
-    validateRequiredWithoutAll(name, value, params) {
-        if (this.allFailingRequired(params)) {
-            return this.validateRequired(name, value);
-        }
-
-        return true;
-    }
-
-    validateRequiredIf(name, value, params) {
-        this.requireParameterCount(2, params, 'required_if');
-
-        let data = this.getValue(params[0]);
-        if (typeof data === 'boolean') {
-            data = data.toString();
-        }
-
-        let values = params.slice(1);
-
-        if (values.indexOf(data) >= 0) {
-            return this.validateRequired(name, value);
-        }
-
-        return true;
-    }
-
-    validateRequiredUnless(name, value, params) {
-        this.requireParameterCount(2, params, 'required_unless');
-
-        let data = this.getValue(params[0]);
-
-        let values = params.slice(1);
-
-        if (values.indexOf(data) < 0) {
-            return this.validateRequired(name, value);
-        }
-
-        return true;
-    }
-
     getPresentCount(names) {
         let self = this;
         let count = 0;
@@ -574,36 +511,12 @@ class Validator {
         return re.test(value);
     }
 
-    validateRegex(name, value, params) {
-        return this.validateMatch(name, value, params);
-    }
-
-    validateAccepted(name, value) {
-        let acceptable = ['yes', 'on', '1', 1, true, 'true'];
-
-        return (
-            this.validateRequired(name, value) && acceptable.indexOf(value) >= 0
-        );
-    }
-
     validateArray(name, value) {
         if (typeof this.data[name] === 'undefined') {
             return true;
         }
 
         return value === null || Array.isArray(value);
-    }
-
-    validateConfirmed(name, value) {
-        return this.validateSame(name, value, [name + '_confirmation']);
-    }
-
-    validateSame(name, value, params) {
-        this.requireParameterCount(1, params, 'same');
-
-        let other = this.data[params[0]];
-
-        return typeof other !== 'undefined' && value === other;
     }
 
     validateDifferent(name, value, params) {
@@ -625,94 +538,6 @@ class Validator {
     }
 
 
-    validateBefore(name, value, params) {
-        this.requireParameterCount(1, params, 'before');
-
-        if (
-            typeof value !== 'string' &&
-            typeof value !== 'number' &&
-            !(value instanceof Date)
-        ) {
-            return false;
-        }
-
-        let date = this.hasData(params[0])
-            ? this.getValue(params[0])
-            : params[0];
-
-        if (!this.validateDate(name, date)) {
-            return false;
-        }
-
-        return Date.parse(value) < Date.parse(date);
-    }
-
-    validateBeforeOrEqual(name, value, params) {
-        this.requireParameterCount(1, params, 'before_or_equal');
-
-        if (
-            typeof value !== 'string' &&
-            typeof value !== 'number' &&
-            !(value instanceof Date)
-        ) {
-            return false;
-        }
-
-        let date = this.hasData(params[0])
-            ? this.getValue(params[0])
-            : params[0];
-
-        if (!this.validateDate(name, date)) {
-            return false;
-        }
-
-        return Date.parse(value) <= Date.parse(date);
-    }
-
-    validateAfter(name, value, params) {
-        this.requireParameterCount(1, params, 'after');
-
-        if (
-            typeof value !== 'string' &&
-            typeof value !== 'number' &&
-            !(value instanceof Date)
-        ) {
-            return false;
-        }
-
-        let date = this.hasData(params[0])
-            ? this.getValue(params[0])
-            : params[0];
-
-        if (!this.validateDate(name, date)) {
-            return false;
-        }
-
-        return Date.parse(value) > Date.parse(date);
-    }
-
-    validateAfterOrEqual(name, value, params) {
-        this.requireParameterCount(1, params, 'afterOrEqual');
-
-        if (
-            typeof value !== 'string' &&
-            typeof value !== 'number' &&
-            !(value instanceof Date)
-        ) {
-            return false;
-        }
-
-        let date = this.hasData(params[0])
-            ? this.getValue(params[0])
-            : params[0];
-
-        if (!this.validateDate(name, date)) {
-            return false;
-        }
-
-        return Date.parse(value) >= Date.parse(date);
-    }
-
     validateDate(name, value) {
         if (value instanceof Date) {
             return true;
@@ -723,25 +548,6 @@ class Validator {
         }
 
         return !isNaN(Date.parse(value));
-    }
-
-    validateBoolean(name, value) {
-        if (!this.hasData(name)) {
-            return true;
-        }
-
-        let acceptable = [true, false, 0, 1, '0', '1'];
-
-        return value === null || acceptable.indexOf(value) >= 0;
-    }
-
-    validateJson(name, value) {
-        try {
-            JSON.parse(value);
-            return true;
-        } catch (err) {
-            return false;
-        }
     }
 
     /*---- Replacers ----*/

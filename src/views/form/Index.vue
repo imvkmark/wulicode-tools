@@ -6,12 +6,14 @@
     </PxMain>
 </template>
 <script lang="ts" setup>
-import { onMounted, reactive } from 'vue';
-import { apiDemoFormText } from '@/services/demo';
+import { onMounted, reactive, watch } from 'vue';
+import { apiDemoForm } from '@/services/demo';
 import FormWidget from '@/components/form/FormWidget.vue';
 import { get } from 'lodash-es';
 import PxMain from '@/components/base/PxMain.vue';
+import { useRouter } from 'vue-router';
 
+let router = useRouter();
 const trans = reactive({
     title: '',
     description: '',
@@ -21,9 +23,11 @@ const trans = reactive({
     model: {},
     attr: {}
 })
-onMounted(() => {
+
+const doRequest = () => {
+    let type = String(router.currentRoute.value.params.type);
     trans.loading = true;
-    apiDemoFormText({}, 'get').then(({ data }) => {
+    apiDemoForm(type, {}, 'get').then(({ data }) => {
         trans.loading = false;
         trans.title = get(data, 'title');
         trans.description = get(data, 'description');
@@ -33,6 +37,13 @@ onMounted(() => {
         trans.attr = get(data, 'attr');
         console.log('🐢', trans.rules)
     })
+}
+
+watch(() => router.currentRoute.value.params.type, () => {
+    doRequest();
+}, { deep: true })
+onMounted(() => {
+    doRequest();
 })
 </script>
 
