@@ -45,7 +45,6 @@ const props = defineProps({
     description: String,
     attr: Object,
     items: Array,
-    rules: Object,
     model: {
         type: Object,
         default: () => {

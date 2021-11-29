@@ -1,4 +1,4 @@
-import { clone, difference, each, endsWith, get, includes, indexOf, keys, map, set, startsWith, union } from 'lodash-es';
+import { clone, difference, each, endsWith, get, includes, indexOf, keys, map, set, startsWith } from 'lodash-es';
 import { onMounted, Ref, ref, toRefs, watch } from 'vue';
 import { Rule } from 'async-validator';
 import {
@@ -28,22 +28,17 @@ dayjs.extend(customParseFormat)
  */
 export default function useValidation(props: any, model = <Ref>{}) {
 
-    const { rules, items } = toRefs(props);
+    const { items } = toRefs(props);
 
     const defines = ref({});
 
-    const parsedRules = ref({});
+    const plainRules = ref({});
 
     /**
      * 所有的验证规则
      * @private
      */
     const schema = ref({});
-
-    /**
-     * 追加的规则
-     */
-    const append = ref({});
 
     /**
      * todo 待确定
@@ -53,6 +48,14 @@ export default function useValidation(props: any, model = <Ref>{}) {
 
     const hasData = (name: string) => {
         return typeof get(model.value, name) !== 'undefined';
+    }
+
+    const setTo = (field: string, rule: Rule) => {
+        let cloneSchema = clone(schema.value);
+        let obj = get(cloneSchema, field, []);
+        obj.push(rule);
+        set(cloneSchema, field, obj);
+        schema.value = cloneSchema;
     }
 
 
@@ -76,7 +79,7 @@ export default function useValidation(props: any, model = <Ref>{}) {
      * @param itemRules
      * @param field
      */
-    const parseRules = (field: string, itemRules: string | string[]) => {
+    const _toPlainRules = (field: string, itemRules: string | string[]) => {
         let rules = <any>[];
 
         /* 格式化规则
@@ -192,16 +195,18 @@ export default function useValidation(props: any, model = <Ref>{}) {
 
     /**
      * 返回规则的类型, 根据不同的类型过滤不同的规则
-     * @param ruleNames
+     * @param field
      */
-    const rulesType = (ruleNames: string[]) => {
-        if (includes(ruleNames, 'numeric') || includes(ruleNames, 'integer')) {
+    const fieldType = (field: string) => {
+        let rules = get(plainRules.value, field);
+        let names = map(rules, (rule) => get(rule, 'name'))
+        if (includes(names, 'numeric') || includes(names, 'integer')) {
             return 'numeric';
-        } else if (includes(ruleNames, 'array')) {
+        } else if (includes(names, 'array')) {
             return 'array';
-        } else if (includes(ruleNames, 'string')) {
+        } else if (includes(names, 'string')) {
             return 'string';
-        } else if (includes(ruleNames, 'date') || includes(ruleNames, 'date_format')) {
+        } else if (includes(names, 'date') || includes(names, 'date_format')) {
             return 'date';
         }
         return '';
@@ -294,8 +299,8 @@ export default function useValidation(props: any, model = <Ref>{}) {
     /**
      * 字串类型
      */
-    const validateString = (fieldRule: {}): Rule => {
-        return {
+    const validateString = (field: string) => {
+        setTo(field, {
             type: 'string',
             validator(rule, value, callback) {
                 if (value && typeof value !== 'string') {
@@ -304,12 +309,12 @@ export default function useValidation(props: any, model = <Ref>{}) {
                     callback();
                 }
             }
-        }
+        })
     }
 
 
-    const validateArray = (fieldRule: {}): Rule => {
-        return {
+    const validateArray = (field: string) => {
+        setTo(field, {
             type: 'array',
             validator(rule, value, callback) {
                 if (value && !Array.isArray(value)) {
@@ -318,15 +323,14 @@ export default function useValidation(props: any, model = <Ref>{}) {
                     callback();
                 }
             }
-        }
+        })
     }
 
     /**
      * 完全由字母构成
      */
-    const validateAlpha = (fieldRule: {}): Rule => {
-
-        return {
+    const validateAlpha = (field: string) => {
+        setTo(field, {
             validator(rule, value, callback) {
                 if (value && !isAlpha(value)) {
                     callback(sprintf(defaultMsgs.alpha, label(rule.field)));
@@ -334,14 +338,14 @@ export default function useValidation(props: any, model = <Ref>{}) {
                     callback();
                 }
             }
-        }
+        })
     }
 
     /**
      * 验证字段可能包含字母、数字，以及破折号 (-) 和下划线 ( _ )。
      */
-    const validateAlphaDash = (fieldRule: {}): Rule => {
-        return {
+    const validateAlphaDash = (field: string) => {
+        setTo(field, {
             validator(rule, value, callback) {
                 if (value && !isAlphaDash(value)) {
                     callback(sprintf(defaultMsgs.alphaDash, label(rule.field)));
@@ -349,14 +353,14 @@ export default function useValidation(props: any, model = <Ref>{}) {
                     callback();
                 }
             }
-        }
+        })
     }
 
     /**
      * 验证字段必须是完全是字母、数字
      */
-    const validateAlphaNum = (fieldRule: {}): Rule => {
-        return {
+    const validateAlphaNum = (field: string) => {
+        setTo(field, {
             validator(rule, value, callback) {
                 if (value && !isAlphaNum(value)) {
                     callback(sprintf(defaultMsgs.alphaNum, label(rule.field)));
@@ -364,14 +368,14 @@ export default function useValidation(props: any, model = <Ref>{}) {
                     callback();
                 }
             }
-        }
+        })
     }
 
     /**
      * 验证必填
      */
-    const validateRequired = (fieldRule: {}): Rule => {
-        return {
+    const validateRequired = (field: string) => {
+        setTo(field, {
             required: true,
             validator(rule, value, callback) {
                 if (!value) {
@@ -380,13 +384,13 @@ export default function useValidation(props: any, model = <Ref>{}) {
                     callback();
                 }
             }
-        }
+        });
     }
     /**
      * 验证必须存在, 单可以为空
      */
-    const validatePresent = (fieldRule: {}): Rule => {
-        return {
+    const validatePresent = (field: string) => {
+        setTo(field, {
             required: true,
             validator(rule, value, callback) {
                 if (typeof value === 'undefined') {
@@ -395,14 +399,14 @@ export default function useValidation(props: any, model = <Ref>{}) {
                     callback();
                 }
             }
-        }
+        })
     }
 
     /**
      * 必须是邮箱
      */
-    const validateEmail = (fieldRule: {}): Rule => {
-        return {
+    const validateEmail = (field: string) => {
+        setTo(field, {
             validator: (rule, value, callback) => {
                 if (value && !isEmail(value)) {
                     callback(sprintf(defaultMsgs.email, label(rule.field)));
@@ -410,14 +414,14 @@ export default function useValidation(props: any, model = <Ref>{}) {
                     callback();
                 }
             }
-        }
+        })
     }
 
     /**
      * 正确的身份证信息
      */
-    const validateChid = (fieldRule: {}): Rule => {
-        return {
+    const validateChid = (field: string) => {
+        setTo(field, {
             validator(rule, value, callback) {
                 if (value && !isChid(value)) {
                     callback(sprintf(defaultMsgs.chid, label(rule.field)));
@@ -425,17 +429,18 @@ export default function useValidation(props: any, model = <Ref>{}) {
                     callback();
                 }
             }
-        }
+        })
     }
 
     /**
      * 验证值是否在验证之列
-     * @param type
+     * @param field
      * @param fieldRule
      */
-    const validateIn = (type: string, fieldRule: {}): Rule => {
+    const validateIn = (field: string, fieldRule: {}) => {
         let values = get(fieldRule, 'params');
-        return {
+        let type = fieldType(field)
+        setTo(field, {
             validator(rule, value, callback) {
                 if (!value) {
                     callback();
@@ -456,16 +461,17 @@ export default function useValidation(props: any, model = <Ref>{}) {
                     callback();
                 }
             }
-        }
+        })
     }
 
     /**
      * 不在允许的范围内
+     * @param field
      * @param fieldRule
      */
-    const validateNotIn = (fieldRule: {}): Rule => {
+    const validateNotIn = (field: string, fieldRule: {}) => {
         let values = get(fieldRule, 'params');
-        return {
+        setTo(field, {
             validator(rule, value, callback) {
                 if (value && indexOf(values, value) >= 0) {
                     callback(sprintf(defaultMsgs.notIn, label(rule.field), values.toString()));
@@ -473,14 +479,14 @@ export default function useValidation(props: any, model = <Ref>{}) {
                     callback();
                 }
             }
-        }
+        })
     }
 
     /**
      * 验证IP
      */
-    const validateIp = (fieldRule: {}): Rule => {
-        return {
+    const validateIp = (field: string) => {
+        setTo(field, {
             validator: (rule, value, callback) => {
                 if (value && !(isIpV4(value) || isIpV6(value))) {
                     callback(sprintf(defaultMsgs.ip, label(rule.field)));
@@ -488,11 +494,11 @@ export default function useValidation(props: any, model = <Ref>{}) {
                     callback();
                 }
             }
-        }
+        })
     }
 
-    const validateIpV4 = (fieldRule: {}): Rule => {
-        return {
+    const validateIpV4 = (field: string) => {
+        setTo(field, {
             validator: (rule, value, callback) => {
                 if (value && !isIpV4(value)) {
                     callback(sprintf(defaultMsgs.ipv4, label(rule.field)));
@@ -500,11 +506,11 @@ export default function useValidation(props: any, model = <Ref>{}) {
                     callback();
                 }
             }
-        }
+        })
     }
 
-    const validateIpV6 = (fieldRule: {}): Rule => {
-        return {
+    const validateIpV6 = (field: string) => {
+        setTo(field, {
             validator: (rule, value, callback) => {
                 if (value && !isIpV6(value)) {
                     callback(sprintf(defaultMsgs.ipv6, label(rule.field)));
@@ -512,14 +518,14 @@ export default function useValidation(props: any, model = <Ref>{}) {
                     callback();
                 }
             }
-        }
+        })
     }
 
     /**
      * 数值类型
      */
-    const validateNumeric = (fieldRule: {}): Rule => {
-        return {
+    const validateNumeric = (field: string) => {
+        setTo(field, {
             validator(rule, value, callback) {
                 if (value && !isNumeric(value)) {
                     callback(sprintf(defaultMsgs.numeric, label(rule.field)));
@@ -527,14 +533,14 @@ export default function useValidation(props: any, model = <Ref>{}) {
                     callback();
                 }
             }
-        }
+        })
     }
 
     /**
      * 验证是否是一个Url
      */
-    const validateUrl = (fieldRule: {}): Rule => {
-        return {
+    const validateUrl = (field: string) => {
+        setTo(field, {
             validator(rule, value, callback) {
                 if (value && !isUrl(value)) {
                     callback(sprintf(defaultMsgs.url, label(rule.field)));
@@ -542,11 +548,11 @@ export default function useValidation(props: any, model = <Ref>{}) {
                     callback();
                 }
             }
-        }
+        })
     }
 
-    const validateInteger = (fieldRule: {}): Rule => {
-        return {
+    const validateInteger = (field: string) => {
+        setTo(field, {
             validator(rule, value, callback) {
                 if (value && !isInteger(value)) {
                     callback(sprintf(defaultMsgs.integer, label(rule.field)));
@@ -554,11 +560,12 @@ export default function useValidation(props: any, model = <Ref>{}) {
                     callback();
                 }
             }
-        }
+        })
     }
 
-    const validateMax = (type: string, fieldRule: {}): Rule => {
-        return {
+    const validateMax = (field: string, fieldRule: {}) => {
+        let type = fieldType(field);
+        setTo(field, {
             validator(rule, value, callback) {
                 let size = Number.parseFloat(get(fieldRule, 'params')[0]);
                 if (!isNumeric(size)) {
@@ -577,11 +584,12 @@ export default function useValidation(props: any, model = <Ref>{}) {
                 }
                 callback();
             }
-        }
+        })
     }
 
-    const validateSize = (type: string, fieldRule: {}): Rule => {
-        return {
+    const validateSize = (field: string, fieldRule: {}) => {
+        let type = fieldType(field);
+        setTo(field, {
             validator(rule, value, callback) {
                 let size = get(fieldRule, 'params')[0];
                 if (!isInteger(size)) {
@@ -600,16 +608,17 @@ export default function useValidation(props: any, model = <Ref>{}) {
                 }
                 callback()
             }
-        }
+        })
     }
 
     /**
      * 检测最小值
-     * @param type
+     * @param field
      * @param fieldRule
      */
-    const validateMin = (type: string, fieldRule: {}): Rule => {
-        return {
+    const validateMin = (field: string, fieldRule: {}) => {
+        let type = fieldType(field);
+        setTo(field, {
             validator(rule, value, callback) {
                 let size = get(fieldRule, 'params')[0];
                 if (!isNumeric(size)) {
@@ -628,16 +637,17 @@ export default function useValidation(props: any, model = <Ref>{}) {
                 }
                 callback()
             }
-        }
+        })
     }
 
     /**
      *
-     * @param type
+     * @param field
      * @param fieldRule
      */
-    const validateBetween = (type: string, fieldRule: {}): Rule => {
-        return {
+    const validateBetween = (field: string, fieldRule: {}) => {
+        let type = fieldType(field);
+        setTo(field, {
             validator(rule, value, callback) {
                 let start = get(fieldRule, 'params')[0];
                 let end = get(fieldRule, 'params')[1];
@@ -659,15 +669,16 @@ export default function useValidation(props: any, model = <Ref>{}) {
                 }
                 callback()
             }
-        }
+        })
     }
 
     /**
      * 长度是 size 大小的正整数
+     * @param field
      * @param fieldRule
      */
-    const validateDigits = (fieldRule: {}): Rule => {
-        return {
+    const validateDigits = (field: string, fieldRule: {}) => {
+        setTo(field, {
             validator(rule, value, callback) {
                 let size = get(fieldRule, 'params')[0];
                 if (!isNumeric(size)) {
@@ -683,15 +694,16 @@ export default function useValidation(props: any, model = <Ref>{}) {
                     callback();
                 }
             }
-        }
+        })
     }
 
     /**
      * 验证数据长度在范围内
+     * @param field
      * @param fieldRule
      */
-    const validateDigitsBetween = (fieldRule: {}): Rule => {
-        return {
+    const validateDigitsBetween = (field: string, fieldRule: {}) => {
+        setTo(field, {
             validator(rule, value, callback) {
                 let min = get(fieldRule, 'params')[0];
                 let max = get(fieldRule, 'params')[1];
@@ -708,15 +720,15 @@ export default function useValidation(props: any, model = <Ref>{}) {
                     callback();
                 }
             }
-        }
+        })
     }
 
     /**
      * Accept : 必须是有值的
      * 这里值是 yes/on/1/true
      */
-    const validateAccepted = (fieldRule: {}): Rule => {
-        return {
+    const validateAccepted = (field: string) => {
+        setTo(field, {
             validator: (rule, value, callback) => {
                 let accepted = ['yes', 'on', '1', 1, true, 'true'];
                 if (!(indexOf(accepted, value) >= 0)) {
@@ -724,11 +736,11 @@ export default function useValidation(props: any, model = <Ref>{}) {
                 }
                 callback();
             }
-        }
+        })
     }
 
-    const validateFilled = (fieldRule: {}): Rule => {
-        return {
+    const validateFilled = (field: string) => {
+        setTo(field, {
             validator: (rule, value, callback) => {
                 if (typeof value !== 'undefined' && value !== null) {
                     if (!value) {
@@ -737,15 +749,15 @@ export default function useValidation(props: any, model = <Ref>{}) {
                 }
                 callback();
             }
-        }
+        })
     }
 
     /**
      * 验证布尔值
-     * @param fieldRule
+     * @param field
      */
-    const validateBoolean = (fieldRule: {}): Rule => {
-        return {
+    const validateBoolean = (field: string) => {
+        setTo(field, {
             validator: (rule, value, callback) => {
                 let acceptable = [true, false, 0, 1, '0', '1'];
                 if (!(value === null || acceptable.indexOf(value) >= 0)) {
@@ -753,30 +765,31 @@ export default function useValidation(props: any, model = <Ref>{}) {
                 }
                 callback()
             }
-        }
+        })
     }
 
     /**
      * 验证日期(Y-m-d)
-     * @param fieldRule
+
+     * @param field
      */
-    const validateDate = (fieldRule: {}): Rule => {
-        return {
+    const validateDate = (field: string) => {
+        setTo(field, {
             validator: (rule, value, callback) => {
                 if (value && !dayjs(value, 'YYYY-MM-DD', true).isValid()) {
                     callback(sprintf(defaultMsgs.date, label(rule.field)))
                 }
                 callback()
             }
-        }
+        })
     }
 
     /**
      * 验证是 Json 字串
-     * @param fieldRule
+     * @param field
      */
-    const validateJson = (fieldRule: {}): Rule => {
-        return {
+    const validateJson = (field: string) => {
+        setTo(field, {
             validator: (rule, value, callback) => {
                 if (value) {
                     try {
@@ -788,15 +801,16 @@ export default function useValidation(props: any, model = <Ref>{}) {
                 }
                 callback();
             }
-        }
+        })
     }
 
     /**
      * 验证正则匹配的数据
+     * @param field
      * @param fieldRule
      */
-    const validateRegex = (fieldRule: {}): Rule => {
-        return {
+    const validateRegex = (field: string, fieldRule: {}) => {
+        setTo(field, {
             validator: (rule, value, callback) => {
                 if (value) {
                     let param = get(fieldRule, 'params')[0];
@@ -806,15 +820,16 @@ export default function useValidation(props: any, model = <Ref>{}) {
                 }
                 callback();
             }
-        }
+        })
     }
 
     /**
      * 验证非正则匹配的数据
+     * @param field
      * @param fieldRule
      */
-    const validateNotRegex = (fieldRule: {}): Rule => {
-        return {
+    const validateNotRegex = (field: string, fieldRule: {}) => {
+        setTo(field, {
             validator: (rule, value, callback) => {
                 if (value) {
                     let param = get(fieldRule, 'params')[0];
@@ -824,11 +839,11 @@ export default function useValidation(props: any, model = <Ref>{}) {
                 }
                 callback();
             }
-        }
+        })
     }
 
-    const validateStartsWith = (fieldRule: {}): Rule => {
-        return {
+    const validateStartsWith = (field: string, fieldRule: {}) => {
+        setTo(field, {
             validator: (rule, value, callback) => {
                 if (value) {
                     let param = get(fieldRule, 'params')[0];
@@ -838,10 +853,10 @@ export default function useValidation(props: any, model = <Ref>{}) {
                 }
                 callback();
             }
-        }
+        })
     }
-    const validateEndsWith = (fieldRule: {}): Rule => {
-        return {
+    const validateEndsWith = (field: string, fieldRule: {}) => {
+        setTo(field, {
             validator: (rule, value, callback) => {
                 if (value) {
                     let param = get(fieldRule, 'params')[0];
@@ -851,14 +866,311 @@ export default function useValidation(props: any, model = <Ref>{}) {
                 }
                 callback();
             }
-        }
+        })
+    }
+
+    /**
+     * 验证非正则匹配的数据
+     * @param field
+     * @param fieldRule
+     */
+    const validateSame = (field: string, fieldRule: {}) => {
+        setTo(field, {
+            validator: (rule, value, callback) => {
+                if (value) {
+                    let field = get(fieldRule, 'params')[0];
+                    let fieldVal = get(model.value, field);
+                    if (value !== fieldVal) {
+                        callback(sprintf(defaultMsgs.same, label(rule.field), label(field)));
+                    }
+                }
+                callback();
+            }
+        })
+    }
+    /**
+     * 验证非正则匹配的数据
+     * @param field
+     * @param fieldRule
+     */
+    const validateDifferent = (field: string, fieldRule: {}) => {
+        setTo(field, {
+            validator: (rule, value, callback) => {
+                if (value) {
+                    let field = get(fieldRule, 'params')[0];
+                    let fieldVal = get(model.value, field);
+                    if (value === fieldVal) {
+                        callback(sprintf(defaultMsgs.different, label(rule.field), label(field)));
+                    }
+                }
+                callback();
+            }
+        })
+    }
+
+    const validateGt = (field: string, fieldRule: {}) => {
+        let type = fieldType(field);
+        setTo(field, {
+            validator: (rule, value, callback) => {
+                if (value) {
+                    let field = get(fieldRule, 'params')[0];
+                    let fieldVal = get(model.value, field);
+                    if (!(valueSize(value, type) > valueSize(fieldVal, type))) {
+                        callback(sprintf(defaultMsgs.gt, label(rule.field), label(field)));
+                    }
+                }
+                callback();
+            }
+        })
+    }
+    const validateGte = (field: string, fieldRule: {}) => {
+        let type = fieldType(field);
+        setTo(field, {
+            validator: (rule, value, callback) => {
+                if (value) {
+                    let field = get(fieldRule, 'params')[0];
+                    let fieldVal = get(model.value, field);
+                    if (!(valueSize(value, type) >= valueSize(fieldVal, type))) {
+                        callback(sprintf(defaultMsgs.gte, label(rule.field), label(field)));
+                    }
+                }
+                callback();
+            }
+        })
+    }
+
+    const validateLte = (field: string, fieldRule: {}) => {
+        let type = fieldType(field);
+        setTo(field, {
+            validator: (rule, value, callback) => {
+                if (value) {
+                    let field = get(fieldRule, 'params')[0];
+                    let fieldVal = get(model.value, field);
+                    if (!(valueSize(value, type) <= valueSize(fieldVal, type))) {
+                        callback(sprintf(defaultMsgs.lte, label(rule.field), label(field)));
+                    }
+                }
+                callback();
+            }
+        })
+    }
+
+    const validateLt = (field: string, fieldRule: {}) => {
+        let type = fieldType(field);
+        setTo(field, {
+            validator: (rule, value, callback) => {
+                if (value) {
+                    let field = get(fieldRule, 'params')[0];
+                    let fieldVal = get(model.value, field);
+                    if (!(valueSize(value, type) < valueSize(fieldVal, type))) {
+                        callback(sprintf(defaultMsgs.lt, label(rule.field), label(field)));
+                    }
+                }
+                callback();
+            }
+        })
     }
 
 
+    const validateAfter = (field: string, fieldRule: {}) => {
+        setTo(field, {
+            validator: (rule, value, callback) => {
+                if (value) {
+                    let field = get(fieldRule, 'params')[0];
+                    let fieldVal = get(model.value, field);
+                    if (!isDate(fieldVal)) {
+                        callback(sprintf(defaultMsgs.date, label(field)));
+                    }
+                    if (!isDate(value)) {
+                        callback(sprintf(defaultMsgs.date, label(rule.field)));
+                    }
+                    if (!(Date.parse(value) > Date.parse(fieldVal))) {
+                        callback(sprintf(defaultMsgs.after, label(rule.field), label(field)));
+                    }
+                }
+                callback();
+            }
+        })
+    }
+
+    const validateBefore = (field: string, fieldRule: {}) => {
+        setTo(field, {
+            validator: (rule, value, callback) => {
+                if (value) {
+                    let field = get(fieldRule, 'params')[0];
+                    let fieldVal = get(model.value, field);
+                    if (!isDate(fieldVal)) {
+                        callback(sprintf(defaultMsgs.date, label(field)));
+                    }
+                    if (!isDate(value)) {
+                        callback(sprintf(defaultMsgs.date, label(rule.field)));
+                    }
+                    if (!(Date.parse(value) < Date.parse(fieldVal))) {
+                        callback(sprintf(defaultMsgs.after, label(rule.field), label(field)));
+                    }
+                }
+                callback();
+            }
+        })
+    }
+
+
+    const validateAfterOrEqual = (field: string, fieldRule: {}) => {
+        setTo(field, {
+            validator: (rule, value, callback) => {
+                if (value) {
+                    let field = get(fieldRule, 'params')[0];
+                    let fieldVal = get(model.value, field);
+                    if (!isDate(fieldVal)) {
+                        callback(sprintf(defaultMsgs.date, label(field)));
+                    }
+                    if (!isDate(value)) {
+                        callback(sprintf(defaultMsgs.date, label(rule.field)));
+                    }
+                    if (!(Date.parse(value) >= Date.parse(fieldVal))) {
+                        callback(sprintf(defaultMsgs.after, label(rule.field), label(field)));
+                    }
+                }
+                callback();
+            }
+        })
+    }
+
+    const validateBeforeOrEqual = (field: string, fieldRule: {}) => {
+        setTo(field, {
+            validator: (rule, value, callback) => {
+                if (value) {
+                    let field = get(fieldRule, 'params')[0];
+                    let fieldVal = get(model.value, field);
+                    if (!isDate(fieldVal)) {
+                        callback(sprintf(defaultMsgs.date, label(field)));
+                    }
+                    if (!isDate(value)) {
+                        callback(sprintf(defaultMsgs.date, label(rule.field)));
+                    }
+                    if (!(Date.parse(value) <= Date.parse(fieldVal))) {
+                        callback(sprintf(defaultMsgs.after, label(rule.field), label(field)));
+                    }
+                }
+                callback();
+            }
+        })
+    }
+
     /**
-     * 独立的规则, 不依附于其他字段的存在
+     * 验证当 字段 为指定值时候, 本字段不能为空
+     * @param field
+     * @param fieldRule
      */
-    const independentRules = {
+    const validateRequiredIf = (field: string, fieldRule: {}) => {
+        setTo(field, {
+            validator: (rule, value, callback) => {
+                let field = get(fieldRule, 'params')[0];
+                let fieldVal = get(model.value, field);
+                let allowed = get(fieldRule, 'params', []).slice(1);
+                if (indexOf(allowed, fieldVal) >= 0 && !value) {
+                    callback(sprintf(defaultMsgs.required_if, label(field), allowed.toString()));
+                }
+                callback();
+            }
+        })
+    }
+
+    const validateRequiredWith = (field: string, fieldRule: {}) => {
+        setTo(field, {
+            validator: (rule, value, callback) => {
+                let params = get(fieldRule, 'params');
+                console.log(value, params);
+                if (!isRequiredWith(value, params)) {
+                    callback(sprintf(defaultMsgs.required_with, label(params)));
+                }
+                callback();
+            }
+        })
+    }
+    const validateRequiredWithAll = (field: string, fieldRule: {}) => {
+        setTo(field, {
+            validator: (rule, value, callback) => {
+                let params = get(fieldRule, 'params');
+                if (!isRequiredWithAll(value, params)) {
+                    callback(sprintf(defaultMsgs.required_with_all, label(params)));
+                }
+                callback();
+            }
+        })
+    }
+    const validateRequiredWithout = (field: string, fieldRule: {}) => {
+        setTo(field, {
+            validator: (rule, value, callback) => {
+                let params = get(fieldRule, 'params');
+                if (!isRequiredWithout(value, params)) {
+                    callback(sprintf(defaultMsgs.required_without, label(params)));
+                }
+                callback();
+            }
+        })
+    }
+
+
+    const validateRequiredWithoutAll = (field: string, fieldRule: {}) => {
+        setTo(field, {
+            validator: (rule, value, callback) => {
+                let params = get(fieldRule, 'params');
+                if (!isRequiredWithoutAll(value, params)) {
+                    callback(sprintf(defaultMsgs.required_without_all, label(params)));
+                }
+                callback();
+            }
+        })
+    }
+
+    /**
+     * 验证当 字段 不为指定值时候, 本字段不能为空
+     * @param field
+     * @param fieldRule
+     */
+    const validateRequiredUnless = (field: string, fieldRule: {}) => {
+        setTo(field, {
+            validator: (rule, value, callback) => {
+                let field = get(fieldRule, 'params')[0];
+                let fieldVal = get(model.value, field);
+                let allowed = get(fieldRule, 'params', []).slice(1);
+                if (!(indexOf(allowed, fieldVal) >= 0) && !value) {
+                    callback(sprintf(defaultMsgs.required_unless, label(field), allowed.toString()));
+                }
+                callback();
+            }
+        })
+    }
+
+    /**
+     * 验证存在值并一致
+     * @param field
+     */
+    const validateConfirmed = (field: string) => {
+        let fieldConfirm = `${field}_confirmation`;
+        setTo(fieldConfirm, {
+            validator: (rule: any, value: any, callback: any) => {
+                if (value) {
+                    let oriField = String(get(rule, 'field'))
+                    let thatField = oriField.slice(0, oriField.indexOf('_confirmation'));
+                    let fieldTitle = label(oriField)
+                    let thatFieldTitle = label(thatField)
+                    let fieldVal = get(model.value, thatField);
+                    if (value !== fieldVal) {
+                        callback(sprintf(defaultMsgs.same, fieldTitle, thatFieldTitle));
+                    }
+                }
+                callback();
+            }
+        });
+    }
+
+    /**
+     * 独立的规则
+     */
+    const rulesMap = {
+        // independent
         'array': validateArray,
         'required': validateRequired,
         'filled': validateFilled,
@@ -884,325 +1196,17 @@ export default function useValidation(props: any, model = <Ref>{}) {
         'digits_between': validateDigitsBetween,
         'chid': validateChid,
         'string': validateString,
-        'accepted': validateAccepted
-    };
+        'accepted': validateAccepted,
 
-    const typedRules = {
+        // typed
         'max': validateMax,
         'min': validateMin,
         'between': validateBetween,
         'size': validateSize,
         'in': validateIn,
-        'not_in': validateNotIn
-    };
+        'not_in': validateNotIn,
 
-    /**
-     * 验证非正则匹配的数据
-     * @param type
-     * @param fieldRule
-     */
-    const validateSame = (type: string, fieldRule: {}): Rule => {
-        return {
-            validator: (rule, value, callback) => {
-                if (value) {
-                    let field = get(fieldRule, 'params')[0];
-                    let fieldVal = get(model.value, field);
-                    if (value !== fieldVal) {
-                        callback(sprintf(defaultMsgs.same, label(rule.field), label(field)));
-                    }
-                }
-                callback();
-            }
-        }
-    }
-    /**
-     * 验证非正则匹配的数据
-     * @param type
-     * @param fieldRule
-     */
-    const validateDifferent = (type: string, fieldRule: {}): Rule => {
-        return {
-            validator: (rule, value, callback) => {
-                if (value) {
-                    let field = get(fieldRule, 'params')[0];
-                    let fieldVal = get(model.value, field);
-                    if (value === fieldVal) {
-                        callback(sprintf(defaultMsgs.different, label(rule.field), label(field)));
-                    }
-                }
-                callback();
-            }
-        }
-    }
-
-    const validateGt = (type: string, fieldRule: {}): Rule => {
-        return {
-            validator: (rule, value, callback) => {
-                if (value) {
-                    let field = get(fieldRule, 'params')[0];
-                    let fieldVal = get(model.value, field);
-                    if (!(valueSize(value, type) > valueSize(fieldVal, type))) {
-                        callback(sprintf(defaultMsgs.gt, label(rule.field), label(field)));
-                    }
-                }
-                callback();
-            }
-        }
-    }
-    const validateGte = (type: string, fieldRule: {}): Rule => {
-        return {
-            validator: (rule, value, callback) => {
-                if (value) {
-                    let field = get(fieldRule, 'params')[0];
-                    let fieldVal = get(model.value, field);
-                    if (!(valueSize(value, type) >= valueSize(fieldVal, type))) {
-                        callback(sprintf(defaultMsgs.gte, label(rule.field), label(field)));
-                    }
-                }
-                callback();
-            }
-        }
-    }
-
-    const validateLte = (type: string, fieldRule: {}): Rule => {
-        return {
-            validator: (rule, value, callback) => {
-                if (value) {
-                    let field = get(fieldRule, 'params')[0];
-                    let fieldVal = get(model.value, field);
-                    if (!(valueSize(value, type) <= valueSize(fieldVal, type))) {
-                        callback(sprintf(defaultMsgs.lte, label(rule.field), label(field)));
-                    }
-                }
-                callback();
-            }
-        }
-    }
-
-    const validateLt = (type: string, fieldRule: {}): Rule => {
-        return {
-            validator: (rule, value, callback) => {
-                if (value) {
-                    let field = get(fieldRule, 'params')[0];
-                    let fieldVal = get(model.value, field);
-                    if (!(valueSize(value, type) < valueSize(fieldVal, type))) {
-                        callback(sprintf(defaultMsgs.lt, label(rule.field), label(field)));
-                    }
-                }
-                callback();
-            }
-        }
-    }
-
-
-    const validateAfter = (type: string, fieldRule: {}): Rule => {
-        return {
-            validator: (rule, value, callback) => {
-                if (value) {
-                    let field = get(fieldRule, 'params')[0];
-                    let fieldVal = get(model.value, field);
-                    if (!isDate(fieldVal)) {
-                        callback(sprintf(defaultMsgs.date, label(field)));
-                    }
-                    if (!isDate(value)) {
-                        callback(sprintf(defaultMsgs.date, label(rule.field)));
-                    }
-                    if (!(Date.parse(value) > Date.parse(fieldVal))) {
-                        callback(sprintf(defaultMsgs.after, label(rule.field), label(field)));
-                    }
-                }
-                callback();
-            }
-        }
-    }
-
-    const validateBefore = (type: string, fieldRule: {}): Rule => {
-        return {
-            validator: (rule, value, callback) => {
-                if (value) {
-                    let field = get(fieldRule, 'params')[0];
-                    let fieldVal = get(model.value, field);
-                    if (!isDate(fieldVal)) {
-                        callback(sprintf(defaultMsgs.date, label(field)));
-                    }
-                    if (!isDate(value)) {
-                        callback(sprintf(defaultMsgs.date, label(rule.field)));
-                    }
-                    if (!(Date.parse(value) < Date.parse(fieldVal))) {
-                        callback(sprintf(defaultMsgs.after, label(rule.field), label(field)));
-                    }
-                }
-                callback();
-            }
-        }
-    }
-
-
-    const validateAfterOrEqual = (type: string, fieldRule: {}): Rule => {
-        return {
-            validator: (rule, value, callback) => {
-                if (value) {
-                    let field = get(fieldRule, 'params')[0];
-                    let fieldVal = get(model.value, field);
-                    if (!isDate(fieldVal)) {
-                        callback(sprintf(defaultMsgs.date, label(field)));
-                    }
-                    if (!isDate(value)) {
-                        callback(sprintf(defaultMsgs.date, label(rule.field)));
-                    }
-                    if (!(Date.parse(value) >= Date.parse(fieldVal))) {
-                        callback(sprintf(defaultMsgs.after, label(rule.field), label(field)));
-                    }
-                }
-                callback();
-            }
-        }
-    }
-
-    const validateBeforeOrEqual = (type: string, fieldRule: {}): Rule => {
-        return {
-            validator: (rule, value, callback) => {
-                if (value) {
-                    let field = get(fieldRule, 'params')[0];
-                    let fieldVal = get(model.value, field);
-                    if (!isDate(fieldVal)) {
-                        callback(sprintf(defaultMsgs.date, label(field)));
-                    }
-                    if (!isDate(value)) {
-                        callback(sprintf(defaultMsgs.date, label(rule.field)));
-                    }
-                    if (!(Date.parse(value) <= Date.parse(fieldVal))) {
-                        callback(sprintf(defaultMsgs.after, label(rule.field), label(field)));
-                    }
-                }
-                callback();
-            }
-        }
-    }
-
-    /**
-     * 验证当 字段 为指定值时候, 本字段不能为空
-     * @param type
-     * @param fieldRule
-     */
-    const validateRequiredIf = (type: string, fieldRule: {}): Rule => {
-        return {
-            validator: (rule, value, callback) => {
-                let field = get(fieldRule, 'params')[0];
-                let fieldVal = get(model.value, field);
-                let allowed = get(fieldRule, 'params', []).slice(1);
-                if (indexOf(allowed, fieldVal) >= 0 && !value) {
-                    callback(sprintf(defaultMsgs.required_if, label(field), allowed.toString()));
-                }
-                callback();
-            }
-        }
-    }
-
-    const validateRequiredWith = (type: string, fieldRule: {}): Rule => {
-        return {
-            validator: (rule, value, callback) => {
-                let params = get(fieldRule, 'params');
-                console.log(value, params);
-                if (!isRequiredWith(value, params)) {
-                    callback(sprintf(defaultMsgs.required_with, label(params)));
-                }
-                callback();
-            }
-        }
-    }
-    const validateRequiredWithAll = (type: string, fieldRule: {}): Rule => {
-        return {
-            validator: (rule, value, callback) => {
-                let params = get(fieldRule, 'params');
-                if (!isRequiredWithAll(value, params)) {
-                    callback(sprintf(defaultMsgs.required_with_all, label(params)));
-                }
-                callback();
-            }
-        }
-    }
-    const validateRequiredWithout = (type: string, fieldRule: {}): Rule => {
-        return {
-            validator: (rule, value, callback) => {
-                let params = get(fieldRule, 'params');
-                if (!isRequiredWithout(value, params)) {
-                    callback(sprintf(defaultMsgs.required_without, label(params)));
-                }
-                callback();
-            }
-        }
-    }
-
-
-    const validateRequiredWithoutAll = (type: string, fieldRule: {}): Rule => {
-        return {
-            validator: (rule, value, callback) => {
-                let params = get(fieldRule, 'params');
-                if (!isRequiredWithoutAll(value, params)) {
-                    callback(sprintf(defaultMsgs.required_without_all, label(params)));
-                }
-                callback();
-            }
-        }
-    }
-
-    /**
-     * 验证当 字段 不为指定值时候, 本字段不能为空
-     * @param type
-     * @param fieldRule
-     */
-    const validateRequiredUnless = (type: string, fieldRule: {}): Rule => {
-        return {
-            validator: (rule, value, callback) => {
-                let field = get(fieldRule, 'params')[0];
-                let fieldVal = get(model.value, field);
-                let allowed = get(fieldRule, 'params', []).slice(1);
-                if (!(indexOf(allowed, fieldVal) >= 0) && !value) {
-                    callback(sprintf(defaultMsgs.required_unless, label(field), allowed.toString()));
-                }
-                callback();
-            }
-        }
-    }
-
-    /**
-     * 验证存在值并一致
-     * @param type
-     * @param fieldRule
-     */
-    const validateConfirmed = (type: string, fieldRule: {}): Rule => {
-        let fieldConfirm = `${get(fieldRule, 'field')}_confirmation`;
-        let cloneAppend = clone(append.value);
-        let ori: any = get(cloneAppend, fieldConfirm, []);
-        if (Array.isArray(ori)) {
-            /* 对之前数据的验证
-             * ---------------------------------------- */
-            ori.push({
-                validator: (rule: any, value: any, callback: any) => {
-                    if (value) {
-                        let oriField = String(get(rule, 'field'))
-                        let thatField = oriField.slice(0, oriField.indexOf('_confirmation'));
-                        let fieldTitle = label(oriField)
-                        let thatFieldTitle = label(thatField)
-                        let fieldVal = get(model.value, thatField);
-                        if (value !== fieldVal) {
-                            callback(sprintf(defaultMsgs.same, fieldTitle, thatFieldTitle));
-                        }
-                    }
-                    callback();
-                }
-            })
-        }
-        set(cloneAppend, fieldConfirm, ori);
-        append.value = cloneAppend;
-
-        /* 当前验证 confirm
-         * ---------------------------------------- */
-        return {}
-    }
-
-    const dependentRules = {
+        // dependent
         'gt': validateGt,
         'lt': validateLt,
         'gte': validateGte,
@@ -1223,80 +1227,49 @@ export default function useValidation(props: any, model = <Ref>{}) {
     };
 
 
-    /**
-     * 查找验证规则
-     * @param type
-     * @param field
-     * @param rule
-     */
-    const combineRule = (type: string, field: string, rule = {}) => {
-        let name = get(rule, 'name');
-        if (includes(keys(independentRules), name)) {
-            return get(independentRules, name)(rule);
-        } else if (includes(keys(typedRules), name)) {
-            return get(typedRules, name)(type, rule);
-        } else if (includes(keys(dependentRules), name)) {
-            return get(dependentRules, name)(type, rule);
-        } else {
-            console.error(
-                '"' + name + '" validation rule does not exist!'
-            );
-        }
-        return {}
-    }
-
-    const fieldRules: any = (rules: any, defs: any) => {
-        let arr = {};
+    const parseRules: any = () => {
+        /* 模型
+         * ---------------------------------------- */
         let mdl = {};
-        // 模型名称获取
-        map(defs, function (item) {
+        map(items.value, function (item) {
             set(mdl, get(item, 'field.name'), get(item, 'item.label'))
         })
-
         defines.value = mdl;
 
-        for (let field in rules) {
-            set(arr, field, parseRules(field, get(rules, field)))
+        /* 规则
+         * ---------------------------------------- */
+        let arr = {};
+        for (let item of items.value) {
+            let field = get(item, 'field.name');
+            let rules = get(item, 'rules', []);
+            if (rules.length) {
+                set(arr, field, _toPlainRules(field, rules))
+            }
         }
+        plainRules.value = arr;
 
-        console.log(arr, 'parsed-rules')
-        return arr;
-    }
-
-    /**
-     * 将规则进行合并
-     * @param rules
-     */
-    const combinedRules = (rules: any[]) => {
-        let comp = {};
-        each(rules, (fieldRules, field: string) => {
-            let ruleNames = map(fieldRules, (rule) => get(rule, 'name'))
-            let type = rulesType(ruleNames);
-            set(comp, field, fieldRules.map((rule: any) => {
-                return combineRule(type, field, rule);
-            }));
+        /* 解析
+         * ---------------------------------------- */
+        each(plainRules.value, (fieldRules: any, field: string) => {
+            each(fieldRules, (rule: any) => {
+                let name = get(rule, 'name');
+                if (includes(keys(rulesMap), name)) {
+                    get(rulesMap, name)(field, rule);
+                } else {
+                    console.error(
+                        '"' + name + '" validation rule does not exist!'
+                    );
+                }
+            })
         });
-
-        each(append.value, (rules, field: string) => {
-            let oriFieldRules = get(comp, field, []);
-            set(comp, field, union(oriFieldRules, rules));
-        })
-        console.log(comp, 'schema');
-        return comp;
     }
 
-    const parseSchema = () => {
-        let prs = fieldRules(rules.value, items.value);
-        parsedRules.value = prs;
-        schema.value = combinedRules(prs);
-    }
-
-    watch(() => rules.value, () => {
-        parseSchema();
+    watch(() => items.value, () => {
+        parseRules();
     }, { deep: true })
 
     onMounted(() => {
-        parseSchema();
+        parseRules();
     });
 
     return {
