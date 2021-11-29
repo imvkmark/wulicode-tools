@@ -55,9 +55,14 @@ const props = defineProps({
 })
 
 const transModel = ref({});
+const obj = ref({
+    str: {
+        required: '{0}这里是自定义的提示'
+    }
+});
 
 //ts-ignore
-const { schema } = useValidation(props, transModel)
+const { schema } = useValidation(props, transModel, obj)
 
 
 const formRef: any = ref<InstanceType<typeof ElForm>>();
