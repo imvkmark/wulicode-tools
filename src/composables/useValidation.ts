@@ -1315,7 +1315,7 @@ export default function useValidation(props: any, model = <Ref>{}, customMessage
          * ---------------------------------------- */
         let mdl = {};
         map(items.value, function (item) {
-            set(mdl, get(item, 'field.name'), get(item, 'item.label'))
+            set(mdl, get(item, 'name'), get(item, 'label'))
         })
         defines.value = mdl;
 
@@ -1323,7 +1323,7 @@ export default function useValidation(props: any, model = <Ref>{}, customMessage
          * ---------------------------------------- */
         let arr = {};
         for (let item of items.value) {
-            let field = get(item, 'field.name');
+            let field = get(item, 'name');
             let rules = get(item, 'rules', []);
             if (rules.length) {
                 set(arr, field, toPlainRules(field, rules))

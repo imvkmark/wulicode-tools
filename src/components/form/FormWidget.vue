@@ -1,26 +1,23 @@
 <template>
-    <div class="py--form">
+    <div :class="{'py--form':true, ...sizeClass(trans.size)}">
         <h3 class="form-title" v-if="title">
             {{ title }}
             <small v-if="description">{{ description }}</small>
         </h3>
         <!-- 表格数据 -->
         <el-form :model="transModel" :rules="schema" ref="formRef"
-            :label-position="get(attr, 'label-position', 'right')"
-            :label-suffix="get(attr, 'label-suffix', '')" :hide-required-asterisk="get(attr, 'hide-required-asterisk', false)"
-            :show-message="get(attr, 'show-message', true)" :inline-message="get(attr, 'inline-message', false)"
-            :status-icon="get(attr, 'status-icon', false)" :size="get(attr, 'size', '')"
-            :validate-on-rule-change="get(attr, 'validate-on-rule-change', true)"
+            :label-position="sizeLt('lg', trans.size)? 'right': 'top'"
+            :label-width="get(attr, 'label-width', 'auto')"
+            :size="get(attr, 'size', '')"
             :inline="get(attr, 'inline', false)" :disabled="get(attr, 'disabled', false)">
 
-            <template v-for="item in props.items" :key="get(item , 'field.name')">
+            <template v-for="item in props.items" :key="get(item , 'name')">
                 <!--  hidden 不进行处理, 因为不修改模型数据  -->
-                <el-form-item :label="get(item , 'item.label')" v-if="!includes(['hidden'], get(item , 'type'))"
-                    :rules="get(item, 'item.rules')"
-                    :prop="get(item , 'field.name')">
+                <el-form-item :label="get(item , 'label')" v-if="!includes(['hidden'], get(item , 'type'))"
+                    :prop="get(item , 'name')">
                     <!--  text -->
                     <field-text :attr="get(item, 'field')" v-if="get(item , 'type') === 'text'" @change="onChange"
-                        :value="get(transModel, get(item, 'field.name'))"/>
+                        :value="get(transModel, get(item, 'name'))"/>
                 </el-form-item>
             </template>
 
@@ -33,11 +30,13 @@
     </div>
 </template>
 <script lang="ts" setup>
-import { defineProps, ref } from 'vue';
+import { computed, defineProps, reactive, ref } from 'vue';
 import { clone, get, includes, indexOf, set } from 'lodash-es';
 import FieldText from '@/components/form/FieldText.vue';
 import { ElForm } from 'element-plus';
 import useValidation from '@/composables/useValidation';
+import { sizeClass, sizeLt } from '@/utils/helper';
+import { useStore } from '@/store';
 
 const props = defineProps({
     title: String,
@@ -53,7 +52,10 @@ const props = defineProps({
     },
     buttons: Array
 })
-
+const store = useStore();
+const trans = reactive({
+    size: computed(() => store.state.size)
+})
 const transModel = ref({});
 const obj = ref({
     str: {
@@ -84,7 +86,6 @@ const onSubmit = () => {
 }
 const onRules = () => {
     console.log(schema.value, 'parsed');
-    console.log(props.rules, 'plain');
 }
 
 const onReset = () => {
