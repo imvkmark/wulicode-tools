@@ -1,4 +1,4 @@
-import { clone, difference, each, endsWith, get, includes, indexOf, keys, map, set, startsWith } from 'lodash-es';
+import { clone, difference, each, endsWith, find, get, includes, indexOf, keys, map, set, startsWith } from 'lodash-es';
 import { onMounted, Ref, ref, toRefs, watch } from 'vue';
 import { Rule } from 'async-validator';
 import {
@@ -6,7 +6,6 @@ import {
     isAlphaDash,
     isAlphaNum,
     isChid,
-    isDate,
     isEmail,
     isInteger,
     isIpV4,
@@ -14,12 +13,17 @@ import {
     isNumeric,
     isUrl,
     regexTest,
-    sprintf
+    sprintf,
+    toDayjsFormat
 } from '@/utils/helper';
 import dayjs from 'dayjs';
 import customParseFormat from 'dayjs/plugin/customParseFormat';
+import IsSameOrAfter from 'dayjs/plugin/isSameOrAfter';
+import IsSameOrBefore from 'dayjs/plugin/isSameOrBefore';
 
 dayjs.extend(customParseFormat)
+dayjs.extend(IsSameOrAfter)
+dayjs.extend(IsSameOrBefore)
 
 /**
  * 参考Laravel的验证规则
@@ -45,10 +49,6 @@ export default function useValidation(props: any, model = <Ref>{}) {
      * 自定义的消息 { username : {required : '请填写用户名'} }
      */
 
-
-    const hasData = (name: string) => {
-        return typeof get(model.value, name) !== 'undefined';
-    }
 
     const setTo = (field: string, rule: Rule) => {
         let cloneSchema = clone(schema.value);
@@ -79,7 +79,7 @@ export default function useValidation(props: any, model = <Ref>{}) {
      * @param itemRules
      * @param field
      */
-    const _toPlainRules = (field: string, itemRules: string | string[]) => {
+    const toPlainRules = (field: string, itemRules: string | string[]) => {
         let rules = <any>[];
 
         /* 格式化规则
@@ -121,7 +121,7 @@ export default function useValidation(props: any, model = <Ref>{}) {
             .join('');
     }
 
-    const defaultMsgs: any = {
+    const defaultMessages: any = {
         accepted: '{0}必须选择',
         filled: '{0}字段存在时候不能为空',
         required: '{0}必填',
@@ -155,6 +155,7 @@ export default function useValidation(props: any, model = <Ref>{}) {
         lt: '字段{0}的长度需要小于{1}的长度',
         boolean: '验证的字段{0}必须可以是布尔',
         date: '字段{0}需要是日期类型',
+        date_format: '字段{0}需要是形如{1}的日期格式',
         after: '验证字段{0}必须是给定日期{1}之后的值',
         required_if: '字段{0}是{1}时候,本字段不能为空',
         required_unless: '字段{0}不是{1}时候,本字段不能为空',
@@ -163,6 +164,8 @@ export default function useValidation(props: any, model = <Ref>{}) {
         required_without: '其他任一指定字段{0}不出现时，本字段不能为空',
         required_without_all: '其他全部指定字段{0}不出现时，本字段不能为空',
         error: {
+            date_empty: '{0}必须存在值才可以被比较',
+            not_date: '{0}字段必须是日期形式',
             max: '{0}的规则{1}必须是数字',
             size: '{0}的规则{1}必须是整数',
             min: '{0}的规则{1}必须是数字',
@@ -210,6 +213,22 @@ export default function useValidation(props: any, model = <Ref>{}) {
             return 'date';
         }
         return '';
+    }
+
+    /**
+     * 字段的日期格式
+     * @param field
+     */
+    const dateFormat = (field: string) => {
+        let rules = get(plainRules.value, field);
+        if (fieldType(field) === 'date') {
+            if (find(rules, { name: 'date' })) {
+                return 'YYYY-MM-DD';
+            }
+            let df = find(rules, { name: 'date_format' });
+            return toDayjsFormat(get(df, 'params')[0]);
+        }
+        return false;
     }
 
 
@@ -304,7 +323,7 @@ export default function useValidation(props: any, model = <Ref>{}) {
             type: 'string',
             validator(rule, value, callback) {
                 if (value && typeof value !== 'string') {
-                    callback(sprintf(defaultMsgs.string, label(rule.field)));
+                    callback(sprintf(defaultMessages.string, label(rule.field)));
                 } else {
                     callback();
                 }
@@ -318,7 +337,7 @@ export default function useValidation(props: any, model = <Ref>{}) {
             type: 'array',
             validator(rule, value, callback) {
                 if (value && !Array.isArray(value)) {
-                    callback(sprintf(defaultMsgs.array, label(rule.field)));
+                    callback(sprintf(defaultMessages.array, label(rule.field)));
                 } else {
                     callback();
                 }
@@ -333,7 +352,7 @@ export default function useValidation(props: any, model = <Ref>{}) {
         setTo(field, {
             validator(rule, value, callback) {
                 if (value && !isAlpha(value)) {
-                    callback(sprintf(defaultMsgs.alpha, label(rule.field)));
+                    callback(sprintf(defaultMessages.alpha, label(rule.field)));
                 } else {
                     callback();
                 }
@@ -348,7 +367,7 @@ export default function useValidation(props: any, model = <Ref>{}) {
         setTo(field, {
             validator(rule, value, callback) {
                 if (value && !isAlphaDash(value)) {
-                    callback(sprintf(defaultMsgs.alphaDash, label(rule.field)));
+                    callback(sprintf(defaultMessages.alphaDash, label(rule.field)));
                 } else {
                     callback();
                 }
@@ -363,7 +382,7 @@ export default function useValidation(props: any, model = <Ref>{}) {
         setTo(field, {
             validator(rule, value, callback) {
                 if (value && !isAlphaNum(value)) {
-                    callback(sprintf(defaultMsgs.alphaNum, label(rule.field)));
+                    callback(sprintf(defaultMessages.alphaNum, label(rule.field)));
                 } else {
                     callback();
                 }
@@ -379,7 +398,7 @@ export default function useValidation(props: any, model = <Ref>{}) {
             required: true,
             validator(rule, value, callback) {
                 if (!value) {
-                    callback(sprintf(defaultMsgs.required, label(rule.field)));
+                    callback(sprintf(defaultMessages.required, label(rule.field)));
                 } else {
                     callback();
                 }
@@ -394,7 +413,7 @@ export default function useValidation(props: any, model = <Ref>{}) {
             required: true,
             validator(rule, value, callback) {
                 if (typeof value === 'undefined') {
-                    callback(sprintf(defaultMsgs.present, label(rule.field)));
+                    callback(sprintf(defaultMessages.present, label(rule.field)));
                 } else {
                     callback();
                 }
@@ -409,7 +428,7 @@ export default function useValidation(props: any, model = <Ref>{}) {
         setTo(field, {
             validator: (rule, value, callback) => {
                 if (value && !isEmail(value)) {
-                    callback(sprintf(defaultMsgs.email, label(rule.field)));
+                    callback(sprintf(defaultMessages.email, label(rule.field)));
                 } else {
                     callback();
                 }
@@ -424,7 +443,7 @@ export default function useValidation(props: any, model = <Ref>{}) {
         setTo(field, {
             validator(rule, value, callback) {
                 if (value && !isChid(value)) {
-                    callback(sprintf(defaultMsgs.chid, label(rule.field)));
+                    callback(sprintf(defaultMessages.chid, label(rule.field)));
                 } else {
                     callback();
                 }
@@ -450,13 +469,13 @@ export default function useValidation(props: any, model = <Ref>{}) {
                 if (Array.isArray(value) && type === 'array') {
                     let arr = difference(value, values);
                     if (arr.length !== 0) {
-                        callback(sprintf(defaultMsgs.in, label(rule.field), values.toString()));
+                        callback(sprintf(defaultMessages.in, label(rule.field), values.toString()));
                     }
                 }
 
                 // 不在之中
                 if (!(indexOf(values, value) >= 0)) {
-                    callback(sprintf(defaultMsgs.in, label(rule.field), values.toString()));
+                    callback(sprintf(defaultMessages.in, label(rule.field), values.toString()));
                 } else {
                     callback();
                 }
@@ -474,7 +493,7 @@ export default function useValidation(props: any, model = <Ref>{}) {
         setTo(field, {
             validator(rule, value, callback) {
                 if (value && indexOf(values, value) >= 0) {
-                    callback(sprintf(defaultMsgs.notIn, label(rule.field), values.toString()));
+                    callback(sprintf(defaultMessages.notIn, label(rule.field), values.toString()));
                 } else {
                     callback();
                 }
@@ -489,7 +508,7 @@ export default function useValidation(props: any, model = <Ref>{}) {
         setTo(field, {
             validator: (rule, value, callback) => {
                 if (value && !(isIpV4(value) || isIpV6(value))) {
-                    callback(sprintf(defaultMsgs.ip, label(rule.field)));
+                    callback(sprintf(defaultMessages.ip, label(rule.field)));
                 } else {
                     callback();
                 }
@@ -501,7 +520,7 @@ export default function useValidation(props: any, model = <Ref>{}) {
         setTo(field, {
             validator: (rule, value, callback) => {
                 if (value && !isIpV4(value)) {
-                    callback(sprintf(defaultMsgs.ipv4, label(rule.field)));
+                    callback(sprintf(defaultMessages.ipv4, label(rule.field)));
                 } else {
                     callback();
                 }
@@ -513,7 +532,7 @@ export default function useValidation(props: any, model = <Ref>{}) {
         setTo(field, {
             validator: (rule, value, callback) => {
                 if (value && !isIpV6(value)) {
-                    callback(sprintf(defaultMsgs.ipv6, label(rule.field)));
+                    callback(sprintf(defaultMessages.ipv6, label(rule.field)));
                 } else {
                     callback();
                 }
@@ -528,7 +547,7 @@ export default function useValidation(props: any, model = <Ref>{}) {
         setTo(field, {
             validator(rule, value, callback) {
                 if (value && !isNumeric(value)) {
-                    callback(sprintf(defaultMsgs.numeric, label(rule.field)));
+                    callback(sprintf(defaultMessages.numeric, label(rule.field)));
                 } else {
                     callback();
                 }
@@ -543,7 +562,7 @@ export default function useValidation(props: any, model = <Ref>{}) {
         setTo(field, {
             validator(rule, value, callback) {
                 if (value && !isUrl(value)) {
-                    callback(sprintf(defaultMsgs.url, label(rule.field)));
+                    callback(sprintf(defaultMessages.url, label(rule.field)));
                 } else {
                     callback();
                 }
@@ -555,7 +574,7 @@ export default function useValidation(props: any, model = <Ref>{}) {
         setTo(field, {
             validator(rule, value, callback) {
                 if (value && !isInteger(value)) {
-                    callback(sprintf(defaultMsgs.integer, label(rule.field)));
+                    callback(sprintf(defaultMessages.integer, label(rule.field)));
                 } else {
                     callback();
                 }
@@ -569,16 +588,16 @@ export default function useValidation(props: any, model = <Ref>{}) {
             validator(rule, value, callback) {
                 let size = Number.parseFloat(get(fieldRule, 'params')[0]);
                 if (!isNumeric(size)) {
-                    callback(sprintf(defaultMsgs.error.max, label(rule.field), size))
+                    callback(sprintf(defaultMessages.error.max, label(rule.field), size))
                 }
                 if (!value) {
                     callback();
                 }
                 const valSize = valueSize(value, type);
                 if (valSize > size) {
-                    let tip = defaultMsgs.max.string;
+                    let tip = defaultMessages.max.string;
                     if (type === 'numeric') {
-                        tip = defaultMsgs.max.numeric;
+                        tip = defaultMessages.max.numeric;
                     }
                     callback(sprintf(tip, label(rule.field), size))
                 }
@@ -593,16 +612,16 @@ export default function useValidation(props: any, model = <Ref>{}) {
             validator(rule, value, callback) {
                 let size = get(fieldRule, 'params')[0];
                 if (!isInteger(size)) {
-                    callback(sprintf(defaultMsgs.error.size, label(rule.field), size))
+                    callback(sprintf(defaultMessages.error.size, label(rule.field), size))
                 }
                 if (!value) {
                     callback()
                 }
                 const valSize = valueSize(value, type);
                 if (valSize !== size) {
-                    let tip = defaultMsgs.size.string;
+                    let tip = defaultMessages.size.string;
                     if (type === 'numeric') {
-                        tip = defaultMsgs.size.numeric;
+                        tip = defaultMessages.size.numeric;
                     }
                     callback(sprintf(tip, label(rule.field), size))
                 }
@@ -622,16 +641,16 @@ export default function useValidation(props: any, model = <Ref>{}) {
             validator(rule, value, callback) {
                 let size = get(fieldRule, 'params')[0];
                 if (!isNumeric(size)) {
-                    callback(sprintf(defaultMsgs.error.min, label(rule.field), size))
+                    callback(sprintf(defaultMessages.error.min, label(rule.field), size))
                 }
                 if (!value) {
                     callback()
                 }
                 const valSize = valueSize(value, type);
                 if (valSize < size) {
-                    let tip = defaultMsgs.min.string;
+                    let tip = defaultMessages.min.string;
                     if (type === 'numeric') {
-                        tip = defaultMsgs.min.numeric;
+                        tip = defaultMessages.min.numeric;
                     }
                     callback(sprintf(tip, label(rule.field), size))
                 }
@@ -652,7 +671,7 @@ export default function useValidation(props: any, model = <Ref>{}) {
                 let start = get(fieldRule, 'params')[0];
                 let end = get(fieldRule, 'params')[1];
                 if (!isNumeric(start) || !isNumeric(end)) {
-                    callback(sprintf(defaultMsgs.error.between, label(rule.field), start, end))
+                    callback(sprintf(defaultMessages.error.between, label(rule.field), start, end))
                 }
                 if (!value) {
                     callback();
@@ -661,9 +680,9 @@ export default function useValidation(props: any, model = <Ref>{}) {
                 let startVal = Number.parseFloat(start);
                 let endVal = Number.parseFloat(end);
                 if (startVal > valSize || endVal < valSize) {
-                    let tip = defaultMsgs.between.string;
+                    let tip = defaultMessages.between.string;
                     if (type === 'numeric') {
-                        tip = defaultMsgs.between.numeric;
+                        tip = defaultMessages.between.numeric;
                     }
                     callback(sprintf(tip, label(rule.field), startVal, endVal))
                 }
@@ -682,12 +701,12 @@ export default function useValidation(props: any, model = <Ref>{}) {
             validator(rule, value, callback) {
                 let size = get(fieldRule, 'params')[0];
                 if (!isNumeric(size)) {
-                    callback(sprintf(defaultMsgs.error.digits, label(rule.field), size))
+                    callback(sprintf(defaultMessages.error.digits, label(rule.field), size))
                 }
                 if (value) {
                     let length = String(value).length;
                     if (/[^0-9]/.test(value) || Number.parseInt(size) !== length) {
-                        callback(sprintf(defaultMsgs.digits, label(rule.field), size))
+                        callback(sprintf(defaultMessages.digits, label(rule.field), size))
                     }
                     callback()
                 } else {
@@ -708,12 +727,12 @@ export default function useValidation(props: any, model = <Ref>{}) {
                 let min = get(fieldRule, 'params')[0];
                 let max = get(fieldRule, 'params')[1];
                 if (!isNumeric(min) || !isNumeric(max)) {
-                    callback(sprintf(defaultMsgs.error.digits_between, label(rule.field), min, max))
+                    callback(sprintf(defaultMessages.error.digits_between, label(rule.field), min, max))
                 }
                 if (value) {
                     let length = String(value).length;
                     if (/[^0-9]/.test(value) || Number.parseInt(min) > length || Number.parseInt(max) < length) {
-                        callback(sprintf(defaultMsgs.digits, label(rule.field), min, max))
+                        callback(sprintf(defaultMessages.digits, label(rule.field), min, max))
                     }
                     callback()
                 } else {
@@ -732,7 +751,7 @@ export default function useValidation(props: any, model = <Ref>{}) {
             validator: (rule, value, callback) => {
                 let accepted = ['yes', 'on', '1', 1, true, 'true'];
                 if (!(indexOf(accepted, value) >= 0)) {
-                    callback(sprintf(defaultMsgs.accepted, label(rule.field)));
+                    callback(sprintf(defaultMessages.accepted, label(rule.field)));
                 }
                 callback();
             }
@@ -744,7 +763,7 @@ export default function useValidation(props: any, model = <Ref>{}) {
             validator: (rule, value, callback) => {
                 if (typeof value !== 'undefined' && value !== null) {
                     if (!value) {
-                        callback(sprintf(defaultMsgs.filled, label(rule.field)));
+                        callback(sprintf(defaultMessages.filled, label(rule.field)));
                     }
                 }
                 callback();
@@ -761,7 +780,7 @@ export default function useValidation(props: any, model = <Ref>{}) {
             validator: (rule, value, callback) => {
                 let acceptable = [true, false, 0, 1, '0', '1'];
                 if (!(value === null || acceptable.indexOf(value) >= 0)) {
-                    callback(sprintf(defaultMsgs.boolean, label(rule.field)))
+                    callback(sprintf(defaultMessages.boolean, label(rule.field)))
                 }
                 callback()
             }
@@ -770,14 +789,26 @@ export default function useValidation(props: any, model = <Ref>{}) {
 
     /**
      * 验证日期(Y-m-d)
-
      * @param field
      */
     const validateDate = (field: string) => {
         setTo(field, {
             validator: (rule, value, callback) => {
                 if (value && !dayjs(value, 'YYYY-MM-DD', true).isValid()) {
-                    callback(sprintf(defaultMsgs.date, label(rule.field)))
+                    callback(sprintf(defaultMessages.date, label(rule.field)))
+                }
+                callback()
+            }
+        })
+    }
+
+    const validateDateFormat = (field: string, fieldRule: {}) => {
+        let format = get(fieldRule, 'params')[0];
+        setTo(field, {
+            validator: (rule, value, callback) => {
+                let dayFormat = toDayjsFormat(format);
+                if (value && !dayjs(value, dayFormat, true).isValid()) {
+                    callback(sprintf(defaultMessages.date_format, label(rule.field), dayFormat))
                 }
                 callback()
             }
@@ -796,7 +827,7 @@ export default function useValidation(props: any, model = <Ref>{}) {
                         JSON.parse(value);
                         callback();
                     } catch (err) {
-                        callback(sprintf(defaultMsgs.json, label(rule.field)));
+                        callback(sprintf(defaultMessages.json, label(rule.field)));
                     }
                 }
                 callback();
@@ -815,7 +846,7 @@ export default function useValidation(props: any, model = <Ref>{}) {
                 if (value) {
                     let param = get(fieldRule, 'params')[0];
                     if (!regexTest(value, param)) {
-                        callback(sprintf(defaultMsgs.regex, label(rule.field)));
+                        callback(sprintf(defaultMessages.regex, label(rule.field)));
                     }
                 }
                 callback();
@@ -834,7 +865,7 @@ export default function useValidation(props: any, model = <Ref>{}) {
                 if (value) {
                     let param = get(fieldRule, 'params')[0];
                     if (regexTest(value, param)) {
-                        callback(sprintf(defaultMsgs.not_regex, label(rule.field)));
+                        callback(sprintf(defaultMessages.not_regex, label(rule.field)));
                     }
                 }
                 callback();
@@ -848,7 +879,7 @@ export default function useValidation(props: any, model = <Ref>{}) {
                 if (value) {
                     let param = get(fieldRule, 'params')[0];
                     if (!startsWith(value, param)) {
-                        callback(sprintf(defaultMsgs.starts_with, label(rule.field), param));
+                        callback(sprintf(defaultMessages.starts_with, label(rule.field), param));
                     }
                 }
                 callback();
@@ -861,7 +892,7 @@ export default function useValidation(props: any, model = <Ref>{}) {
                 if (value) {
                     let param = get(fieldRule, 'params')[0];
                     if (!endsWith(value, param)) {
-                        callback(sprintf(defaultMsgs.ends_with, label(rule.field), param));
+                        callback(sprintf(defaultMessages.ends_with, label(rule.field), param));
                     }
                 }
                 callback();
@@ -881,7 +912,7 @@ export default function useValidation(props: any, model = <Ref>{}) {
                     let field = get(fieldRule, 'params')[0];
                     let fieldVal = get(model.value, field);
                     if (value !== fieldVal) {
-                        callback(sprintf(defaultMsgs.same, label(rule.field), label(field)));
+                        callback(sprintf(defaultMessages.same, label(rule.field), label(field)));
                     }
                 }
                 callback();
@@ -900,7 +931,7 @@ export default function useValidation(props: any, model = <Ref>{}) {
                     let field = get(fieldRule, 'params')[0];
                     let fieldVal = get(model.value, field);
                     if (value === fieldVal) {
-                        callback(sprintf(defaultMsgs.different, label(rule.field), label(field)));
+                        callback(sprintf(defaultMessages.different, label(rule.field), label(field)));
                     }
                 }
                 callback();
@@ -916,7 +947,7 @@ export default function useValidation(props: any, model = <Ref>{}) {
                     let field = get(fieldRule, 'params')[0];
                     let fieldVal = get(model.value, field);
                     if (!(valueSize(value, type) > valueSize(fieldVal, type))) {
-                        callback(sprintf(defaultMsgs.gt, label(rule.field), label(field)));
+                        callback(sprintf(defaultMessages.gt, label(rule.field), label(field)));
                     }
                 }
                 callback();
@@ -931,7 +962,7 @@ export default function useValidation(props: any, model = <Ref>{}) {
                     let field = get(fieldRule, 'params')[0];
                     let fieldVal = get(model.value, field);
                     if (!(valueSize(value, type) >= valueSize(fieldVal, type))) {
-                        callback(sprintf(defaultMsgs.gte, label(rule.field), label(field)));
+                        callback(sprintf(defaultMessages.gte, label(rule.field), label(field)));
                     }
                 }
                 callback();
@@ -947,7 +978,7 @@ export default function useValidation(props: any, model = <Ref>{}) {
                     let field = get(fieldRule, 'params')[0];
                     let fieldVal = get(model.value, field);
                     if (!(valueSize(value, type) <= valueSize(fieldVal, type))) {
-                        callback(sprintf(defaultMsgs.lte, label(rule.field), label(field)));
+                        callback(sprintf(defaultMessages.lte, label(rule.field), label(field)));
                     }
                 }
                 callback();
@@ -963,7 +994,7 @@ export default function useValidation(props: any, model = <Ref>{}) {
                     let field = get(fieldRule, 'params')[0];
                     let fieldVal = get(model.value, field);
                     if (!(valueSize(value, type) < valueSize(fieldVal, type))) {
-                        callback(sprintf(defaultMsgs.lt, label(rule.field), label(field)));
+                        callback(sprintf(defaultMessages.lt, label(rule.field), label(field)));
                     }
                 }
                 callback();
@@ -976,16 +1007,21 @@ export default function useValidation(props: any, model = <Ref>{}) {
         setTo(field, {
             validator: (rule, value, callback) => {
                 if (value) {
-                    let field = get(fieldRule, 'params')[0];
-                    let fieldVal = get(model.value, field);
-                    if (!isDate(fieldVal)) {
-                        callback(sprintf(defaultMsgs.date, label(field)));
+                    let aimField = get(fieldRule, 'params')[0];
+                    let aimVal = get(model.value, aimField);
+                    let format = dateFormat(aimField);
+                    if (!aimVal) {
+                        callback(sprintf(defaultMessages.error.date_empty, label(aimField)));
                     }
-                    if (!isDate(value)) {
-                        callback(sprintf(defaultMsgs.date, label(rule.field)));
-                    }
-                    if (!(Date.parse(value) > Date.parse(fieldVal))) {
-                        callback(sprintf(defaultMsgs.after, label(rule.field), label(field)));
+                    if (format) {
+                        if (!dayjs(value, format, true).isValid()) {
+                            callback(sprintf(defaultMessages.date, label(field)));
+                        }
+                        if (!dayjs(value, format).isAfter(dayjs(aimVal, format))) {
+                            callback(sprintf(defaultMessages.after, label(field), label(aimField)));
+                        }
+                    } else {
+                        callback(sprintf(defaultMessages.error.not_date, label(aimField)));
                     }
                 }
                 callback();
@@ -997,16 +1033,21 @@ export default function useValidation(props: any, model = <Ref>{}) {
         setTo(field, {
             validator: (rule, value, callback) => {
                 if (value) {
-                    let field = get(fieldRule, 'params')[0];
-                    let fieldVal = get(model.value, field);
-                    if (!isDate(fieldVal)) {
-                        callback(sprintf(defaultMsgs.date, label(field)));
+                    let aimField = get(fieldRule, 'params')[0];
+                    let aimVal = get(model.value, aimField);
+                    let format = dateFormat(aimField);
+                    if (!aimVal) {
+                        callback(sprintf(defaultMessages.error.date_empty, label(aimField)));
                     }
-                    if (!isDate(value)) {
-                        callback(sprintf(defaultMsgs.date, label(rule.field)));
-                    }
-                    if (!(Date.parse(value) < Date.parse(fieldVal))) {
-                        callback(sprintf(defaultMsgs.after, label(rule.field), label(field)));
+                    if (format) {
+                        if (!dayjs(value, format, true).isValid()) {
+                            callback(sprintf(defaultMessages.date, label(field)));
+                        }
+                        if (!dayjs(value, format).isBefore(dayjs(aimVal, format))) {
+                            callback(sprintf(defaultMessages.after, label(field), label(aimField)));
+                        }
+                    } else {
+                        callback(sprintf(defaultMessages.error.not_date, label(aimField)));
                     }
                 }
                 callback();
@@ -1019,16 +1060,21 @@ export default function useValidation(props: any, model = <Ref>{}) {
         setTo(field, {
             validator: (rule, value, callback) => {
                 if (value) {
-                    let field = get(fieldRule, 'params')[0];
-                    let fieldVal = get(model.value, field);
-                    if (!isDate(fieldVal)) {
-                        callback(sprintf(defaultMsgs.date, label(field)));
+                    let aimField = get(fieldRule, 'params')[0];
+                    let aimVal = get(model.value, aimField);
+                    let format = dateFormat(aimField);
+                    if (!aimVal) {
+                        callback(sprintf(defaultMessages.error.date_empty, label(aimField)));
                     }
-                    if (!isDate(value)) {
-                        callback(sprintf(defaultMsgs.date, label(rule.field)));
-                    }
-                    if (!(Date.parse(value) >= Date.parse(fieldVal))) {
-                        callback(sprintf(defaultMsgs.after, label(rule.field), label(field)));
+                    if (format) {
+                        if (!dayjs(value, format, true).isValid()) {
+                            callback(sprintf(defaultMessages.date, label(field)));
+                        }
+                        if (!dayjs(value, format).isSameOrAfter(dayjs(aimVal, format))) {
+                            callback(sprintf(defaultMessages.after, label(field), label(aimField)));
+                        }
+                    } else {
+                        callback(sprintf(defaultMessages.error.not_date, label(aimField)));
                     }
                 }
                 callback();
@@ -1040,16 +1086,21 @@ export default function useValidation(props: any, model = <Ref>{}) {
         setTo(field, {
             validator: (rule, value, callback) => {
                 if (value) {
-                    let field = get(fieldRule, 'params')[0];
-                    let fieldVal = get(model.value, field);
-                    if (!isDate(fieldVal)) {
-                        callback(sprintf(defaultMsgs.date, label(field)));
+                    let aimField = get(fieldRule, 'params')[0];
+                    let aimVal = get(model.value, aimField);
+                    let format = dateFormat(aimField);
+                    if (!aimVal) {
+                        callback(sprintf(defaultMessages.error.date_empty, label(aimField)));
                     }
-                    if (!isDate(value)) {
-                        callback(sprintf(defaultMsgs.date, label(rule.field)));
-                    }
-                    if (!(Date.parse(value) <= Date.parse(fieldVal))) {
-                        callback(sprintf(defaultMsgs.after, label(rule.field), label(field)));
+                    if (format) {
+                        if (!dayjs(value, format, true).isValid()) {
+                            callback(sprintf(defaultMessages.date, label(field)));
+                        }
+                        if (!dayjs(value, format).isSameOrBefore(dayjs(aimVal, format))) {
+                            callback(sprintf(defaultMessages.after, label(field), label(aimField)));
+                        }
+                    } else {
+                        callback(sprintf(defaultMessages.error.not_date, label(aimField)));
                     }
                 }
                 callback();
@@ -1069,7 +1120,7 @@ export default function useValidation(props: any, model = <Ref>{}) {
                 let fieldVal = get(model.value, field);
                 let allowed = get(fieldRule, 'params', []).slice(1);
                 if (indexOf(allowed, fieldVal) >= 0 && !value) {
-                    callback(sprintf(defaultMsgs.required_if, label(field), allowed.toString()));
+                    callback(sprintf(defaultMessages.required_if, label(field), allowed.toString()));
                 }
                 callback();
             }
@@ -1082,7 +1133,7 @@ export default function useValidation(props: any, model = <Ref>{}) {
                 let params = get(fieldRule, 'params');
                 console.log(value, params);
                 if (!isRequiredWith(value, params)) {
-                    callback(sprintf(defaultMsgs.required_with, label(params)));
+                    callback(sprintf(defaultMessages.required_with, label(params)));
                 }
                 callback();
             }
@@ -1093,7 +1144,7 @@ export default function useValidation(props: any, model = <Ref>{}) {
             validator: (rule, value, callback) => {
                 let params = get(fieldRule, 'params');
                 if (!isRequiredWithAll(value, params)) {
-                    callback(sprintf(defaultMsgs.required_with_all, label(params)));
+                    callback(sprintf(defaultMessages.required_with_all, label(params)));
                 }
                 callback();
             }
@@ -1104,20 +1155,19 @@ export default function useValidation(props: any, model = <Ref>{}) {
             validator: (rule, value, callback) => {
                 let params = get(fieldRule, 'params');
                 if (!isRequiredWithout(value, params)) {
-                    callback(sprintf(defaultMsgs.required_without, label(params)));
+                    callback(sprintf(defaultMessages.required_without, label(params)));
                 }
                 callback();
             }
         })
     }
 
-
     const validateRequiredWithoutAll = (field: string, fieldRule: {}) => {
         setTo(field, {
             validator: (rule, value, callback) => {
                 let params = get(fieldRule, 'params');
                 if (!isRequiredWithoutAll(value, params)) {
-                    callback(sprintf(defaultMsgs.required_without_all, label(params)));
+                    callback(sprintf(defaultMessages.required_without_all, label(params)));
                 }
                 callback();
             }
@@ -1136,7 +1186,7 @@ export default function useValidation(props: any, model = <Ref>{}) {
                 let fieldVal = get(model.value, field);
                 let allowed = get(fieldRule, 'params', []).slice(1);
                 if (!(indexOf(allowed, fieldVal) >= 0) && !value) {
-                    callback(sprintf(defaultMsgs.required_unless, label(field), allowed.toString()));
+                    callback(sprintf(defaultMessages.required_unless, label(field), allowed.toString()));
                 }
                 callback();
             }
@@ -1158,7 +1208,7 @@ export default function useValidation(props: any, model = <Ref>{}) {
                     let thatFieldTitle = label(thatField)
                     let fieldVal = get(model.value, thatField);
                     if (value !== fieldVal) {
-                        callback(sprintf(defaultMsgs.same, fieldTitle, thatFieldTitle));
+                        callback(sprintf(defaultMessages.same, fieldTitle, thatFieldTitle));
                     }
                 }
                 callback();
@@ -1189,6 +1239,7 @@ export default function useValidation(props: any, model = <Ref>{}) {
         'alpha': validateAlpha,
         'url': validateUrl,
         'alpha_dash': validateAlphaDash,
+        'date_format': validateDateFormat,
         'json': validateJson,
         'alpha_num': validateAlphaNum,
         'email': validateEmail,
@@ -1243,7 +1294,7 @@ export default function useValidation(props: any, model = <Ref>{}) {
             let field = get(item, 'field.name');
             let rules = get(item, 'rules', []);
             if (rules.length) {
-                set(arr, field, _toPlainRules(field, rules))
+                set(arr, field, toPlainRules(field, rules))
             }
         }
         plainRules.value = arr;
