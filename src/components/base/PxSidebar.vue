@@ -35,9 +35,12 @@ const routes = {
         { name: 'tool.url-decode', title: 'Url 解码' }
     ],
     form: [
-        { name: 'form.index', title: 'Text', params: { type: 'text' } },
-        { name: 'form.index', title: 'Required', params: { type: 'required' } },
-        { name: 'form.index', title: 'Date', params: { type: 'date' } }
+        { name: 'form.index', title: 'Field-Textarea', params: { type: 'field-textarea' } },
+        { name: 'form.index', title: 'Field-Text', params: { type: 'field-text' } },
+        { name: 'form.index', title: 'Field-Number', params: { type: 'field-number' } },
+        { name: 'form.index', title: 'Rule-Text', params: { type: 'rule-text' } },
+        { name: 'form.index', title: 'Rule-Required', params: { type: 'rule-required' } },
+        { name: 'form.index', title: 'Rule-Date', params: { type: 'rule-date' } }
     ],
     js: [
         { name: 'js.sentry', title: '异常' },

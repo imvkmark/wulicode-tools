@@ -1,7 +1,7 @@
 <template>
     <PxMain title="文本输入">
         <form-widget v-loading="trans.loading" :attr="trans.attr" :description="trans.description" :items="trans.items" :title="trans.title"
-            :model="trans.model"
+            :model="trans.model" @submit="onSubmit"
             :rules="trans.rules"></form-widget>
     </PxMain>
 </template>
@@ -12,6 +12,7 @@ import FormWidget from '@/components/form/FormWidget.vue';
 import { get } from 'lodash-es';
 import PxMain from '@/components/base/PxMain.vue';
 import { useRouter } from 'vue-router';
+import { ElNotification } from 'element-plus';
 
 let router = useRouter();
 const trans = reactive({
@@ -36,6 +37,17 @@ const doRequest = () => {
         trans.rules = get(data, 'rules');
         trans.attr = get(data, 'attr');
         console.log('🐢', trans.rules)
+    })
+}
+
+const onSubmit = (data: any) => {
+    let type = String(router.currentRoute.value.params.type);
+    apiDemoForm(type, data, 'post').then(({ message, success }) => {
+        // console.log('🐤', resp);
+        ElNotification({
+            title: !success ? '成功' : '失败',
+            message
+        })
     })
 }
 

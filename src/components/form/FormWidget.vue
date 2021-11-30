@@ -5,7 +5,7 @@
             <small v-if="description">{{ description }}</small>
         </h3>
         <!-- 表格数据 -->
-        <el-form :model="transModel" :rules="schema" ref="formRef"
+        <ElForm :model="transModel" :rules="schema" ref="formRef"
             :label-position="sizeLt('lg', trans.size)? 'right': 'top'"
             :label-width="get(attr, 'label-width', 'auto')"
             :size="get(attr, 'size', '')"
@@ -13,30 +13,34 @@
 
             <template v-for="item in props.items" :key="get(item , 'name')">
                 <!--  hidden 不进行处理, 因为不修改模型数据  -->
-                <el-form-item :label="get(item , 'label')" v-if="!includes(['hidden'], get(item , 'type'))"
-                    :prop="get(item , 'name')">
-                    <!--  text -->
-                    <field-text :attr="get(item, 'field')" v-if="get(item , 'type') === 'text'" @change="onChange"
-                        :value="get(transModel, get(item, 'name'))"/>
-                </el-form-item>
+                <ElFormItem :label="get(item , 'label')" :prop="get(item , 'name')">
+                    <FieldText v-if="get(item , 'type') === 'text'" :attr="get(item, 'field')" @change="onChange"
+                        :name="get(item, 'name')" :value="get(transModel, get(item, 'name'))"/>
+                    <FieldTextarea v-if="get(item , 'type') === 'textarea'" :attr="get(item, 'field')" @change="onChange"
+                        :name="get(item, 'name')" :value="get(transModel, get(item, 'name'))"/>
+                    <FieldNumber v-if="get(item , 'type') === 'number'" :attr="get(item, 'field')" @change="onChange"
+                        :name="get(item, 'name')" :value="get(transModel, get(item, 'name'))"/>
+                </ElFormItem>
             </template>
 
-            <el-form-item>
-                <el-button type="primary" v-if="indexOf(buttons, 'submit')" @click="onSubmit">确认</el-button>
-                <el-button v-if="indexOf(buttons, 'reset')" @click="onReset">重置</el-button>
-                <el-button @click="onRules">规则</el-button>
-            </el-form-item>
-        </el-form>
+            <ElFormItem>
+                <ElButton type="primary" v-if="indexOf(buttons, 'submit')" @click="onSubmit">确认</ElButton>
+                <ElButton v-if="indexOf(buttons, 'reset')" @click="onReset">重置</ElButton>
+                <ElButton @click="onRules">规则</ElButton>
+            </ElFormItem>
+        </ElForm>
     </div>
 </template>
 <script lang="ts" setup>
-import { computed, defineProps, reactive, ref } from 'vue';
-import { clone, get, includes, indexOf, set } from 'lodash-es';
+import { computed, defineProps, onMounted, reactive, ref, watch } from 'vue';
+import { clone, get, indexOf, set } from 'lodash-es';
 import FieldText from '@/components/form/FieldText.vue';
 import { ElForm } from 'element-plus';
 import useValidation from '@/composables/useValidation';
 import { sizeClass, sizeLt } from '@/utils/helper';
 import { useStore } from '@/store';
+import FieldTextarea from '@/components/form/FieldTextarea.vue';
+import FieldNumber from '@/components/form/FieldNumber.vue';
 
 const props = defineProps({
     title: String,
@@ -66,23 +70,21 @@ const obj = ref({
 //ts-ignore
 const { schema } = useValidation(props, transModel, obj)
 
-
 const formRef: any = ref<InstanceType<typeof ElForm>>();
 const emit = defineEmits([
     'submit'
 ])
 
 const onChange = (field: any) => {
-    let inter = clone(transModel.value)
+    let inter = clone(transModel.value);
     set(inter, get(field, 'name'), get(field, 'value'));
     transModel.value = inter;
 }
 
 const onSubmit = () => {
-    formRef.value.validate().then((success: any) => {
-        console.log(success, transModel.value);
+    formRef.value.validate().then(() => {
         emit('submit', transModel.value);
-    })
+    });
 }
 const onRules = () => {
     console.log(schema.value, 'parsed');
@@ -92,6 +94,16 @@ const onReset = () => {
     formRef.value.resetFields();
 }
 
+const init = () => {
+    transModel.value = props.model;
+}
+watch(() => props.model, () => {
+    init();
+})
+
+onMounted(() => {
+    init();
+})
 
 </script>
 
