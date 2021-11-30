@@ -1,9 +1,8 @@
 <template>
-    <ElDatePicker v-model="val"
-        :type="get(attr, 'type', '')"
+    <ElTimePicker v-model="val"
         :format="get(attr, 'format', '')"
-        :disabled="get(attr, 'disabled', false)" :placeholder="get(attr, 'placeholder', '')">
-    </ElDatePicker>
+        :disabled="get(attr, 'disabled', false)">
+    </ElTimePicker>
 </template>
 <script lang="ts" setup>
 import { defineProps, onMounted, ref, watch } from 'vue';

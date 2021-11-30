@@ -1,9 +1,12 @@
 <template>
-    <ElDatePicker v-model="val"
-        :type="get(attr, 'type', '')"
+    <ElTimePicker v-model="val"
         :format="get(attr, 'format', '')"
-        :disabled="get(attr, 'disabled', false)" :placeholder="get(attr, 'placeholder', '')">
-    </ElDatePicker>
+        :disabled="get(attr, 'disabled', false)"
+        :is-range="true"
+        :start-placeholder="get(attr, 'start-placeholder', '')"
+        :end-placeholder="get(attr, 'end-placeholder', '')"
+        range-separator="-">
+    </ElTimePicker>
 </template>
 <script lang="ts" setup>
 import { defineProps, onMounted, ref, watch } from 'vue';
@@ -17,9 +20,9 @@ const props = defineProps({
     name: String,
     attr: Object,
     value: {
-        type: String,
+        type: Array,
         default: () => {
-            return ''
+            return []
         }
     }
 })
@@ -28,12 +31,15 @@ const emit = defineEmits([
     'change'
 ])
 
-const val: any = ref('');
+const val: any = ref([]);
 
 watch(() => val.value, (newVal) => {
-    let formatVal = '';
+    let formatVal: any = [];
     if (newVal) {
-        formatVal = dayjs(newVal).format(get(props.attr, 'format'));
+        formatVal = [
+            dayjs(newVal[0]).format(get(props.attr, 'format')),
+            dayjs(newVal[1]).format(get(props.attr, 'format'))
+        ]
     }
     emit('change', {
         name: props.name,

@@ -26,7 +26,16 @@
                         :name="get(item, 'name')" :value="get(transModel, get(item, 'name'))"/>
                     <FieldColor v-if="get(item , 'type') === 'color'" :attr="get(item, 'field')" @change="onChange"
                         :name="get(item, 'name')" :value="get(transModel, get(item, 'name'))"/>
-                    <FieldDate v-if="includes(['date', 'week'], get(item , 'type'))" :attr="get(item, 'field')" @change="onChange"
+                    <FieldDate v-if="includes(['date', 'month', 'year', 'datetime'], get(item , 'type'))" :attr="get(item, 'field')" @change="onChange"
+                        :name="get(item, 'name')" :value="get(transModel, get(item, 'name'))"/>
+                    <FieldDateRange v-if="includes(['date-range','month-range', 'datetime-range'], get(item , 'type'))"
+                        :attr="get(item, 'field')" @change="onChange"
+                        :name="get(item, 'name')" :value="get(transModel, get(item, 'name'))"/>
+                    <FieldTime v-if="includes(['time'], get(item , 'type'))"
+                        :attr="get(item, 'field')" @change="onChange"
+                        :name="get(item, 'name')" :value="get(transModel, get(item, 'name'))"/>
+                    <FieldTimeRange v-if="includes(['time-range'], get(item , 'type'))"
+                        :attr="get(item, 'field')" @change="onChange"
                         :name="get(item, 'name')" :value="get(transModel, get(item, 'name'))"/>
                 </ElFormItem>
             </template>
@@ -41,7 +50,7 @@
 </template>
 <script lang="ts" setup>
 import { computed, defineProps, onMounted, reactive, Ref, ref, toRef, watch } from 'vue';
-import { clone, get, indexOf, set, includes } from 'lodash-es';
+import { clone, get, includes, indexOf, set } from 'lodash-es';
 import FieldText from '@/components/form/FieldText.vue';
 import { ElForm } from 'element-plus';
 import useValidation from '@/composables/useValidation';
@@ -53,6 +62,9 @@ import FieldRadio from '@/components/form/FieldRadio.vue';
 import FieldCheckbox from '@/components/form/FieldCheckbox.vue';
 import FieldColor from '@/components/form/FieldColor.vue';
 import FieldDate from '@/components/form/FieldDate.vue';
+import FieldDateRange from '@/components/form/FieldDateRange.vue';
+import FieldTime from '@/components/form/FieldTime.vue';
+import FieldTimeRange from '@/components/form/FieldTimeRange.vue';
 
 const props = defineProps({
     title: String,
