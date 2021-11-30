@@ -7,6 +7,7 @@ import * as Sentry from '@sentry/vue';
 import { Integrations } from '@sentry/tracing';
 import { appIsProd, appMode, appVersion, sentryDsnUrl } from '@/utils/conf';
 import ElementPlus from 'element-plus'
+import zhCn from 'element-plus/es/locale/lang/zh-cn'
 import 'element-plus/dist/index.css'
 import '@/assets/style/style.less';
 
@@ -33,7 +34,9 @@ Sentry.init({
         return 0
     }
 });
-app.use(ElementPlus)
+app.use(ElementPlus, {
+    locale: zhCn
+})
     .use(router)
     .use(store, key)
     .mount('#app');

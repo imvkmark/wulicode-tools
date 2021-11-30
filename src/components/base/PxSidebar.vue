@@ -40,6 +40,8 @@ const routes = {
         { name: 'form.index', title: 'Field-Checkbox', params: { type: 'field-checkbox' } },
         { name: 'form.index', title: 'Field-Text', params: { type: 'field-text' } },
         { name: 'form.index', title: 'Field-Number', params: { type: 'field-number' } },
+        { name: 'form.index', title: 'Field-Color', params: { type: 'field-color' } },
+        { name: 'form.index', title: 'Field-Date', params: { type: 'field-date' } },
         { name: 'form.index', title: 'Rule-Text', params: { type: 'rule-text' } },
         { name: 'form.index', title: 'Rule-Required', params: { type: 'rule-required' } },
         { name: 'form.index', title: 'Rule-Date', params: { type: 'rule-date' } }
