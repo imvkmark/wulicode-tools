@@ -22,6 +22,8 @@
                         :name="get(item, 'name')" :value="get(transModel, get(item, 'name'))"/>
                     <FieldRadio v-if="get(item , 'type') === 'radio'" :attr="get(item, 'field')" @change="onChange"
                         :name="get(item, 'name')" :value="get(transModel, get(item, 'name'))"/>
+                    <FieldCheckbox v-if="get(item , 'type') === 'checkbox'" :attr="get(item, 'field')" @change="onChange"
+                        :name="get(item, 'name')" :value="get(transModel, get(item, 'name'))"/>
                 </ElFormItem>
             </template>
 
@@ -44,6 +46,7 @@ import { useStore } from '@/store';
 import FieldTextarea from '@/components/form/FieldTextarea.vue';
 import FieldNumber from '@/components/form/FieldNumber.vue';
 import FieldRadio from '@/components/form/FieldRadio.vue';
+import FieldCheckbox from '@/components/form/FieldCheckbox.vue';
 
 const props = defineProps({
     title: String,

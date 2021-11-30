@@ -35,7 +35,6 @@ watch(() => val.value, (newVal) => {
 })
 
 onMounted(() => {
-    console.log(props.value, 'number');
     val.value = props.value;
 })
 </script>

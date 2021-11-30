@@ -37,6 +37,7 @@ const routes = {
     form: [
         { name: 'form.index', title: 'Field-Textarea', params: { type: 'field-textarea' } },
         { name: 'form.index', title: 'Field-Radio', params: { type: 'field-radio' } },
+        { name: 'form.index', title: 'Field-Checkbox', params: { type: 'field-checkbox' } },
         { name: 'form.index', title: 'Field-Text', params: { type: 'field-text' } },
         { name: 'form.index', title: 'Field-Number', params: { type: 'field-number' } },
         { name: 'form.index', title: 'Rule-Text', params: { type: 'rule-text' } },
