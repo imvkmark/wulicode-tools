@@ -1,7 +1,9 @@
 <template>
+    <template v-if="get(attr, 'check-all', false)">
+        <ElCheckbox v-model="trans.checkAll" :indeterminate="trans.isIndeterminate" @change="onCheckAll">全选</ElCheckbox>
+    </template>
     <ElCheckboxGroup v-model="val" :disabled="get(attr, 'disabled', false)"
-        :min="get(attr, 'min')" :max="get(attr, 'max')"
-        :indeterminate="get(attr, 'indeterminate', false)">
+        :min="get(attr, 'min')" :max="get(attr, 'max')">
         <template v-if="!get(attr, 'button', false) && !get(attr, 'complex', false)">
             <ElCheckbox :label="key" v-for="(label, key) in get(attr, 'options')" :key="key">{{ label }}</ElCheckbox>
         </template>
@@ -21,8 +23,8 @@
     </ElCheckboxGroup>
 </template>
 <script lang="ts" setup>
-import { defineProps, onMounted, ref, watch } from 'vue';
-import { get } from 'lodash-es';
+import { defineProps, onMounted, reactive, ref, watch } from 'vue';
+import { get, map } from 'lodash-es';
 
 const props = defineProps({
     name: String,
@@ -35,6 +37,23 @@ const props = defineProps({
     }
 })
 
+const trans = reactive({
+    isIndeterminate: true,
+    checkAll: false,
+    allKeys: <any>[]
+})
+
+const onCheckAll = (checked: boolean) => {
+    if (checked) {
+        val.value = trans.allKeys;
+        trans.checkAll = true;
+    } else {
+        val.value = [];
+        trans.checkAll = false;
+    }
+    trans.isIndeterminate = false;
+}
+
 const emit = defineEmits([
     'change'
 ])
@@ -42,6 +61,9 @@ const emit = defineEmits([
 const val = ref(<any>[]);
 
 watch(() => val.value, (newVal) => {
+    trans.isIndeterminate = newVal.length > 0 && newVal.length < trans.allKeys.length;
+    trans.checkAll = newVal.length === trans.allKeys.length;
+
     emit('change', {
         name: props.name,
         value: newVal
@@ -49,6 +71,12 @@ watch(() => val.value, (newVal) => {
 })
 
 onMounted(() => {
-    val.value = props.value;
+    val.value = Array.isArray(props.value) ? props.value : [];
+    const isComplex = get(props.attr, 'complex');
+    trans.allKeys = isComplex ? map(get(props.attr, 'options', []), (item) => {
+        return get(item, 'value')
+    }) : map(get(props.attr, 'options', []), (item, key) => {
+        return key;
+    })
 })
 </script>
