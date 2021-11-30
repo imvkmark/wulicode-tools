@@ -28,11 +28,10 @@ const emit = defineEmits([
 const val = ref(0);
 
 watch(() => val.value, (newVal) => {
-    console.log('val-changed', newVal);
-    // emit('change', {
-    //     name: props.name,
-    //     value: newVal
-    // })
+    emit('change', {
+        name: props.name,
+        value: newVal
+    })
 })
 
 onMounted(() => {

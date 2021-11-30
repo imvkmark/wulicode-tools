@@ -1,5 +1,5 @@
-import { clone, difference, each, endsWith, find, get, includes, indexOf, keys, map, set, startsWith } from 'lodash-es';
-import { onMounted, Ref, ref, toRefs, watch } from 'vue';
+import { difference, each, endsWith, find, get, includes, indexOf, keys, map, set, startsWith } from 'lodash-es';
+import { onMounted, Ref, ref, watch } from 'vue';
 import { Rule } from 'async-validator';
 import {
     isAlpha,
@@ -30,27 +30,21 @@ dayjs.extend(IsSameOrBefore)
  * https://learnku.com/docs/laravel/6.x/validation/5144#c58a91
  * https://github.com/yiminghe/async-validator/blob/master/src/messages.ts
  */
-export default function useValidation(props: any, model = <Ref>{}, customMessages = <Ref>{}) {
-
-    const { items } = toRefs(props);
+export default function useValidation(items: Ref<any[]>, model = <Ref>{}, customMessages = <Ref>{}) {
 
     const defines = ref({});
 
     const plainRules = ref({});
 
-    /**
-     * 所有的验证规则
-     * @private
-     */
     const schema = ref({});
+
+    let schemaCopy = {};
 
 
     const setTo = (field: string, rule: Rule) => {
-        let cloneSchema = clone(schema.value);
-        let obj = get(cloneSchema, field, []);
+        let obj = get(schemaCopy, field, []);
         obj.push(rule);
-        set(cloneSchema, field, obj);
-        schema.value = cloneSchema;
+        set(schemaCopy, field, obj);
     }
 
 
@@ -1311,6 +1305,8 @@ export default function useValidation(props: any, model = <Ref>{}, customMessage
 
 
     const parseRules: any = () => {
+        schemaCopy = {};
+
         /* 模型
          * ---------------------------------------- */
         let mdl = {};
@@ -1345,12 +1341,12 @@ export default function useValidation(props: any, model = <Ref>{}, customMessage
                 }
             })
         });
+        schema.value = schemaCopy;
     }
 
     watch(() => items.value, () => {
         parseRules();
     }, { deep: true })
-
     onMounted(() => {
         parseRules();
     });

@@ -20,6 +20,8 @@
                         :name="get(item, 'name')" :value="get(transModel, get(item, 'name'))"/>
                     <FieldNumber v-if="get(item , 'type') === 'number'" :attr="get(item, 'field')" @change="onChange"
                         :name="get(item, 'name')" :value="get(transModel, get(item, 'name'))"/>
+                    <FieldRadio v-if="get(item , 'type') === 'radio'" :attr="get(item, 'field')" @change="onChange"
+                        :name="get(item, 'name')" :value="get(transModel, get(item, 'name'))"/>
                 </ElFormItem>
             </template>
 
@@ -32,7 +34,7 @@
     </div>
 </template>
 <script lang="ts" setup>
-import { computed, defineProps, onMounted, reactive, ref, watch } from 'vue';
+import { computed, defineProps, onMounted, reactive, Ref, ref, toRef, watch } from 'vue';
 import { clone, get, indexOf, set } from 'lodash-es';
 import FieldText from '@/components/form/FieldText.vue';
 import { ElForm } from 'element-plus';
@@ -41,6 +43,7 @@ import { sizeClass, sizeLt } from '@/utils/helper';
 import { useStore } from '@/store';
 import FieldTextarea from '@/components/form/FieldTextarea.vue';
 import FieldNumber from '@/components/form/FieldNumber.vue';
+import FieldRadio from '@/components/form/FieldRadio.vue';
 
 const props = defineProps({
     title: String,
@@ -67,8 +70,8 @@ const obj = ref({
     }
 });
 
-//ts-ignore
-const { schema } = useValidation(props, transModel, obj)
+const items: Ref = toRef(props, 'items');
+const { schema } = useValidation(items, transModel, obj)
 
 const formRef: any = ref<InstanceType<typeof ElForm>>();
 const emit = defineEmits([

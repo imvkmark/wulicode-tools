@@ -45,7 +45,7 @@ const onSubmit = (data: any) => {
     apiDemoForm(type, data, 'post').then(({ message, success }) => {
         // console.log('🐤', resp);
         ElNotification({
-            title: !success ? '成功' : '失败',
+            title: success ? '成功' : '失败',
             message
         })
     })

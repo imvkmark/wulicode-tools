@@ -21,8 +21,6 @@ import { defineProps, onMounted, ref, watch } from 'vue';
 import { get } from 'lodash-es';
 import { icon } from '@/utils/icon';
 
-console.log(icon);
-
 const props = defineProps({
     name: String,
     attr: Object,
