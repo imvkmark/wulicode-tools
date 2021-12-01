@@ -20,6 +20,7 @@ import dayjs from 'dayjs';
 import customParseFormat from 'dayjs/plugin/customParseFormat';
 import IsSameOrAfter from 'dayjs/plugin/isSameOrAfter';
 import IsSameOrBefore from 'dayjs/plugin/isSameOrBefore';
+import { isMobile } from '@/utils/utils';
 
 dayjs.extend(customParseFormat)
 dayjs.extend(IsSameOrAfter)
@@ -133,6 +134,7 @@ export default function useValidation(items: Ref<any[]>, model = <Ref>{}, custom
         digits_between: '{0}需要是长度介于{1},{2}的正整数',
         json: '{0}需要是标准的Json字串',
         regex: '字段{0}输入内容不匹配',
+        mobile: '字段{0}需要输入手机号',
         not_regex: '字段{0}输入内容不匹配',
         starts_with: '字段{0}应该以{1}开头',
         ends_with: '字段{0}应该以{1}结尾',
@@ -362,6 +364,19 @@ export default function useValidation(items: Ref<any[]>, model = <Ref>{}, custom
             }
         })
     }
+
+    const validateMobile = (field: string) => {
+        setTo(field, {
+            validator(rule, value, callback) {
+                if (value && !isMobile(value)) {
+                    callback(message(field, 'mobile', label(field)));
+                } else {
+                    callback();
+                }
+            }
+        })
+    }
+
 
     /**
      * 验证字段可能包含字母、数字，以及破折号 (-) 和下划线 ( _ )。
@@ -1277,6 +1292,7 @@ export default function useValidation(items: Ref<any[]>, model = <Ref>{}, custom
         'digits_between': validateDigitsBetween,
         'chid': validateChid,
         'string': validateString,
+        'mobile': validateMobile,
         'accepted': validateAccepted,
 
         // typed

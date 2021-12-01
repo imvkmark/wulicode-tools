@@ -1,6 +1,7 @@
 <template>
     <ElInput v-model="val" :disabled="get(attr, 'disabled', false)" :clearable="get(attr, 'clearable', false)"
         :show-word-limit="get(attr, 'show-word-limit', false)"
+        :show-password="get(attr, 'show-password', false)"
         :placeholder="get(attr, 'placeholder', '')"
         :maxlength="get(attr, 'maxlength', '')"
     >

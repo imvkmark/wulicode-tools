@@ -1,5 +1,5 @@
 <template>
-    <ElSelect v-model="val" :disabled="get(attr, 'disabled', false)" :placeholder="get(attr, 'placeholder', false)" :clearable="true">
+    <ElSelect v-model="val" :disabled="get(attr, 'disabled', false)" :placeholder="get(attr, 'placeholder', '')" :clearable="true">
         <template v-if="get(attr, 'complex', false) === false">
             <ElOption :label="get(item, 'label')" :value="key" v-for="(item, key) in get(attr, 'options')"
                 :key="get(item, 'value')"/>

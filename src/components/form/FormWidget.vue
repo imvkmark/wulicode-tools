@@ -14,7 +14,8 @@
             <template v-for="item in props.items" :key="get(item , 'name')">
                 <!--  hidden 不进行处理, 因为不修改模型数据  -->
                 <ElFormItem :label="get(item , 'label')" :prop="get(item , 'name')">
-                    <FieldText v-if="get(item , 'type') === 'text'" :attr="get(item, 'field')" @change="onChange"
+                    <FieldText v-if="includes(['text', 'url', 'password', 'mobile', 'ip', 'decimal', 'email', 'currency'], get(item , 'type'))"
+                        :attr="get(item, 'field')" @change="onChange"
                         :name="get(item, 'name')" :value="get(transModel, get(item, 'name'))"/>
                     <FieldTextarea v-if="get(item , 'type') === 'textarea'" :attr="get(item, 'field')" @change="onChange"
                         :name="get(item, 'name')" :value="get(transModel, get(item, 'name'))"/>
@@ -26,7 +27,8 @@
                         :name="get(item, 'name')" :value="get(transModel, get(item, 'name'))"/>
                     <FieldColor v-if="get(item , 'type') === 'color'" :attr="get(item, 'field')" @change="onChange"
                         :name="get(item, 'name')" :value="get(transModel, get(item, 'name'))"/>
-                    <FieldDate v-if="includes(['date', 'month', 'year', 'datetime'], get(item , 'type'))" :attr="get(item, 'field')" @change="onChange"
+                    <FieldDate v-if="includes(['date', 'month', 'year', 'datetime'], get(item , 'type'))" :attr="get(item, 'field')"
+                        @change="onChange"
                         :name="get(item, 'name')" :value="get(transModel, get(item, 'name'))"/>
                     <FieldDateRange v-if="includes(['date-range','month-range', 'datetime-range'], get(item , 'type'))"
                         :attr="get(item, 'field')" @change="onChange"
@@ -40,7 +42,10 @@
                     <FieldSelect v-if="includes(['select'], get(item , 'type'))"
                         :attr="get(item, 'field')" @change="onChange"
                         :name="get(item, 'name')" :value="get(transModel, get(item, 'name'))"/>
-                    <FieldMultiSelect v-if="includes(['multi-select'], get(item , 'type'))"
+                    <FieldMultiSelect v-if="includes(['multi-select', 'tags'], get(item , 'type'))"
+                        :attr="get(item, 'field')" @change="onChange"
+                        :name="get(item, 'name')" :value="get(transModel, get(item, 'name'))"/>
+                    <FieldSwitch v-if="includes(['on-off'], get(item , 'type'))"
                         :attr="get(item, 'field')" @change="onChange"
                         :name="get(item, 'name')" :value="get(transModel, get(item, 'name'))"/>
                 </ElFormItem>
@@ -73,6 +78,7 @@ import FieldTime from '@/components/form/FieldTime.vue';
 import FieldTimeRange from '@/components/form/FieldTimeRange.vue';
 import FieldSelect from '@/components/form/FieldSelect.vue';
 import FieldMultiSelect from '@/components/form/FieldMultiSelect.vue';
+import FieldSwitch from '@/components/form/FieldSwitch.vue';
 
 const props = defineProps({
     title: String,
