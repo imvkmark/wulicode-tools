@@ -168,7 +168,8 @@ export default function useValidation(items: Ref<any[]>, model = <Ref>{}, custom
         },
         max: {
             numeric: '{0}的值不得大于{1}',
-            string: '{0}的长度不得大于{1}'  // with array
+            string: '{0}的长度不得大于{1}',
+            array: '{0}的选择数量不得多于{1}'
         },
         size: {
             numeric: '{0}的值需要等于{1}',
@@ -598,6 +599,9 @@ export default function useValidation(items: Ref<any[]>, model = <Ref>{}, custom
                     let tip = defaultMessages.max.string;
                     if (type === 'numeric') {
                         tip = defaultMessages.max.numeric;
+                    }
+                    if (type === 'array') {
+                        tip = defaultMessages.max.array;
                     }
 
                     // 自定义的消息
