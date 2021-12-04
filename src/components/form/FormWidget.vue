@@ -48,6 +48,9 @@
                     <FieldSwitch v-if="includes(['on-off'], get(item , 'type'))"
                         :attr="get(item, 'field')" @change="onChange"
                         :name="get(item, 'name')" :value="get(transModel, get(item, 'name'))"/>
+                    <FieldImage v-if="includes(['image'], get(item , 'type'))"
+                        :attr="get(item, 'field')" @change="onChange"
+                        :name="get(item, 'name')" :value="get(transModel, get(item, 'name'))"/>
                 </ElFormItem>
             </template>
 
@@ -79,6 +82,7 @@ import FieldTimeRange from '@/components/form/FieldTimeRange.vue';
 import FieldSelect from '@/components/form/FieldSelect.vue';
 import FieldMultiSelect from '@/components/form/FieldMultiSelect.vue';
 import FieldSwitch from '@/components/form/FieldSwitch.vue';
+import FieldImage from '@/components/form/FieldImage.vue';
 
 const props = defineProps({
     title: String,
