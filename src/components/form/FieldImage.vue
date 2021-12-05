@@ -1,5 +1,5 @@
 <template>
-    <ElUpload :action="appUrl" name="file" :http-request="onUpload" list-type="picture-card" class="form-image"
+    <ElUpload action="#" name="file" :http-request="onUpload" list-type="picture-card" class="form-image"
         :file-list="trans.files" v-if="trans.files.length<=0"
         :show-file-list="false">
         <ElIcon>
@@ -30,8 +30,7 @@
     </div>
 </template>
 <script lang="ts" setup>
-import { computed, defineComponent, defineProps, onMounted, reactive, ref, watch } from 'vue';
-import { appUrl } from '@/utils/conf';
+import { computed, defineComponent, defineProps, onMounted, reactive, watch } from 'vue';
 import { apiPySystemUploadImage } from '@/services/poppy';
 import { Delete, Download, Plus, ZoomIn } from '@element-plus/icons';
 import { toast } from '@/utils/utils';
@@ -66,7 +65,7 @@ const onUpload = ({ file }) => {
 
 const trans = reactive({
     preview: false,
-    files: <any>[],
+    files: <any>[]
 })
 
 const fileList = computed(() => {
