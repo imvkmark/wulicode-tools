@@ -109,10 +109,16 @@ onMounted(() => {
 <style scoped lang="less">
 .image {
     display: flex;
-    align-items: center;
-    align-content: center;
+    width: 100%;
+    height: 100%;
     justify-content: center;
-    justify-items: center;
-    height: 60px;
+    align-items: center;
+    img {
+        flex: 0;
+        width: auto;
+        height: auto;
+        max-width: 100%;
+        max-height: 100%;
+    }
 }
 </style>

@@ -179,7 +179,7 @@ export default function request(options: RequestOptions) {
                         from: 'api'
                     }).then()
 
-                    return Promise.resolve({
+                    return Promise.reject({
                         success: false,
                         status: code,
                         message: '无权访问, 请登录后重试',

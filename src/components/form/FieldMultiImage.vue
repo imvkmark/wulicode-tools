@@ -1,7 +1,8 @@
 <template>
-    <ElImageViewer :url-list="fileList" v-if="trans.preview" @close="trans.preview=false"/>
+    <ElImageViewer :url-list="trans.fileList" :initial-index="trans.index" v-if="trans.preview" @close="trans.preview=false"/>
     <div class="form-image-list">
-        <ElUpload action="#" name="file" :http-request="onUpload" list-type="picture-card" class="form-image" multiple :limit="get(attr, 'limit', 0)"
+        <ElUpload action="#" name="file" :http-request="onUpload" list-type="picture-card" class="form-image" multiple
+            :limit="get(attr, 'limit', 0)"
             :show-file-list="false">
             <ElIcon>
                 <Plus/>
@@ -12,7 +13,7 @@
                 <div class="image">
                     <img class="el-upload-list__item-thumbnail" :src="file.url" alt=""/>
                     <span class="el-upload-list__item-actions">
-                        <span class="el-upload-list__item-preview" @click="onPreview()">
+                        <span class="el-upload-list__item-preview" @click="onPreview(file)">
                             <ElIcon>
                                 <ZoomIn/>
                             </ElIcon>
@@ -29,11 +30,11 @@
     </div>
 </template>
 <script lang="ts" setup>
-import { computed, defineComponent, defineProps, onMounted, reactive, watch } from 'vue';
+import { defineComponent, defineProps, onMounted, shallowReactive, watch } from 'vue';
 import { apiPySystemUploadImage } from '@/services/poppy';
 import { Delete, Download, Plus, ZoomIn } from '@element-plus/icons';
 import { toast } from '@/utils/utils';
-import { each, first, get, map, union } from 'lodash-es';
+import { each, first, get, indexOf, map, union } from 'lodash-es';
 
 defineComponent({
     Delete, ZoomIn, Download, Plus
@@ -49,26 +50,36 @@ const props = defineProps({
         }
     }
 })
-const trans = reactive({
+const trans = shallowReactive({
     disabled: false,
     files: <any>[],
-    preview: false
+    fileList: <any>[],
+    preview: false,
+    index: 0
 })
 
 
 const onUpload = ({ file }) => {
     apiPySystemUploadImage(file).then((resp) => {
         const { data } = resp;
-        toast(resp)
+        toast(resp);
         if (data) {
-            trans.files = union([{
-                url: String(first(get(data, 'url', []))).toString()
-            }], trans.files)
+            let url  = first(get(data, 'url', []));
+            if(url) {
+                trans.files = union([{
+                    url: String(url).toString()
+                }], trans.files)
+            }
         }
     })
 }
 
-const onPreview = () => {
+const onPreview = (file) => {
+    let url = get(file, 'url');
+    trans.fileList = map(trans.files, function (file) {
+        return get(file, 'url')
+    })
+    trans.index = indexOf(trans.fileList, url);
     trans.preview = true;
 }
 
@@ -82,13 +93,7 @@ const onRemove = (file: object) => {
         newFiles.push(file);
     })
     trans.files = newFiles;
-
 }
-const fileList = computed(() => {
-    return map(trans.files, function (file) {
-        return get(file, 'url')
-    })
-})
 
 
 const emit = defineEmits([
@@ -110,7 +115,6 @@ watch(() => trans.files, () => {
 })
 
 onMounted(() => {
-    console.log(props.attr);
     if (props.value.length) {
         trans.files = map(props.value, (url) => {
             return {
@@ -121,3 +125,19 @@ onMounted(() => {
     }
 })
 </script>
+<style scoped lang="less">
+.image {
+    display: flex;
+    width: 100%;
+    height: 100%;
+    justify-content: center;
+    align-items: center;
+    img {
+        flex: 0;
+        width: auto;
+        height: auto;
+        max-width: 100%;
+        max-height: 100%;
+    }
+}
+</style>
