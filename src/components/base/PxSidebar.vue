@@ -45,6 +45,7 @@ const routes = {
         { name: 'form.index', title: 'Field-Select', params: { type: 'field-select' } },
         { name: 'form.index', title: 'Field-Switch', params: { type: 'field-switch' } },
         { name: 'form.index', title: 'Field-Image', params: { type: 'field-image' } },
+        { name: 'form.index', title: 'Field-Editor', params: { type: 'field-editor' } },
         { name: 'form.index', title: 'Rule-Text', params: { type: 'rule-text' } },
         { name: 'form.index', title: 'Rule-Required', params: { type: 'rule-required' } },
         { name: 'form.index', title: 'Rule-Date', params: { type: 'rule-date' } }

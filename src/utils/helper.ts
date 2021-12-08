@@ -1,4 +1,4 @@
-import { get, indexOf } from 'lodash-es';
+import { get, indexOf, random } from 'lodash-es';
 
 
 /*
@@ -277,4 +277,48 @@ export const toDayjsFormat = (str: string) => {
         'U': 'X'
     };
     return str.split('').map(chr => chr in replacements ? get(replacements, chr) : chr).join('');
+}
+
+/**
+ * 字串之前
+ * @param str
+ * @param needle
+ */
+export const strBefore = (str: string, needle: string) => {
+    return str.substring(0, str.indexOf(needle));
+}
+
+
+/**
+ * 字串之后
+ * @param str
+ * @param needle
+ */
+export const strAfter = (str: string, needle: string) => {
+    return str.substring(str.indexOf(needle) + needle.length);
+}
+
+
+/**
+ * return a promise that resolves with a File instance
+ * https://stackoverflow.com/questions/35940290/how-to-convert-base64-string-to-javascript-file-object-like-as-from-file-input-f
+ * @param url
+ */
+export const urltoFile = (url: string) => {
+    // data:image/png;base64,iVBO
+    let extension = strAfter(strBefore(url, ';base64'), '/');
+    if (!extension) {
+        extension = 'png';
+    }
+    let filename = random() + '.' + extension
+    let mimeType = 'image/' + extension;
+
+    return (fetch(url)
+            .then(function (res) {
+                return res.arrayBuffer();
+            })
+            .then(function (buf) {
+                return new File([buf], filename, { type: mimeType });
+            })
+    );
 }

@@ -13,7 +13,7 @@
 
             <template v-for="item in props.items" :key="get(item , 'name')">
                 <!--  hidden 不进行处理, 因为不修改模型数据  -->
-                <ElFormItem :label="get(item , 'label')" :prop="get(item , 'name')">
+                <ElFormItem :label="get(item , 'label')" :prop="get(item , 'name')" v-if="!includes(['divider'], get(item, 'type'))">
                     <FieldText
                         v-if="includes(['text', 'url', 'password', 'mobile', 'ip', 'decimal', 'email', 'currency'], get(item , 'type'))"
                         :attr="get(item, 'field')" @change="onChange"
@@ -55,7 +55,12 @@
                     <FieldMultiImage v-if="includes(['multi-image'], get(item , 'type'))"
                         :attr="get(item, 'field')" @change="onChange"
                         :name="get(item, 'name')" :value="get(transModel, get(item, 'name'))"/>
+                    <FieldEditor v-if="includes(['editor'], get(item , 'type'))"
+                        :attr="get(item, 'field')" @change="onChange"
+                        :name="get(item, 'name')" :value="get(transModel, get(item, 'name'))"/>
                 </ElFormItem>
+                <!-- 分割线 -->
+                <FieldDivider v-else :label="get(item , 'label')"/>
             </template>
 
             <ElFormItem>
@@ -88,6 +93,8 @@ import FieldMultiSelect from '@/components/form/FieldMultiSelect.vue';
 import FieldSwitch from '@/components/form/FieldSwitch.vue';
 import FieldImage from '@/components/form/FieldImage.vue';
 import FieldMultiImage from '@/components/form/FieldMultiImage.vue';
+import FieldDivider from '@/components/form/FieldDivider.vue';
+import FieldEditor from '@/components/form/FieldEditor.vue';
 
 const props = defineProps({
     title: String,
