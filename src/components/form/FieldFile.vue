@@ -1,17 +1,36 @@
 <template>
-    <ElUpload action="#" name="file" :http-request="onUpload" list-type="picture-card" class="form-image"
-        :file-list="trans.files" v-if="trans.files.length<=0"
+    <ElUpload action="#" name="file" :http-request="onUpload" list-type="picture-card" class="form-file"
+        :file-list="trans.files" v-if="trans.files.length<=0" :accept="get(attr, 'accept', '*/*')"
         :show-file-list="false">
         <ElIcon>
             <Plus/>
         </ElIcon>
     </ElUpload>
     <ElImageViewer :url-list="fileList" v-if="trans.preview" @close="onClosePreview"/>
-    <div class="form-image-list">
+    <div class="form-file-list">
         <ul class="el-upload-list el-upload-list--picture-card is-disabled">
             <li class="el-upload-list__item is-success" v-for="file in trans.files" :key="file">
-                <div class="image">
-                    <img class="el-upload-list__item-thumbnail" :src="file.url" alt=""/>
+                <div class="form-file-preview">
+                    <img class="el-upload-list__item-thumbnail"
+                        v-if="includes(fileExtensions.images, urlExtension(file.url))" :src="file.url" alt=""/>
+                    <span class="el-upload-list__item-thumbnail"
+                        v-else-if="includes(fileExtensions.audio, urlExtension(file.url))">
+                        <ElIcon>
+                            <Headset/>
+                        </ElIcon>
+                    </span>
+                    <span class="el-upload-list__item-thumbnail"
+                        v-else-if="includes(fileExtensions.video, urlExtension(file.url))">
+                        <ElIcon>
+                            <Film/>
+                        </ElIcon>
+                    </span>
+                    <span class="el-upload-list__item-thumbnail"
+                        v-else>
+                        <ElIcon>
+                            <Document/>
+                        </ElIcon>
+                    </span>
                     <span class="el-upload-list__item-actions">
                         <span class="el-upload-list__item-preview" @click="onPreview()">
                             <ElIcon>
@@ -30,15 +49,13 @@
     </div>
 </template>
 <script lang="ts" setup>
-import { computed, defineComponent, defineProps, onMounted, reactive, watch } from 'vue';
-import { apiPySystemUploadImage } from '@/services/poppy';
-import { Delete, Download, Plus, ZoomIn } from '@element-plus/icons';
+import { computed, defineProps, onMounted, reactive, watch } from 'vue';
+import { apiPySystemUploadFile } from '@/services/poppy';
+import { Delete, Document, Film, Headset, Plus, ZoomIn } from '@element-plus/icons';
 import { toast } from '@/utils/utils';
-import { first, get, map } from 'lodash-es';
-
-defineComponent({
-    Delete, ZoomIn, Download, Plus
-})
+import { first, get, includes, map } from 'lodash-es';
+import { urlExtension } from '@/utils/helper';
+import { fileExtensions } from '@/utils/defs';
 
 const props = defineProps({
     name: String,
@@ -52,7 +69,7 @@ const props = defineProps({
 })
 
 const onUpload = ({ file }) => {
-    apiPySystemUploadImage(file).then((resp) => {
+    apiPySystemUploadFile(file, get(props.attr, 'type', 'file')).then((resp) => {
         const { data } = resp;
         toast(resp)
         if (get(data, 'url', []).length) {
@@ -79,6 +96,11 @@ const onRemove = () => {
     trans.files = [];
 }
 const onPreview = () => {
+    let url = get(first(trans.files), 'url');
+    if (!includes(extensions.images, urlExtension(url))) {
+        window.open(url);
+        return;
+    }
     trans.preview = true;
 }
 const onClosePreview = () => {
@@ -106,19 +128,3 @@ onMounted(() => {
     }
 })
 </script>
-<style scoped lang="less">
-.image {
-    display: flex;
-    width: 100%;
-    height: 100%;
-    justify-content: center;
-    align-items: center;
-    img {
-        flex: 0;
-        width: auto;
-        height: auto;
-        max-width: 100%;
-        max-height: 100%;
-    }
-}
-</style>

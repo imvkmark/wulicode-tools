@@ -41,6 +41,22 @@ export function apiPySystemUploadImage(image: any) {
 }
 
 /**
+ *上传图片
+ */
+export function apiPySystemUploadFile(image: any, type: string) {
+    const data = new FormData()
+    data.set('file', image, image.name);
+    data.set('type', type);
+    return request({
+        url: 'api_v1/system/upload/file',
+        headers: {
+            'Content-Type': 'multipart/form-data'
+        },
+        params: data
+    });
+}
+
+/**
  * 登录访问
  */
 export async function apiPySystemAuthAccess(params = {}) {

@@ -49,10 +49,10 @@
                     <FieldSwitch v-if="includes(['on-off'], get(item , 'type'))"
                         :attr="get(item, 'field')" @change="onChange"
                         :name="get(item, 'name')" :value="get(transModel, get(item, 'name'))"/>
-                    <FieldImage v-if="includes(['image'], get(item , 'type'))"
+                    <FieldFile v-if="includes(['image', 'file'], get(item , 'type'))"
                         :attr="get(item, 'field')" @change="onChange"
                         :name="get(item, 'name')" :value="get(transModel, get(item, 'name'))"/>
-                    <FieldMultiImage v-if="includes(['multi-image'], get(item , 'type'))"
+                    <FieldMultiFile v-if="includes(['multi-image', 'multi-file'], get(item , 'type'))"
                         :attr="get(item, 'field')" @change="onChange"
                         :name="get(item, 'name')" :value="get(transModel, get(item, 'name'))"/>
                     <FieldEditor v-if="includes(['editor'], get(item , 'type'))"
@@ -91,10 +91,10 @@ import FieldTimeRange from '@/components/form/FieldTimeRange.vue';
 import FieldSelect from '@/components/form/FieldSelect.vue';
 import FieldMultiSelect from '@/components/form/FieldMultiSelect.vue';
 import FieldSwitch from '@/components/form/FieldSwitch.vue';
-import FieldImage from '@/components/form/FieldImage.vue';
-import FieldMultiImage from '@/components/form/FieldMultiImage.vue';
 import FieldDivider from '@/components/form/FieldDivider.vue';
 import FieldEditor from '@/components/form/FieldEditor.vue';
+import FieldFile from '@/components/form/FieldFile.vue';
+import FieldMultiFile from '@/components/form/FieldMultiFile.vue';
 
 const props = defineProps({
     title: String,

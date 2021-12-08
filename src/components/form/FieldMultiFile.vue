@@ -1,7 +1,8 @@
 <template>
     <ElImageViewer :url-list="trans.fileList" :initial-index="trans.index" v-if="trans.preview" @close="trans.preview=false"/>
-    <div class="form-image-list">
-        <ElUpload action="#" name="file" :http-request="onUpload" list-type="picture-card" class="form-image" multiple
+    <div class="form-file-list">
+        <ElUpload action="#" name="file" :http-request="onUpload" list-type="picture-card" class="form-file" multiple
+            :accept="get(attr, 'accept', '*/*')"
             :limit="get(attr, 'limit', 0)"
             :show-file-list="false">
             <ElIcon>
@@ -10,8 +11,27 @@
         </ElUpload>
         <ul class="el-upload-list el-upload-list--picture-card is-disabled">
             <li class="el-upload-list__item is-success" v-for="file in trans.files" :key="file">
-                <div class="image">
-                    <img class="el-upload-list__item-thumbnail" :src="file.url" alt=""/>
+                <div class="form-file-preview">
+                    <img class="el-upload-list__item-thumbnail"
+                        v-if="includes(fileExtensions.images, urlExtension(file.url))" :src="file.url" alt=""/>
+                    <span class="el-upload-list__item-thumbnail"
+                        v-else-if="includes(fileExtensions.audio, urlExtension(file.url))">
+                        <ElIcon>
+                            <Headset/>
+                        </ElIcon>
+                    </span>
+                    <span class="el-upload-list__item-thumbnail"
+                        v-else-if="includes(fileExtensions.video, urlExtension(file.url))">
+                        <ElIcon>
+                            <Film/>
+                        </ElIcon>
+                    </span>
+                    <span class="el-upload-list__item-thumbnail"
+                        v-else>
+                        <ElIcon>
+                            <Document/>
+                        </ElIcon>
+                    </span>
                     <span class="el-upload-list__item-actions">
                         <span class="el-upload-list__item-preview" @click="onPreview(file)">
                             <ElIcon>
@@ -30,15 +50,13 @@
     </div>
 </template>
 <script lang="ts" setup>
-import { defineComponent, defineProps, onMounted, shallowReactive, watch } from 'vue';
+import { defineProps, onMounted, shallowReactive, watch } from 'vue';
 import { apiPySystemUploadImage } from '@/services/poppy';
-import { Delete, Download, Plus, ZoomIn } from '@element-plus/icons';
+import { Delete, Document, Film, Headset, Plus, ZoomIn } from '@element-plus/icons';
 import { toast } from '@/utils/utils';
-import { each, first, get, indexOf, map, union } from 'lodash-es';
-
-defineComponent({
-    Delete, ZoomIn, Download, Plus
-})
+import { each, first, get, includes, indexOf, map, union } from 'lodash-es';
+import { urlExtension } from '@/utils/helper';
+import { fileExtensions } from '@/utils/defs';
 
 const props = defineProps({
     name: String,
@@ -64,8 +82,8 @@ const onUpload = ({ file }) => {
         const { data } = resp;
         toast(resp);
         if (data) {
-            let url  = first(get(data, 'url', []));
-            if(url) {
+            let url = first(get(data, 'url', []));
+            if (url) {
                 trans.files = union([{
                     url: String(url).toString()
                 }], trans.files)
@@ -76,9 +94,18 @@ const onUpload = ({ file }) => {
 
 const onPreview = (file) => {
     let url = get(file, 'url');
-    trans.fileList = map(trans.files, function (file) {
-        return get(file, 'url')
+    let extension = urlExtension(get(file, 'url'));
+    if (!includes(fileExtensions.images, extension)) {
+        window.open(url);
+        return;
+    }
+    let fileList = <any>[];
+    each(trans.files, function (file) {
+        if (includes(fileExtensions.images, urlExtension(get(file, 'url')))) {
+            fileList.push(get(file, 'url'));
+        }
     })
+    trans.fileList = fileList;
     trans.index = indexOf(trans.fileList, url);
     trans.preview = true;
 }
@@ -125,19 +152,3 @@ onMounted(() => {
     }
 })
 </script>
-<style scoped lang="less">
-.image {
-    display: flex;
-    width: 100%;
-    height: 100%;
-    justify-content: center;
-    align-items: center;
-    img {
-        flex: 0;
-        width: auto;
-        height: auto;
-        max-width: 100%;
-        max-height: 100%;
-    }
-}
-</style>

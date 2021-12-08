@@ -299,6 +299,14 @@ export const strAfter = (str: string, needle: string) => {
 }
 
 
+export const urlExtension = (url: string) => {
+    let ext = url.substring(url.lastIndexOf('.') + 1);
+    if (ext.indexOf('?') > -1) {
+        return strBefore(ext, '?')
+    }
+    return ext;
+}
+
 /**
  * return a promise that resolves with a File instance
  * https://stackoverflow.com/questions/35940290/how-to-convert-base64-string-to-javascript-file-object-like-as-from-file-input-f

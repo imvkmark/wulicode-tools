@@ -27,3 +27,9 @@ export const sizeClass = (size: string) => {
     }
 }
 
+export const fileExtensions = {
+    images: ['jpg', 'jpeg', 'png', 'gif'],
+    audio: ['mp3', 'm4a', 'wav', 'aac'],
+    video: ['mp4', 'rm', 'rmvb', 'wmv']
+}
+
