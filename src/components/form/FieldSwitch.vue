@@ -8,7 +8,7 @@
     </ElSwitch>
 </template>
 <script lang="ts" setup>
-import { defineProps, onMounted, ref, watch } from 'vue';
+import { onMounted, ref, watch } from 'vue';
 import { get } from 'lodash-es';
 
 const props = defineProps({

@@ -7,7 +7,7 @@
     </div>
 </template>
 <script lang="ts" setup>
-import { defineProps, onMounted, ref } from 'vue';
+import {  onMounted, ref } from 'vue';
 import XIcon from "@/components/element/XIcon.vue";
 import { copyText } from 'vue3-clipboard'
 import { toast } from "@/utils/utils";

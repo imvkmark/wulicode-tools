@@ -29,7 +29,7 @@
     </div>
 </template>
 <script lang="ts" setup>
-import { defineProps, onMounted, reactive, ref, watch } from 'vue';
+import { onMounted, reactive, ref, watch } from 'vue';
 import { get, map } from 'lodash-es';
 
 const props = defineProps({

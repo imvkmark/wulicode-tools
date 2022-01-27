@@ -50,7 +50,7 @@
     </div>
 </template>
 <script lang="ts" setup>
-import { defineProps, onMounted, shallowReactive, watch } from 'vue';
+import { onMounted, shallowReactive, watch } from 'vue';
 import { apiPySystemUploadImage } from '@/services/poppy';
 import { Delete, Document, Film, Headset, Plus, ZoomIn } from '@element-plus/icons';
 import { toast } from '@/utils/utils';

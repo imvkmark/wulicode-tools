@@ -14,7 +14,7 @@
     </ElInput>
 </template>
 <script lang="ts" setup>
-import { defineProps, onMounted, ref, watch } from 'vue';
+import { onMounted, ref, watch } from 'vue';
 import { get } from 'lodash-es';
 import XIcon from "@/components/element/XIcon.vue";
 

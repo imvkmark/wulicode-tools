@@ -77,7 +77,7 @@
     </div>
 </template>
 <script lang="ts" setup>
-import { computed, defineProps, onMounted, reactive, Ref, ref, toRef, watch } from 'vue';
+import { computed, onMounted, reactive, Ref, ref, toRef, watch } from 'vue';
 import { clone, get, includes, indexOf, set } from 'lodash-es';
 import FieldText from '@/components/form/FieldText.vue';
 import { ElForm } from 'element-plus';

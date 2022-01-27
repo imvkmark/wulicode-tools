@@ -5,7 +5,7 @@
     </ElTimePicker>
 </template>
 <script lang="ts" setup>
-import { defineProps, onMounted, ref, watch } from 'vue';
+import { onMounted, ref, watch } from 'vue';
 import { get } from 'lodash-es';
 import dayjs from 'dayjs';
 import advancedFormat from 'dayjs/plugin/advancedFormat';

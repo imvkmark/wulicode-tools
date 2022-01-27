@@ -49,7 +49,7 @@
     </div>
 </template>
 <script lang="ts" setup>
-import { computed, defineProps, onMounted, reactive, watch } from 'vue';
+import { computed, onMounted, reactive, watch } from 'vue';
 import { apiPySystemUploadFile } from '@/services/poppy';
 import { Delete, Document, Film, Headset, Plus, ZoomIn } from '@element-plus/icons';
 import { toast } from '@/utils/utils';

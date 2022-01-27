@@ -2,7 +2,7 @@
     <mavon-editor ref="md" v-model="val" @imgAdd="onImageAdd"/>
 </template>
 <script lang="ts" setup>
-import { defineProps, onMounted, Ref, ref, watch } from 'vue';
+import { onMounted, Ref, ref, watch } from 'vue';
 import { urltoFile } from '@/utils/helper';
 import { apiPySystemUploadImage } from '@/services/poppy';
 import { first, get } from 'lodash-es';
