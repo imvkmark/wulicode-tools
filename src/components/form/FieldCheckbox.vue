@@ -1,26 +1,32 @@
 <template>
-    <template v-if="get(attr, 'check-all', false)">
+    <div class="check-all" style="display: block" v-if="get(attr, 'check-all', false)">
         <ElCheckbox v-model="trans.checkAll" :indeterminate="trans.isIndeterminate" @change="onCheckAll">全选</ElCheckbox>
-    </template>
-    <ElCheckboxGroup v-model="val" :disabled="get(attr, 'disabled', false)"
-        :min="get(attr, 'min')" :max="get(attr, 'max')">
-        <template v-if="!get(attr, 'button', false) && !get(attr, 'complex', false)">
-            <ElCheckbox :label="key" v-for="(label, key) in get(attr, 'options')" :key="key">{{ label }}</ElCheckbox>
-        </template>
-        <template v-if="get(attr, 'button', false) && !get(attr, 'complex', false)">
-            <ElCheckboxButton :label="key" v-for="(label, key) in get(attr, 'options')" :key="key">{{ label }}</ElCheckboxButton>
-        </template>
-        <template v-if="!get(attr, 'button', false) && get(attr, 'complex', false)">
-            <ElCheckbox :label="get(item, 'value')" :disabled="get(item, 'disabled')" v-for="item in get(attr, 'options')"
-                :key="get(item, 'value')">{{ get(item, 'label') }}
-            </ElCheckbox>
-        </template>
-        <template v-if="get(attr, 'button', false) && get(attr, 'complex', false)">
-            <ElCheckboxButton :label="get(item, 'value')" :disabled="get(item, 'disabled')" v-for="item in get(attr, 'options')"
-                :key="get(item, 'value')">{{ get(item, 'label') }}
-            </ElCheckboxButton>
-        </template>
-    </ElCheckboxGroup>
+    </div>
+    <div :class="{'check-item' : get(attr, 'check-all', false), 'check-button': get(attr, 'button', false)}">
+        <ElCheckboxGroup v-model="val" :disabled="get(attr, 'disabled', false)" :min="get(attr, 'min')"
+            :max="get(attr, 'max')">
+            <template v-if="!get(attr, 'button', false) && !get(attr, 'complex', false)">
+                <ElCheckbox :label="key" v-for="(label, key) in get(attr, 'options')" :key="key">
+                    {{ label }}
+                </ElCheckbox>
+            </template>
+            <template v-if="get(attr, 'button', false) && !get(attr, 'complex', false)">
+                <ElCheckboxButton :label="key" v-for="(label, key) in get(attr, 'options')" :key="key">
+                    {{ label }}
+                </ElCheckboxButton>
+            </template>
+            <template v-if="!get(attr, 'button', false) && get(attr, 'complex', false)">
+                <ElCheckbox :label="get(item, 'value')" :disabled="get(item, 'disabled')"
+                    v-for="item in get(attr, 'options')" :key="get(item, 'value')">{{ get(item, 'label') }}
+                </ElCheckbox>
+            </template>
+            <template v-if="get(attr, 'button', false) && get(attr, 'complex', false)">
+                <ElCheckboxButton :label="get(item, 'value')" :disabled="get(item, 'disabled')"
+                    v-for="item in get(attr, 'options')" :key="get(item, 'value')">{{ get(item, 'label') }}
+                </ElCheckboxButton>
+            </template>
+        </ElCheckboxGroup>
+    </div>
 </template>
 <script lang="ts" setup>
 import { defineProps, onMounted, reactive, ref, watch } from 'vue';
@@ -80,3 +86,18 @@ onMounted(() => {
     })
 })
 </script>
+<style lang="less">
+.check-all {
+    position: absolute;
+    top: 0;
+    left: 0;
+}
+
+.check-item {
+    padding-top: 25px;
+
+    &.check-button {
+        padding-top: 35px;
+    }
+}
+</style>

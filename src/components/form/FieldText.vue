@@ -6,21 +6,17 @@
         :maxlength="get(attr, 'maxlength', '')"
     >
         <template #suffix v-if="get(attr, 'suffix-icon', '')">
-            <el-icon class="el-input__icon">
-                <component :is="get(icon, get(attr, 'suffix-icon', ''))"/>
-            </el-icon>
+            <XIcon class-name="el-input__icon" :type="get(attr, 'suffix-icon', '')"/>
         </template>
         <template #prefix v-if="get(attr, 'prefix-icon', '')">
-            <el-icon class="el-input__icon">
-                <component :is="get(icon, get(attr, 'prefix-icon', ''))"/>
-            </el-icon>
+            <XIcon class-name="el-input__icon" :type="get(attr, 'prefix-icon', '')"/>
         </template>
     </ElInput>
 </template>
 <script lang="ts" setup>
 import { defineProps, onMounted, ref, watch } from 'vue';
 import { get } from 'lodash-es';
-import { icon } from '@/utils/icon';
+import XIcon from "@/components/element/XIcon.vue";
 
 const props = defineProps({
     name: String,

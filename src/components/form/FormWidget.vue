@@ -13,22 +13,26 @@
 
             <template v-for="item in props.items" :key="get(item , 'name')">
                 <!--  hidden 不进行处理, 因为不修改模型数据  -->
-                <ElFormItem :label="get(item , 'label')" :prop="get(item , 'name')" v-if="!includes(['divider'], get(item, 'type'))">
+                <ElFormItem :label="get(item , 'label')" :prop="get(item , 'name')"
+                    v-if="!includes(['divider', 'code'], get(item, 'type'))">
                     <FieldText
                         v-if="includes(['text', 'url', 'password', 'mobile', 'ip', 'decimal', 'email', 'currency'], get(item , 'type'))"
                         :attr="get(item, 'field')" @change="onChange"
                         :name="get(item, 'name')" :value="get(transModel, get(item, 'name'))"/>
-                    <FieldTextarea v-if="get(item , 'type') === 'textarea'" :attr="get(item, 'field')" @change="onChange"
+                    <FieldTextarea v-if="get(item , 'type') === 'textarea'" :attr="get(item, 'field')"
+                        @change="onChange"
                         :name="get(item, 'name')" :value="get(transModel, get(item, 'name'))"/>
                     <FieldNumber v-if="get(item , 'type') === 'number'" :attr="get(item, 'field')" @change="onChange"
                         :name="get(item, 'name')" :value="get(transModel, get(item, 'name'))"/>
                     <FieldRadio v-if="get(item , 'type') === 'radio'" :attr="get(item, 'field')" @change="onChange"
                         :name="get(item, 'name')" :value="get(transModel, get(item, 'name'))"/>
-                    <FieldCheckbox v-if="get(item , 'type') === 'checkbox'" :attr="get(item, 'field')" @change="onChange"
+                    <FieldCheckbox v-if="get(item , 'type') === 'checkbox'" :attr="get(item, 'field')"
+                        @change="onChange"
                         :name="get(item, 'name')" :value="get(transModel, get(item, 'name'))"/>
                     <FieldColor v-if="get(item , 'type') === 'color'" :attr="get(item, 'field')" @change="onChange"
                         :name="get(item, 'name')" :value="get(transModel, get(item, 'name'))"/>
-                    <FieldDate v-if="includes(['date', 'month', 'year', 'datetime'], get(item , 'type'))" :attr="get(item, 'field')"
+                    <FieldDate v-if="includes(['date', 'month', 'year', 'datetime'], get(item , 'type'))"
+                        :attr="get(item, 'field')"
                         @change="onChange"
                         :name="get(item, 'name')" :value="get(transModel, get(item, 'name'))"/>
                     <FieldDateRange v-if="includes(['date-range','month-range', 'datetime-range'], get(item , 'type'))"
@@ -60,7 +64,8 @@
                         :name="get(item, 'name')" :value="get(transModel, get(item, 'name'))"/>
                 </ElFormItem>
                 <!-- 分割线 -->
-                <FieldDivider v-else :label="get(item , 'label')"/>
+                <FieldDivider v-else-if="get(item, 'type') === 'divider'" :label="get(item , 'label')"/>
+                <FieldCode v-else-if="get(item, 'type') === 'code'" :value="get(transModel, get(item, 'name'))"/>
             </template>
 
             <ElFormItem>
@@ -95,6 +100,7 @@ import FieldDivider from '@/components/form/FieldDivider.vue';
 import FieldEditor from '@/components/form/FieldEditor.vue';
 import FieldFile from '@/components/form/FieldFile.vue';
 import FieldMultiFile from '@/components/form/FieldMultiFile.vue';
+import FieldCode from "@/components/form/FieldCode.vue";
 
 const props = defineProps({
     title: String,
@@ -122,7 +128,7 @@ const obj = ref({
 });
 
 const items: Ref = toRef(props, 'items');
-const { schema } = useValidation(items, transModel, obj)
+const {schema} = useValidation(items, transModel, obj)
 
 const formRef: any = ref<InstanceType<typeof ElForm>>();
 const emit = defineEmits([

@@ -6,7 +6,7 @@
                     <img src="@/assets/app/logo.png" alt="WuliCode"> Wulicode
                 </div>
                 <div class="input">
-                    <ElInput @input="onChange" v-model="trans.input"/>
+                    <ElInput v-model="trans.input"/>
                 </div>
             </el-col>
         </el-row>
@@ -19,7 +19,6 @@
 
 <script lang="ts" setup>
 import { onMounted, reactive, ref } from 'vue'
-import { MeiliSearch } from 'meilisearch'
 
 const refList: any = ref(null);
 const trans = reactive({
@@ -29,21 +28,6 @@ const trans = reactive({
     input: ''
 })
 
-const client = new MeiliSearch({
-    host: 'https://platform.jkfxpt.com:7770',
-    apiKey: '8GtGYvV$vUHa##Wvj4Tq8t2hC#E&z97'
-})
-
-// An index is where the documents are stored.
-const index = client.index('wulicode')
-
-const onChange = () => {
-    console.log(trans.input);
-    // MeiliSearch is typo-tolerant:
-    index.search(trans.input).then((resp) => {
-        console.log(resp);
-    })
-}
 
 const initValue = function () {
     trans.height = refList.value.scrollHeight;
