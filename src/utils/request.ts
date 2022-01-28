@@ -134,6 +134,7 @@ const fetch = (options: RequestOptions) => {
 };
 
 export default function request(options: RequestOptions) {
+    store.dispatch('Loading').then()
     // @ts-ignore
     return fetch(options)
         .then((response) => {

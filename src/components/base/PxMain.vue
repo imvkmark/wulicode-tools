@@ -7,7 +7,6 @@
     </div>
 </template>
 <script lang="ts" setup>
-
 import { useStore } from '@/store';
 import { computed, defineComponent, reactive } from 'vue';
 import { Expand } from '@element-plus/icons';
@@ -18,7 +17,8 @@ const trans = reactive({
 })
 
 const props = defineProps({
-    title: String
+    title: String,
+    description: String
 })
 defineComponent({
     Expand

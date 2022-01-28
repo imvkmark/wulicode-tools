@@ -4,7 +4,8 @@
         <div v-for="(item, key) in routes" :key="item">
             <h3>{{ key }}</h3>
             <ul>
-                <li v-for="rt in item" :key="rt.name" :class="{active : rt.name === trans.name && trans.params === get(rt, 'params', {})}">
+                <li v-for="rt in item" :key="rt.name"
+                    :class="{active : rt.name === trans.name && trans.params === get(rt, 'params', {})}">
                     <span @click="onLinkClick(rt.name, get(rt, 'params', {}))">{{ rt.title }}</span>
                 </li>
             </ul>
@@ -33,6 +34,9 @@ const routes = {
         { name: 'tool.base64', title: 'Base64' },
         { name: 'tool.img', title: '图片占位符' },
         { name: 'tool.url-decode', title: 'Url 解码' }
+    ],
+    grid: [
+        { name: 'grid.index', title: 'Grid-Normal', params: { type: 'normal' } },
     ],
     form: [
         { name: 'form.index', title: 'Field-Textarea', params: { type: 'field-textarea' } },

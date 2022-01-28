@@ -71,7 +71,6 @@
             <ElFormItem>
                 <ElButton type="primary" v-if="indexOf(buttons, 'submit')" @click="onSubmit">确认</ElButton>
                 <ElButton v-if="indexOf(buttons, 'reset')" @click="onReset">重置</ElButton>
-                <ElButton @click="onRules">规则</ElButton>
             </ElFormItem>
         </ElForm>
     </div>
@@ -145,9 +144,6 @@ const onSubmit = () => {
     formRef.value.validate().then(() => {
         emit('submit', transModel.value);
     });
-}
-const onRules = () => {
-    console.log(schema.value, 'parsed');
 }
 
 const onReset = () => {

@@ -23,13 +23,24 @@ const routes: Array<RouteRecordRaw> = [
             { path: 'js/sentry', component: () => import('@/views/js/Sentry.vue'), name: 'js.sentry' },
             { path: 'js/scroll', component: () => import('@/views/js/Scroll.vue'), name: 'js.scroll' },
             { path: 'js/info', component: () => import('@/views/js/Info.vue'), name: 'js.info' },
-            { path: 'form/:type', component: () => import('@/views/form/Index.vue'), name: 'form.index' }
+            { path: 'form/:type', component: () => import('@/views/tar/Index.vue'), name: 'form.index' },
+            { path: 'grid/:type', component: () => import('@/views/tar/Index.vue'), name: 'grid.index' }
         ]
     },
     {
         path: '/user', component: SiteLayout, children: [
-            { path: 'cp', component: () => import('@/views/user/Cp.vue'), name: 'user.cp', meta: { title: '用户控制中心', auth: true } },
-            { path: 'login', component: () => import('@/views/user/Login.vue'), name: 'user.login', meta: { title: '登录' } }
+            {
+                path: 'cp',
+                component: () => import('@/views/user/Cp.vue'),
+                name: 'user.cp',
+                meta: { title: '用户控制中心', auth: true }
+            },
+            {
+                path: 'login',
+                component: () => import('@/views/user/Login.vue'),
+                name: 'user.login',
+                meta: { title: '登录' }
+            }
         ]
     }
 ]

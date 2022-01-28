@@ -34,7 +34,7 @@ export function apiPySystemUploadImage(image: any) {
     return request({
         url: 'api_v1/system/upload/image',
         headers: {
-            'Content-Type': 'multipart/form-data'
+            'Content-Type': 'multipart/tar-data'
         },
         params: data
     });
@@ -50,7 +50,7 @@ export function apiPySystemUploadFile(image: any, type: string) {
     return request({
         url: 'api_v1/system/upload/file',
         headers: {
-            'Content-Type': 'multipart/form-data'
+            'Content-Type': 'multipart/tar-data'
         },
         params: data
     });

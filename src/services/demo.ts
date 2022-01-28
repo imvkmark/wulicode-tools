@@ -1,20 +1,19 @@
 import request from '@/utils/request';
 
-/**
- * 文本
- */
-export async function apiDemoFormText(params: object, method: string) {
+export async function apiDemo(type: string, params: object, method: string) {
     return request({
-        url: '/api/demo/form/text',
+        url: '/api/demo/' + type,
         params,
         method
     });
 }
 
-export async function apiDemoForm(type: string, params: object, method: string) {
+export async function apiGrid(url: string, params: object, method: string) {
     return request({
-        url: '/api/demo/form/' + type,
+        url: url,
         params,
         method
     });
 }
+
+
