@@ -1,12 +1,12 @@
 <template>
-    <PxMain :title="trans.title" v-loading="form.loading">
+    <PxMain :title="trans.title" v-loading="trans.loading">
         <FormWidget v-if="type === 'form'" :attr="form.attr" :description="form.description" :items="form.items"
             :title="form.title" :model="form.model" @submit="onSubmit"/>
-        <GridWidget v-if="type === 'grid'" :cols="grid.cols" :url="grid.url"/>
+        <GridWidget v-if="type === 'grid'" :cols="grid.cols" :url="grid.url" :page-sizes="grid.pageSizes"/>
     </PxMain>
 </template>
 <script lang="ts" setup>
-import { computed, onMounted, reactive, ref, watch } from 'vue';
+import { onMounted, reactive, ref, watch } from 'vue';
 import { apiDemo } from '@/services/demo';
 import FormWidget from '@/components/widget/FormWidget.vue';
 import { get } from 'lodash-es';
@@ -23,11 +23,11 @@ const trans = reactive({
     type: '',
     path: '',
     title: '',
+    loading: false
 })
 const form = reactive({
     title: '',
     description: '',
-    loading: computed(() => store.getters.loading),
     items: [],
     model: {},
     attr: {}
@@ -36,7 +36,8 @@ const form = reactive({
 const grid = reactive({
     rows: [],
     cols: [],
-    url: [],
+    url: '',
+    pageSizes: [15]
 })
 
 const type = ref('');
@@ -53,6 +54,7 @@ const setPath = () => {
 }
 
 const doRequest = () => {
+    trans.loading = true;
     setPath()
     apiDemo(path.value, {}, 'get').then(({ data }) => {
         type.value = get(data, 'type');
@@ -67,7 +69,10 @@ const doRequest = () => {
             trans.title = get(data, 'title');
             grid.cols = get(data, 'cols');
             grid.url = get(data, 'url');
+            grid.pageSizes = get(data, 'page_sizes');
         }
+
+        trans.loading = false
     })
 }
 
