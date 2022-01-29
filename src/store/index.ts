@@ -3,6 +3,7 @@ import { createStore, Store, useStore as baseUseStore } from 'vuex'
 import { AllStateTypes, RootStateTypes } from './types'
 
 import poppy from './modules/poppy'
+import theme from './modules/theme'
 
 export const store = createStore<RootStateTypes>({
     state: {
@@ -46,7 +47,7 @@ export const store = createStore<RootStateTypes>({
         }
     },
     modules: {
-        poppy
+        poppy, theme
     }
 })
 

@@ -5,13 +5,27 @@
             <small v-if="description">{{ description }}</small>
         </h3>
         <!-- 表格数据 -->
-        <ElTable :data="grid.rows" size="small" border stripe v-loading="grid.loading">
+        <ElTable :data="grid.rows" border stripe v-loading="grid.loading">
             <template v-for="col in cols" :key="col">
-                <ElTableColumn :prop="get(col, 'field')" :label="get(col, 'label')"/>
+                <ElTableColumn :prop="get(col, 'field')" :width="get(col, 'width', '')" :label="get(col, 'label')">
+                    <template #default="scope">
+                        <ColumnText v-if="get(col, 'type') === 'text'" :ellipsis="get(col, 'ellipsis', false)"
+                            :value="get(scope.row, String(get(col, 'field')))"/>
+                        <ColumnLink v-else-if="get(col, 'type') === 'link'" :ellipsis="get(col, 'ellipsis', false)"
+                            :value="JSON.parse(get(scope.row, String(get(col, 'field'))))"/>
+                        <ColumnImage v-else-if="get(col, 'type') === 'image'"
+                            :value="JSON.parse(get(scope.row, String(get(col, 'field'))))"/>
+                        <ColumnDownload v-else-if="get(col, 'type') === 'download'"
+                            :value="JSON.parse(get(scope.row, String(get(col, 'field'))))"/>
+                        <span v-else>
+                            {{ get(scope.row, String(get(col, 'field'))) }}
+                        </span>
+                    </template>
+                </ElTableColumn>
             </template>
         </ElTable>
         <div class="pagination">
-            <ElPagination small :page-sizes="pageSizes" :total="grid.total" background
+            <ElPagination :page-sizes="pageSizes" :total="grid.total" background
                 layout="sizes,prev, pager, next, total"
                 v-model:page-size="pagesizeRef"
                 v-model:current-page="pageRef"/>
@@ -24,7 +38,12 @@ import { get, merge } from 'lodash-es';
 import { sizeClass } from '@/utils/helper';
 import { useStore } from '@/store';
 import { apiGrid } from "@/services/demo";
+import ColumnText from "@/components/table/ColumnText.vue";
+import ColumnLink from "@/components/table/ColumnLink.vue";
+import ColumnImage from "@/components/table/ColumnImage.vue";
+import ColumnDownload from "@/components/table/ColumnDownload.vue";
 
+const log = console;
 const props = defineProps({
     title: String,
     description: String,

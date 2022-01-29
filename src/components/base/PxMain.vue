@@ -1,7 +1,7 @@
 <template>
     <div class="py--main">
         <h2>{{ props.title }}</h2>
-        <div class="main-area main-mono">
+        <div class="main-area">
             <slot/>
         </div>
     </div>

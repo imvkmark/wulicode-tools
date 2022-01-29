@@ -28,7 +28,8 @@ NODE_ENV=development
 
 ## 验证规则
 
-支持以下的验证规则, 规则的说明见 : [Laravel 6.0 可用验证规则](https://learnku.com/docs/laravel/6.x/validation/5144#available-validation-rules)
+支持以下的验证规则,
+规则的说明见 : [Laravel 6.0 可用验证规则](https://learnku.com/docs/laravel/6.x/validation/5144#available-validation-rules)
 
 ```
 array
@@ -87,6 +88,18 @@ required_with_all
 required_without
 required_without_all
 ```
+
+## 待处理
+
+### 主题
+
+- 支持切换组件大小
+
+### 表格
+
+- 支持自定义数据的返回
+- 拆分 System Grid 框架
+- 列表图片支持预览以及鼠标切换左右
 
 ## Thanks To
 

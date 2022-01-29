@@ -17,8 +17,14 @@ export interface PoppyTypes {
     token: string,
 }
 
+
+export interface ThemeTypes {
+    size: string,
+}
+
 export interface AllStateTypes extends RootStateTypes {
-    poppy: PoppyTypes
+    poppy: PoppyTypes,
+    theme: ThemeTypes
 }
 
 
