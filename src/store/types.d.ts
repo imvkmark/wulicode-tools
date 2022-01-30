@@ -22,9 +22,14 @@ export interface ThemeTypes {
     size: string,
 }
 
+export interface GridTypes {
+    request: object,
+}
+
 export interface AllStateTypes extends RootStateTypes {
     poppy: PoppyTypes,
-    theme: ThemeTypes
+    theme: ThemeTypes,
+    grid: GridTypes
 }
 
 

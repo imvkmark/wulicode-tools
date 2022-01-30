@@ -17,6 +17,8 @@
                             :value="JSON.parse(get(scope.row, String(get(col, 'field'))))"/>
                         <ColumnDownload v-else-if="get(col, 'type') === 'download'"
                             :value="JSON.parse(get(scope.row, String(get(col, 'field'))))"/>
+                        <ColumnActions v-else-if="get(col, 'type') === 'actions'"
+                            :value="JSON.parse(get(scope.row, String(get(col, 'field'))))"/>
                         <span v-else>
                             {{ get(scope.row, String(get(col, 'field'))) }}
                         </span>
@@ -34,7 +36,7 @@
 </template>
 <script lang="ts" setup>
 import { computed, onMounted, reactive, ref, watch } from 'vue';
-import { get, merge } from 'lodash-es';
+import { get, isEmpty, merge } from 'lodash-es';
 import { sizeClass } from '@/utils/helper';
 import { useStore } from '@/store';
 import { apiGrid } from "@/services/demo";
@@ -42,6 +44,8 @@ import ColumnText from "@/components/table/ColumnText.vue";
 import ColumnLink from "@/components/table/ColumnLink.vue";
 import ColumnImage from "@/components/table/ColumnImage.vue";
 import ColumnDownload from "@/components/table/ColumnDownload.vue";
+import ColumnActions from "@/components/table/ColumnActions.vue";
+import { toast } from "@/utils/utils";
 
 const log = console;
 const props = defineProps({
@@ -92,6 +96,23 @@ watch([pagesizeRef, pageRef], ([pagesize, page]) => {
     params.pagesize = pagesize;
     params.page = page;
     onLoad()
+})
+
+/* 进行请求
+**---------------------------------------------------*/
+watch(() => store.state.grid.request, (val) => {
+    if (!isEmpty(val)) {
+        grid.loading = true;
+        apiGrid(get(val, 'url'), {}, 'POST').then((resp) => {
+            grid.loading = false;
+            toast(resp);
+            const { status } = resp
+            if (!status) {
+                onLoad();
+            }
+        })
+        store.dispatch('grid/SetRequest', {})
+    }
 })
 
 const onLoad = () => {

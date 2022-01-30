@@ -4,6 +4,7 @@ import { AllStateTypes, RootStateTypes } from './types'
 
 import poppy from './modules/poppy'
 import theme from './modules/theme'
+import grid from './modules/grid'
 
 export const store = createStore<RootStateTypes>({
     state: {
@@ -47,7 +48,7 @@ export const store = createStore<RootStateTypes>({
         }
     },
     modules: {
-        poppy, theme
+        poppy, theme, grid
     }
 })
 

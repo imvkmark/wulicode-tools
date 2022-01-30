@@ -5,7 +5,7 @@ import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime'
 import locale from 'dayjs/locale/zh-cn'
 import { ElMessage } from 'element-plus';
-import { isString } from 'lodash-es';
+import { isInteger, isString } from 'lodash-es';
 
 
 /**
@@ -108,13 +108,17 @@ export const formatUnixTimestamp = (timestamp: any, format = 'YYYY-MM-DD HH:mm:s
 /**
  * 封装 ele 的状态显示
  * @param {string|object} resp
- * @param {boolean|string} warning
+ * @param {boolean|string|integer} warning
  */
 export const toast = (resp: any, warning: any = true) => {
+    let type = warning;
+    if (isInteger(warning)) {
+        type = Boolean(warning);
+    }
     if (isString(resp)) {
-        if (warning === true) {
+        if (type === true) {
             ElMessage.success(resp);
-        } else if (warning === false) {
+        } else if (type === false) {
             ElMessage.warning(resp);
         } else {
             ElMessage.error(resp);
