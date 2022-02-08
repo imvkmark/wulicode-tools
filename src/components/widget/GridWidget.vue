@@ -47,7 +47,6 @@ import ColumnDownload from "@/components/table/ColumnDownload.vue";
 import ColumnActions from "@/components/table/ColumnActions.vue";
 import { toast } from "@/utils/utils";
 
-const log = console;
 const props = defineProps({
     title: String,
     description: String,
@@ -95,7 +94,7 @@ const emit = defineEmits([
 watch([pagesizeRef, pageRef], ([pagesize, page]) => {
     params.pagesize = pagesize;
     params.page = page;
-    onLoad()
+    loadData()
 })
 
 /* 进行请求
@@ -108,14 +107,14 @@ watch(() => store.state.grid.request, (val) => {
             toast(resp);
             const { status } = resp
             if (!status) {
-                onLoad();
+                loadData();
             }
         })
         store.dispatch('grid/SetRequest', {})
     }
 })
 
-const onLoad = () => {
+const loadData = () => {
     if (!props.url) {
         return;
     }
@@ -123,23 +122,22 @@ const onLoad = () => {
     apiGrid(props.url, merge({
         _query: 1
     }, params), 'get').then(({ data }) => {
-        console.log(data)
         grid.rows = get(data, 'list');
         grid.total = get(data, 'total');
-
         grid.loading = false;
     })
 }
 
 // Url 初始赋值,请求第一页
 watch(() => props.url, (newVal, oldVal) => {
-    if (oldVal === '' && newVal) {
-        onLoad();
+    console.log('url', props.url, newVal, oldVal);
+    if ((oldVal === '' && newVal) || (newVal !== oldVal)) {
+        loadData();
     }
 })
 
 onMounted(() => {
-    onLoad();
+    loadData();
 })
 
 </script>

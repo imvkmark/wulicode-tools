@@ -5,7 +5,7 @@ import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime'
 import locale from 'dayjs/locale/zh-cn'
 import { ElMessage } from 'element-plus';
-import { isInteger, isString } from 'lodash-es';
+import { camelCase, isInteger, isString, upperFirst } from 'lodash-es';
 
 
 /**
@@ -103,6 +103,10 @@ export const formatUnixTimestamp = (timestamp: any, format = 'YYYY-MM-DD HH:mm:s
     }
     dayjs.locale(locale.name);
     return dayjs(timestamp * 1000).format(format);
+}
+
+export const upperCamelCase = (str: string) => {
+    return upperFirst(camelCase(str))
 }
 
 /**

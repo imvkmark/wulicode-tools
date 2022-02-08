@@ -5,8 +5,9 @@
 </template>
 <script lang="ts" setup>
 import { icon } from "@/utils/icon";
-import { camelCase, get, upperFirst } from "lodash-es"
+import { get } from "lodash-es"
 import { toRef } from "vue";
+import { upperCamelCase } from "@/utils/utils";
 
 const props = defineProps({
     type: {
@@ -16,7 +17,7 @@ const props = defineProps({
         type: [String, Object]
     }
 })
-const iconType = upperFirst(camelCase(toRef(props, 'type').value));
+const iconType = upperCamelCase(String(toRef(props, 'type').value));
 </script>
 
 <style scoped lang="less">

@@ -37,6 +37,9 @@ const routes = {
     ],
     grid: [
         { name: 'grid.index', title: 'Grid-Normal', params: { type: 'normal' } },
+        { name: 'grid.index', title: 'Grid-Button', params: { type: 'button' } },
+        { name: 'grid.index', title: 'Grid-Button-Group', params: { type: 'button-group' } },
+        { name: 'grid.index', title: 'Grid-Button-Dropdown', params: { type: 'button-dropdown' } },
     ],
     form: [
         { name: 'form.index', title: 'Field-Textarea', params: { type: 'field-textarea' } },
