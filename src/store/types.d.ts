@@ -23,9 +23,9 @@ export interface ThemeTypes {
 }
 
 export interface GridTypes {
-    request: object,
     action: object,
     button: string,
+    page: string,
     loading: boolean,
     reload: boolean,
     reset: boolean,

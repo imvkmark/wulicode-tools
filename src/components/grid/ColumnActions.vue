@@ -96,10 +96,7 @@ const trans = reactive({
     dropdownBefore: computed(() => {
         const items = get(props.value, 'items');
         const length = get(props.value, 'length');
-        console.log(props.value);
         if (get(props.value, 'style') === 'dropdown') {
-            console.log(items, items.length, length);
-            console.log(items.length > length);
             // 相等 返回全部; 例如允许 5个, 一共有 5 个, 则返回全部
             if (items.length === length) {
                 return items;

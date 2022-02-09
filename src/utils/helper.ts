@@ -69,6 +69,29 @@ export const sizeClass = (size: string) => {
     }
 }
 
+/**
+ * 百分比尺寸
+ * @param size
+ */
+export const sizePercent = (size: string) => {
+    switch (size) {
+        case 'xs':
+            return '100%';
+        case 'sm':
+            return '90%';
+        case 'md':
+            return '50%';
+        case 'lg':
+            return '45%';
+        case 'xl':
+            return '40%';
+        case 'xxl':
+            return '35%';
+        default:
+            return '30%';
+    }
+}
+
 /*
 |--------------------------------------------------------------------------
 | 验证

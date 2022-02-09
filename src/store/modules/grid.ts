@@ -1,23 +1,20 @@
 import { Module } from 'vuex'
 import { GridTypes, RootStateTypes } from '@/store/types'
-import { get, set } from "lodash-es";
+import { get } from "lodash-es";
 import { apiGrid } from "@/services/demo";
 import { toast } from "@/utils/utils";
 
 const grid: Module<GridTypes, RootStateTypes> = {
     namespaced: true,
     state: {
-        request: {},
         action: {},
         loading: false,
+        page: '',
         button: '',
         reload: false,
         reset: false,
     },
     mutations: {
-        SET_REQUEST(state: GridTypes, request) {
-            state.request = request
-        },
         LOADING(state: GridTypes) {
             state.loading = true
         },
@@ -42,30 +39,39 @@ const grid: Module<GridTypes, RootStateTypes> = {
         BTN_EMPTY(state: GridTypes) {
             state.button = '';
         },
-
+        PAGE_SET(state: GridTypes, page) {
+            state.page = page;
+        },
+        PAGE_EMPTY(state: GridTypes) {
+            state.page = '';
+        },
     },
     actions: {
-        // 请求
-        SetRequest({ commit }, request) {
-            commit('SET_REQUEST', request)
-        },
         // 进行操作
         DoAction({ commit }, { action }) {
-            if (get(action, 'method') === 'request') {
-                const url = get(action, 'url');
-                commit('BTN_KEY', window.btoa(url))
-                apiGrid(url, {}, 'POST').then((resp) => {
-                    commit('BTN_EMPTY')
-                    toast(resp);
-                    const { status } = resp
-                    if (!status) {
-                        commit("RELOAD_START");
-                    }
-                })
-            }
-            if (get(action, 'method') === 'page') {
-                toast('Paging...')
-                // store.dispatch('grid/SetPage', item);
+            const url = get(action, 'url');
+            let method = get(action, 'method');
+
+            switch (method) {
+                // 页面请求
+                case 'request':
+                    commit('BTN_KEY', window.btoa(url))
+                    apiGrid(url, {}, 'POST').then((resp) => {
+                        commit('BTN_EMPTY')
+                        toast(resp);
+                        const { success } = resp
+                        if (success) {
+                            commit("RELOAD_START");
+                        }
+                    })
+                    break;
+                // 页面
+                case 'page':
+                    commit('PAGE_SET', url)
+                    break;
+                default:
+                    toast('不正确的操作类型');
+                    break;
             }
         },
     }

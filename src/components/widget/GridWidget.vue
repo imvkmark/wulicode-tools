@@ -5,7 +5,7 @@
             <small v-if="description">{{ description }}</small>
         </h3>
         <!-- 表格数据 -->
-        <ElTable :data="grid.rows" border stripe v-loading="trans.loading">
+        <ElTable :data="trans.rows" border stripe v-loading="trans.loading">
             <template v-for="col in cols" :key="col">
                 <ElTableColumn :prop="get(col, 'field')" :width="get(col, 'width', '')" :label="get(col, 'label')">
                     <template #default="scope">
@@ -27,24 +27,28 @@
             </template>
         </ElTable>
         <div class="pagination">
-            <ElPagination :page-sizes="pageSizes" :total="grid.total" background
+            <ElPagination :page-sizes="pageSizes" :total="trans.total" background
                 layout="sizes,prev, pager, next, total"
                 v-model:page-size="pagesizeRef"
                 v-model:current-page="pageRef"/>
         </div>
     </div>
+    <ElDrawer v-model="drawerRef" :size="sizePercent(trans.size)">
+        <FormDrawer :url="trans.page"/>
+    </ElDrawer>
 </template>
 <script lang="ts" setup>
 import { computed, onMounted, reactive, ref, watch } from 'vue';
 import { get, merge } from 'lodash-es';
-import { sizeClass } from '@/utils/helper';
+import { sizeClass, sizePercent } from '@/utils/helper';
 import { useStore } from '@/store';
 import { apiGrid } from "@/services/demo";
-import ColumnText from "@/components/table/ColumnText.vue";
-import ColumnLink from "@/components/table/ColumnLink.vue";
-import ColumnImage from "@/components/table/ColumnImage.vue";
-import ColumnDownload from "@/components/table/ColumnDownload.vue";
-import ColumnActions from "@/components/table/ColumnActions.vue";
+import ColumnText from "@/components/grid/ColumnText.vue";
+import ColumnLink from "@/components/grid/ColumnLink.vue";
+import ColumnImage from "@/components/grid/ColumnImage.vue";
+import ColumnDownload from "@/components/grid/ColumnDownload.vue";
+import ColumnActions from "@/components/grid/ColumnActions.vue";
+import FormDrawer from "@/components/grid/FormDrawer.vue";
 
 const props = defineProps({
     title: String,
@@ -70,20 +74,27 @@ const props = defineProps({
 })
 const store = useStore();
 const trans = reactive({
-    size: computed(() => store.state.size),
-    loading: computed(() => store.state.grid.loading),
-})
-const pagesizeRef = ref(15)
-const pageRef = ref(1)
-const grid = reactive({
     rows: [],
     total: 0,
-    loading: false
+    size: computed(() => store.state.size),
+    loading: computed(() => store.state.grid.loading),
+    page: computed(() => store.state.grid.page)
 })
-
+const pagesizeRef = ref(15);
+const pageRef = ref(1);
+const drawerRef = ref(false);
 const params = reactive({
     page: 1,
     pagesize: 15
+})
+
+watch(() => store.state.grid.page, (newVal) => {
+    drawerRef.value = Boolean(newVal);
+})
+watch(() => drawerRef.value, (newVal) => {
+    if (!newVal) {
+        store.commit('grid/PAGE_EMPTY')
+    }
 })
 
 // 监听多个 Ref
@@ -98,8 +109,8 @@ const reloadGrid = () => {
     apiGrid(props.url, merge({
         _query: 1
     }, params), 'get').then(({ data }) => {
-        grid.rows = get(data, 'list');
-        grid.total = get(data, 'total');
+        trans.rows = get(data, 'list');
+        trans.total = get(data, 'total');
         store.commit('grid/LOADED')
     })
 }
@@ -110,8 +121,8 @@ const resetGrid = () => {
         page: 1,
         pagesize: pagesizeRef.value
     }, 'get').then(({ data }) => {
-        grid.rows = get(data, 'list');
-        grid.total = get(data, 'total');
+        trans.rows = get(data, 'list');
+        trans.total = get(data, 'total');
         store.commit('grid/LOADED')
     })
 }
