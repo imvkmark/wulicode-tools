@@ -2,9 +2,8 @@ import { InjectionKey } from 'vue'
 import { createStore, Store, useStore as baseUseStore } from 'vuex'
 import { AllStateTypes, RootStateTypes } from './types'
 
-import poppy from './modules/poppy'
-import theme from './modules/theme'
-import grid from './modules/grid'
+import grid from '@/framework/store/grid'
+import poppy from '@/framework/store/poppy'
 
 export const store = createStore<RootStateTypes>({
     state: {
@@ -48,7 +47,7 @@ export const store = createStore<RootStateTypes>({
         }
     },
     modules: {
-        poppy, theme, grid
+        poppy, grid
     }
 })
 

@@ -4,11 +4,11 @@
 </template>
 <script lang="ts" setup>
 import { onMounted, reactive, watch } from 'vue';
-import { apiGrid } from '@/services/demo';
-import FormWidget from '@/components/widget/FormWidget.vue';
+import FormWidget from '@/framework/components/widget/FormWidget.vue';
 import { get } from 'lodash-es';
 import { ElNotification } from 'element-plus';
 import { useStore } from "@/store";
+import { apiPyGrid } from "@/framework/services/poppy";
 
 const props = defineProps({
     url: {
@@ -29,7 +29,7 @@ const trans = reactive({
 
 const doRequest = () => {
     trans.loading = true;
-    apiGrid(props.url, {}, 'get').then(({ data }) => {
+    apiPyGrid(props.url, {}, 'get').then(({ data }) => {
         trans.title = get(data, 'title');
         trans.description = get(data, 'description');
         trans.items = get(data, 'items');
@@ -40,7 +40,7 @@ const doRequest = () => {
 }
 
 const onSubmit = (data: any) => {
-    apiGrid(props.url, data, 'post').then(({ message, success }) => {
+    apiPyGrid(props.url, data, 'post').then(({ message, success }) => {
         ElNotification({
             title: success ? '成功' : '失败',
             message
@@ -64,5 +64,5 @@ onMounted(() => {
 </script>
 
 <style scoped lang="less">
-@import '../../assets/style/vars';
+@import '../../../assets/style/vars';
 </style>

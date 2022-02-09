@@ -25,9 +25,9 @@
 <script lang="ts" setup>
 import { useStore } from '@/store';
 import { computed, defineComponent, reactive } from 'vue';
-import { sizeGt, sizeLte } from '@/utils/helper';
 import { appNavDefs } from '@/utils/conf';
 import { ArrowLeft, Close, Expand } from '@element-plus/icons';
+import { sizeGt, sizeLte } from "@/framework/utils/helper";
 
 const store = useStore();
 const trans = reactive({

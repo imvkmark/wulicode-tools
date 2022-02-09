@@ -10,17 +10,17 @@ import {
     isInteger,
     isIpV4,
     isIpV6,
+    isMobile,
     isNumeric,
     isUrl,
     regexTest,
     sprintf,
     toDayjsFormat
-} from '@/utils/helper';
+} from '@/framework/utils/helper';
 import dayjs from 'dayjs';
 import customParseFormat from 'dayjs/plugin/customParseFormat';
 import IsSameOrAfter from 'dayjs/plugin/isSameOrAfter';
 import IsSameOrBefore from 'dayjs/plugin/isSameOrBefore';
-import { isMobile } from '@/utils/utils';
 
 dayjs.extend(customParseFormat)
 dayjs.extend(IsSameOrAfter)

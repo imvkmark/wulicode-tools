@@ -16,7 +16,7 @@
 <script lang="ts" setup>
 import { onMounted, ref, watch } from 'vue';
 import { get } from 'lodash-es';
-import XIcon from "@/components/element/XIcon.vue";
+import XIcon from "@/framework/components/element/XIcon.vue";
 
 const props = defineProps({
     name: String,

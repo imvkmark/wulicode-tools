@@ -4,10 +4,10 @@
     </ElIcon>
 </template>
 <script lang="ts" setup>
-import { icon } from "@/utils/icon";
+import { icon } from "@/framework/utils/icon";
 import { get } from "lodash-es"
 import { toRef } from "vue";
-import { upperCamelCase } from "@/utils/utils";
+import { upperCamelCase } from "@/framework/utils/helper";
 
 const props = defineProps({
     type: {
@@ -21,5 +21,5 @@ const iconType = upperCamelCase(String(toRef(props, 'type').value));
 </script>
 
 <style scoped lang="less">
-@import '../../assets/style/vars';
+@import '../../../assets/style/vars';
 </style>

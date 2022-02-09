@@ -78,28 +78,28 @@
 <script lang="ts" setup>
 import { computed, onMounted, reactive, Ref, ref, toRef, watch } from 'vue';
 import { clone, get, includes, indexOf, set } from 'lodash-es';
-import FieldText from '@/components/form/FieldText.vue';
+import FieldText from '@/framework/components/form/FieldText.vue';
 import { ElForm } from 'element-plus';
-import useValidation from '@/composables/useValidation';
-import { sizeClass, sizeLt } from '@/utils/helper';
+import useValidation from '@/framework/composables/useValidation';
+import { sizeClass, sizeLt } from '@/framework/utils/helper';
 import { useStore } from '@/store';
-import FieldTextarea from '@/components/form/FieldTextarea.vue';
-import FieldNumber from '@/components/form/FieldNumber.vue';
-import FieldRadio from '@/components/form/FieldRadio.vue';
-import FieldCheckbox from '@/components/form/FieldCheckbox.vue';
-import FieldColor from '@/components/form/FieldColor.vue';
-import FieldDate from '@/components/form/FieldDate.vue';
-import FieldDateRange from '@/components/form/FieldDateRange.vue';
-import FieldTime from '@/components/form/FieldTime.vue';
-import FieldTimeRange from '@/components/form/FieldTimeRange.vue';
-import FieldSelect from '@/components/form/FieldSelect.vue';
-import FieldMultiSelect from '@/components/form/FieldMultiSelect.vue';
-import FieldSwitch from '@/components/form/FieldSwitch.vue';
-import FieldDivider from '@/components/form/FieldDivider.vue';
-import FieldEditor from '@/components/form/FieldEditor.vue';
-import FieldFile from '@/components/form/FieldFile.vue';
-import FieldMultiFile from '@/components/form/FieldMultiFile.vue';
-import FieldCode from "@/components/form/FieldCode.vue";
+import FieldTextarea from '@/framework/components/form/FieldTextarea.vue';
+import FieldNumber from '@/framework/components/form/FieldNumber.vue';
+import FieldRadio from '@/framework/components/form/FieldRadio.vue';
+import FieldCheckbox from '@/framework/components/form/FieldCheckbox.vue';
+import FieldColor from '@/framework/components/form/FieldColor.vue';
+import FieldDate from '@/framework/components/form/FieldDate.vue';
+import FieldDateRange from '@/framework/components/form/FieldDateRange.vue';
+import FieldTime from '@/framework/components/form/FieldTime.vue';
+import FieldTimeRange from '@/framework/components/form/FieldTimeRange.vue';
+import FieldSelect from '@/framework/components/form/FieldSelect.vue';
+import FieldMultiSelect from '@/framework/components/form/FieldMultiSelect.vue';
+import FieldSwitch from '@/framework/components/form/FieldSwitch.vue';
+import FieldDivider from '@/framework/components/form/FieldDivider.vue';
+import FieldEditor from '@/framework/components/form/FieldEditor.vue';
+import FieldFile from '@/framework/components/form/FieldFile.vue';
+import FieldMultiFile from '@/framework/components/form/FieldMultiFile.vue';
+import FieldCode from "@/framework/components/form/FieldCode.vue";
 
 const props = defineProps({
     title: String,
@@ -164,5 +164,5 @@ onMounted(() => {
 </script>
 
 <style scoped lang="less">
-@import '../../assets/style/vars';
+@import '../../../assets/style/vars';
 </style>

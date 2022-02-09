@@ -1,6 +1,6 @@
 // @ts-ignore
 import assert from 'assert';
-import { regexTest, sprintf } from '@/utils/helper';
+import { regexTest, sprintf } from '@/framework/utils/helper';
 
 describe('regex', function () {
     it('test-number', function () {

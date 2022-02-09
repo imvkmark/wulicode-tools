@@ -3,8 +3,8 @@
 </template>
 <script lang="ts" setup>
 import { onMounted, Ref, ref, watch } from 'vue';
-import { urltoFile } from '@/utils/helper';
-import { apiPySystemUploadImage } from '@/services/poppy';
+import { urlToFile } from '@/framework/utils/helper';
+import { apiPySystemUploadImage } from '@/framework/services/poppy';
 import { first, get } from 'lodash-es';
 
 const props = defineProps({
@@ -21,7 +21,7 @@ const props = defineProps({
 const md = <Ref>ref()
 
 const onImageAdd = (name: string, file: any) => {
-    urltoFile(file.miniurl).then((f) => {
+    urlToFile(file.miniurl).then((f) => {
         apiPySystemUploadImage(f).then((resp) => {
             const { data } = resp;
             if (get(data, 'url', []).length) {

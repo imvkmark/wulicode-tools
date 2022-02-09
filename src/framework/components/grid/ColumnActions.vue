@@ -73,8 +73,8 @@
 </template>
 <script lang="ts" setup>
 import { get, slice } from "lodash-es";
-import { icon } from "@/utils/icon";
-import { base64Encode, upperCamelCase } from "@/utils/utils";
+import { icon } from "@/framework/utils/icon";
+import { base64Encode, upperCamelCase } from "@/framework/utils/helper";
 import { computed, reactive } from "vue";
 import { useStore } from "@/store";
 import { ElMessageBox } from "element-plus";

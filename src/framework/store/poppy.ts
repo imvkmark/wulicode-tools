@@ -1,31 +1,38 @@
 import { Module } from 'vuex'
-import { PoppyTypes, RootStateTypes } from '@/store/types'
 import { get } from 'lodash-es';
-import { deviceId, localStore, sessionStore, toast } from '@/utils/utils';
-import { storageKey } from '@/utils/conf';
-import { apiPySystemAuthAccess, apiPySystemCoreInfo } from '@/services/poppy';
-import { EM_USER_LOGIN, emitter } from '@/bus/mitt'
+import { localStore, sessionStore, toast } from '@/framework/utils/helper';
+import { apiPySystemAuthAccess, apiPySystemCoreInfo } from '@/framework/services/poppy';
+import { emitter, PY_USER_LOGIN } from '@/framework/bus/mitt'
+import { PyPoppyTypes, PyRootStateTypes } from "@/framework/store/types";
+import { deviceId } from "@/framework/utils/helper";
+import { pyStorageKey } from "@/framework/utils/conf";
 
 // Create a new store Modules.
-const poppy: Module<PoppyTypes, RootStateTypes> = {
+const poppy: Module<PyPoppyTypes, PyRootStateTypes> = {
     namespaced: true,
     state: {
         appId: '',
         token: '',
         core: {},
-        user: {}
+        user: {},
+
+        // theme
+        size: ''
     },
     mutations: {
-        SET_APP_ID(state: PoppyTypes, deviceId) {
+        SET_SIZE(state: PyPoppyTypes, size) {
+            state.size = size
+        },
+        SET_APP_ID(state: PyPoppyTypes, deviceId) {
             state.appId = deviceId
         },
-        SET_TOKEN(state: PoppyTypes, obj) {
+        SET_TOKEN(state: PyPoppyTypes, obj) {
             state.token = get(obj, 'token')
         },
-        SET_CORE(state: PoppyTypes, obj) {
+        SET_CORE(state: PyPoppyTypes, obj) {
             state.core = obj
         },
-        SET_USER(state: PoppyTypes, obj) {
+        SET_USER(state: PyPoppyTypes, obj) {
             state.user = obj
         }
     },
@@ -39,13 +46,13 @@ const poppy: Module<PoppyTypes, RootStateTypes> = {
             commit('SET_APP_ID', deviceId())
 
             // 系统信息
-            let info: any = sessionStore(storageKey.PY_CORE_INFO);
+            let info: any = sessionStore(pyStorageKey.PY_CORE_INFO);
             if (info) {
                 commit('SET_CORE', info)
             } else {
                 apiPySystemCoreInfo().then(({ success, data }) => {
                     if (success) {
-                        sessionStore(storageKey.PY_CORE_INFO, data);
+                        sessionStore(pyStorageKey.PY_CORE_INFO, data);
                         commit('SET_CORE', info)
                     }
                 })
@@ -71,11 +78,11 @@ const poppy: Module<PoppyTypes, RootStateTypes> = {
          */
         Login({ commit, state, dispatch }, { token }) {
             // 保存用户的Token
-            localStore(storageKey.PY_TOKEN, token);
+            localStore(pyStorageKey.PY_TOKEN, token);
             // token 变化在监听中触发获取信息
             commit('SET_TOKEN', { token });
             // 另一种方式触发事件
-            emitter.emit(EM_USER_LOGIN, { token })
+            emitter.emit(PY_USER_LOGIN, { token })
         },
 
         /**
@@ -87,11 +94,18 @@ const poppy: Module<PoppyTypes, RootStateTypes> = {
             if (from === 'api') {
                 toast('用户访问受限, 请重新登录', false);
             }
-            localStore(storageKey.PY_TOKEN, null);
+            localStore(pyStorageKey.PY_TOKEN, null);
             commit('SET_TOKEN', { token: '' })
             commit('SET_USER', {})
-        }
+        },
 
+        /**
+         * 设定组件规格大小
+         */
+        SetSize({ commit }, size) {
+            // 设备ID
+            commit('SET_SIZE', size)
+        },
     }
 }
 

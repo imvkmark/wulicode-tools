@@ -8,13 +8,13 @@
 <script lang="ts" setup>
 import { onMounted, reactive, ref, watch } from 'vue';
 import { apiDemo } from '@/services/demo';
-import FormWidget from '@/components/widget/FormWidget.vue';
+import FormWidget from '@/framework/components/widget/FormWidget.vue';
 import { get } from 'lodash-es';
 import PxMain from '@/components/base/PxMain.vue';
 import { useRouter } from 'vue-router';
 import { ElNotification } from 'element-plus';
 import { useStore } from "@/store";
-import GridWidget from "@/components/widget/GridWidget.vue";
+import GridWidget from "@/framework/components/widget/GridWidget.vue";
 
 let router = useRouter();
 

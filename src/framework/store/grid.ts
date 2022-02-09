@@ -1,10 +1,19 @@
 import { Module } from 'vuex'
-import { GridTypes, RootStateTypes } from '@/store/types'
 import { get } from "lodash-es";
-import { apiGrid } from "@/services/demo";
-import { toast } from "@/utils/utils";
+import { toast } from "@/framework/utils/helper";
+import { PyRootStateTypes } from "@/framework/store/types";
+import { apiPyGrid } from "@/framework/services/poppy";
 
-const grid: Module<GridTypes, RootStateTypes> = {
+export interface GridTypes {
+    action: object,
+    button: string,
+    page: string,
+    loading: boolean,
+    reload: boolean,
+    reset: boolean,
+}
+
+const grid: Module<GridTypes, PyRootStateTypes> = {
     namespaced: true,
     state: {
         action: {},
@@ -56,7 +65,7 @@ const grid: Module<GridTypes, RootStateTypes> = {
                 // 页面请求
                 case 'request':
                     commit('BTN_KEY', window.btoa(url))
-                    apiGrid(url, {}, 'POST').then((resp) => {
+                    apiPyGrid(url, {}, 'POST').then((resp) => {
                         commit('BTN_EMPTY')
                         toast(resp);
                         const { success } = resp

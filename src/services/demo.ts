@@ -1,4 +1,5 @@
-import request from '@/utils/request';
+import request from "@/framework/utils/request";
+
 
 export async function apiDemo(type: string, params: object, method: string) {
     return request({
@@ -8,12 +9,5 @@ export async function apiDemo(type: string, params: object, method: string) {
     });
 }
 
-export async function apiGrid(url: string, params: object, method: string) {
-    return request({
-        url: url,
-        params,
-        method
-    });
-}
 
 

@@ -1,4 +1,4 @@
-type RequestOptions = {
+export interface PyRequestOptions  {
     method?: string,
     from?: string,
     url: string,

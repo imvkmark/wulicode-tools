@@ -1,4 +1,6 @@
-export interface RootStateTypes {
+import { PyGridTypes, PyPoppyTypes, PyRootStateTypes } from "@/framework/store/types";
+
+export interface RootStateTypes extends PyRootStateTypes {
     text: string,
     loading: boolean,
     navActive: boolean,
@@ -10,31 +12,15 @@ export interface RootStateTypes {
     sidebars: object,
 }
 
-export interface PoppyTypes {
-    user: object,
-    appId: string,
-    core: object,
-    token: string,
-}
-
 
 export interface ThemeTypes {
     size: string,
 }
 
-export interface GridTypes {
-    action: object,
-    button: string,
-    page: string,
-    loading: boolean,
-    reload: boolean,
-    reset: boolean,
-}
-
-export interface AllStateTypes extends RootStateTypes {
-    poppy: PoppyTypes,
+export interface AllStateTypes extends RootStateTypes, PyRootStateTypes {
+    poppy: PyPoppyTypes,
     theme: ThemeTypes,
-    grid: GridTypes
+    grid: PyGridTypes
 }
 
 

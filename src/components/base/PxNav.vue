@@ -6,7 +6,7 @@
             >
                 <em>
                     <ElIcon>
-                        <component :is="navDefs[prefix(nav.name)]"/>
+                        <component :is="appNavDefs[prefix(nav.name)]"/>
                     </ElIcon>
                     <span class=" side-text">{{ nav.text }}</span>
                 </em>
@@ -19,7 +19,8 @@
 import { computed, onMounted, reactive, watch } from 'vue';
 import { useRouter } from 'vue-router';
 import { useStore } from '@/store';
-import { navDefs, sizeClass } from '@/utils/defs';
+import { sizeClass } from "@/framework/utils/helper";
+import { appNavDefs } from "@/utils/conf";
 
 // 监听路由前缀的变化
 let router = useRouter();

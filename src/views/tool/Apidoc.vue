@@ -27,7 +27,7 @@ import { useStore } from '@/store';
 import { debounce, get } from 'lodash-es';
 import { useRouter } from 'vue-router';
 import { apiOpToolApidoc } from '@/services/op';
-import { toast } from '@/utils/utils';
+import { toast } from '@/framework/utils/helper';
 import { ElForm } from 'element-plus';
 import { copyText } from 'vue3-clipboard'
 import PxMain from '@/components/base/PxMain.vue';

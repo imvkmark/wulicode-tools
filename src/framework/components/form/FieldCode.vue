@@ -8,9 +8,9 @@
 </template>
 <script lang="ts" setup>
 import { ref } from 'vue';
-import XIcon from "@/components/element/XIcon.vue";
+import XIcon from "@/framework/components/element/XIcon.vue";
 import { copyText } from 'vue3-clipboard'
-import { toast } from "@/utils/utils";
+import { toast } from "@/framework/utils/helper";
 
 const props = defineProps({
     value: {

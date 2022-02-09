@@ -16,8 +16,8 @@
 import { computed, onMounted, reactive, watch } from 'vue'
 import { useRouter } from 'vue-router';
 import { useStore } from '@/store';
-import { sizeClass } from '@/utils/defs';
 import { get, includes, keys } from 'lodash-es';
+import { sizeClass } from "@/framework/utils/helper";
 
 const router = useRouter();
 const store = useStore();

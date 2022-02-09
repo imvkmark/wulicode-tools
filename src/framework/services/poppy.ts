@@ -1,5 +1,5 @@
-import request from '@/utils/request';
-import { deviceId } from '@/utils/utils';
+import request from '@/framework/utils/request';
+import { deviceId } from "@/framework/utils/helper";
 
 /**
  * 发送验证码
@@ -84,11 +84,10 @@ export async function apiPySystemCoreInfo() {
     });
 }
 
-/**
- * 地区码
- */
-export async function apiPyAreaCode() {
+export async function apiPyGrid(url: string, params: object, method: string) {
     return request({
-        url: '/api_v1/area/area/code'
+        url: url,
+        params,
+        method
     });
 }

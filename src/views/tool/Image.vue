@@ -30,10 +30,10 @@
 <script lang="ts" setup>
 import { trimEnd, trimStart } from 'lodash-es';
 import { onMounted, reactive, watch } from 'vue';
-import { appUrl } from '@/utils/conf';
 import { copyText } from 'vue3-clipboard';
-import { toast } from '@/utils/utils';
+import { toast } from '@/framework/utils/helper';
 import PxMain from '@/components/base/PxMain.vue';
+import { pyAppUrl } from "@/framework/utils/conf";
 
 
 const trans = reactive({
@@ -69,7 +69,7 @@ const toNumber = function (val) {
 }
 
 const onChange = function () {
-    let url = appUrl;
+    let url = pyAppUrl;
     let hwSpec = toNumber(trans.width) ? toNumber(trans.width) : '428';
     let width = toNumber(trans.width) ? toNumber(trans.width) : '428';
     let height = toNumber(trans.height) ? toNumber(trans.height) : '214';

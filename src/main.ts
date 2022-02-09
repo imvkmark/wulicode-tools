@@ -5,21 +5,22 @@ import { key, store } from '@/store'
 import App from './App.vue'
 import * as Sentry from '@sentry/vue';
 import { Integrations } from '@sentry/tracing';
-import { appIsProd, appMode, appVersion, sentryDsnUrl } from '@/utils/conf';
+import { appVersion, sentryDsnUrl } from '@/utils/conf';
 import ElementPlus from 'element-plus'
 import zhCn from 'element-plus/es/locale/lang/zh-cn'
 import 'element-plus/dist/index.css'
 import '@/assets/style/style.less';
 import mavonEditor from 'mavon-editor'
 import 'mavon-editor/dist/css/index.css'
+import { pyAppIsProd, pyAppMode } from "@/framework/utils/conf";
 
 const app = createApp(App)
 
 Sentry.init({
     app,
     dsn: sentryDsnUrl,
-    release: `${appMode}-${appVersion}`,
-    environment: appMode,
+    release: `${pyAppMode}-${appVersion}`,
+    environment: pyAppMode,
     integrations: [
         new Integrations.BrowserTracing({
             routingInstrumentation: Sentry.vueRouterInstrumentation(router),
@@ -27,7 +28,7 @@ Sentry.init({
         })
     ],
     // 开发环境下不抛出错误
-    sampleRate: appIsProd ? 1 : 1,
+    sampleRate: pyAppIsProd ? 1 : 1,
     /**
      * 线上环境捕捉 1%, 开发环境捕捉完整
      * https://docs.sentry.io/platforms/javascript/guides/vue/configuration/sampling/#setting-a-sampling-function
@@ -36,6 +37,7 @@ Sentry.init({
         return 0
     }
 });
+
 app.use(ElementPlus, {
     locale: zhCn
 })

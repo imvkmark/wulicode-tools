@@ -2,7 +2,7 @@
 import assert from 'assert';
 import Rules from '../src/utils/rules';
 import Schema from 'async-validator';
-import { regexTest } from '../src/utils/helper';
+import { regexTest } from '../src/framework/utils/helper';
 
 describe('validation', function () {
     // required
