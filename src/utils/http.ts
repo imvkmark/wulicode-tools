@@ -100,7 +100,7 @@ const http = (options: PyRequestOptions) => {
     }
 
 
-    let token = localStore(pyStorageKey.PY_TOKEN);
+    let token = localStore(pyStorageKey.TOKEN);
     set(params, 'timestamp', Math.round(new Date().getTime() / 1000));
     set(params, 'sign', requestSign(params, token ? token : ''));
 

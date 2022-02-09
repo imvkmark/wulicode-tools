@@ -15,7 +15,7 @@ export default function useClearCache() {
         let lsKeys = keys(localStorage);
         each(lsKeys, function (key) {
             // 设备ID 不清除
-            if (key.indexOf(pyStorageKey.PY_DEVICE_ID) >= 0) {
+            if (key.indexOf(pyStorageKey.DEVICE_ID) >= 0) {
                 return;
             }
             let ks = split(key, ':')
