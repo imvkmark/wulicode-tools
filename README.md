@@ -115,3 +115,11 @@ required_without_all
 
 MIT Copyright © 2021 duoli zhaody901@126.com
 
+
+## 子树
+
+**推送子树**
+```
+$ git remote add framework git@github.com:imvkmark/popjs-_framework.git
+$ git subtree push --prefix=src/framework framework develop
+```
