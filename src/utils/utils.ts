@@ -105,6 +105,27 @@ export const formatUnixTimestamp = (timestamp: any, format = 'YYYY-MM-DD HH:mm:s
     return dayjs(timestamp * 1000).format(format);
 }
 
+
+/**
+ * alias encode
+ * @param data
+ */
+export const base64Encode = (data: string) => {
+    return window.btoa(data);
+}
+
+/**
+ * alias decode
+ * @param data
+ */
+export const base64Decode = (data: string) => {
+    return window.atob(data);
+}
+
+/**
+ * 首字母大写的KEY
+ * @param str
+ */
 export const upperCamelCase = (str: string) => {
     return upperFirst(camelCase(str))
 }

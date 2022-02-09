@@ -5,7 +5,7 @@
             <small v-if="description">{{ description }}</small>
         </h3>
         <!-- 表格数据 -->
-        <ElTable :data="grid.rows" border stripe v-loading="grid.loading">
+        <ElTable :data="grid.rows" border stripe v-loading="trans.loading">
             <template v-for="col in cols" :key="col">
                 <ElTableColumn :prop="get(col, 'field')" :width="get(col, 'width', '')" :label="get(col, 'label')">
                     <template #default="scope">
@@ -36,7 +36,7 @@
 </template>
 <script lang="ts" setup>
 import { computed, onMounted, reactive, ref, watch } from 'vue';
-import { get, isEmpty, merge } from 'lodash-es';
+import { get, merge } from 'lodash-es';
 import { sizeClass } from '@/utils/helper';
 import { useStore } from '@/store';
 import { apiGrid } from "@/services/demo";
@@ -45,7 +45,6 @@ import ColumnLink from "@/components/table/ColumnLink.vue";
 import ColumnImage from "@/components/table/ColumnImage.vue";
 import ColumnDownload from "@/components/table/ColumnDownload.vue";
 import ColumnActions from "@/components/table/ColumnActions.vue";
-import { toast } from "@/utils/utils";
 
 const props = defineProps({
     title: String,
@@ -71,7 +70,8 @@ const props = defineProps({
 })
 const store = useStore();
 const trans = reactive({
-    size: computed(() => store.state.size)
+    size: computed(() => store.state.size),
+    loading: computed(() => store.state.grid.loading),
 })
 const pagesizeRef = ref(15)
 const pageRef = ref(1)
@@ -86,58 +86,61 @@ const params = reactive({
     pagesize: 15
 })
 
-const emit = defineEmits([
-    'submit'
-])
-
 // 监听多个 Ref
 watch([pagesizeRef, pageRef], ([pagesize, page]) => {
     params.pagesize = pagesize;
     params.page = page;
-    loadData()
+    reloadGrid()
 })
 
-/* 进行请求
-**---------------------------------------------------*/
-watch(() => store.state.grid.request, (val) => {
-    if (!isEmpty(val)) {
-        grid.loading = true;
-        apiGrid(get(val, 'url'), {}, 'POST').then((resp) => {
-            grid.loading = false;
-            toast(resp);
-            const { status } = resp
-            if (!status) {
-                loadData();
-            }
-        })
-        store.dispatch('grid/SetRequest', {})
-    }
-})
-
-const loadData = () => {
-    if (!props.url) {
-        return;
-    }
-    grid.loading = true
+const reloadGrid = () => {
+    store.commit('grid/LOADING')
     apiGrid(props.url, merge({
         _query: 1
     }, params), 'get').then(({ data }) => {
         grid.rows = get(data, 'list');
         grid.total = get(data, 'total');
-        grid.loading = false;
+        store.commit('grid/LOADED')
     })
 }
+const resetGrid = () => {
+    store.commit('grid/LOADING')
+    apiGrid(props.url, {
+        _query: 1,
+        page: 1,
+        pagesize: pagesizeRef.value
+    }, 'get').then(({ data }) => {
+        grid.rows = get(data, 'list');
+        grid.total = get(data, 'total');
+        store.commit('grid/LOADED')
+    })
+}
+// 监听重置操作
+watch(() => store.state.grid.reset, (val) => {
+    if (!val) {
+        return;
+    }
+    resetGrid()
+    store.commit('grid/RESET_OVER')
+})
+// 监听刷新操作
+watch(() => store.state.grid.reload, (val) => {
+    if (!val) {
+        return;
+    }
+    reloadGrid()
+    store.commit('grid/RELOAD_OVER')
+})
 
-// Url 初始赋值,请求第一页
+// 更换URL, 重置请求
 watch(() => props.url, (newVal, oldVal) => {
-    console.log('url', props.url, newVal, oldVal);
     if ((oldVal === '' && newVal) || (newVal !== oldVal)) {
-        loadData();
+        resetGrid();
     }
 })
 
 onMounted(() => {
-    loadData();
+    resetGrid();
 })
 
 </script>

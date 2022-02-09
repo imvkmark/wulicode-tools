@@ -3,21 +3,8 @@
     <template v-if="get(value, 'style') === 'group'">
         <ElButtonGroup>
             <template v-for="item in get(value, 'items')" :key="item">
-                <ElPopconfirm title="确认要进行此操作?" v-if="get(item, 'confirm')" @confirm="doRequest(item)">
-                    <template #reference>
-                        <ElButton :plain="get(item, 'plain', false)"
-                            :type="get(item, 'type', 'default')"
-                            :size="get(item, 'size', 'default')"
-                            :circle="get(item, 'circle', false)"
-                            :icon="get(item, 'icon', '') ? get(icon, upperCamelCase(get(item, 'icon'))) : null"
-                            :disabled="get(item, 'disabled', false)">
-                            <template #default v-if="!get(item, 'only', false)">
-                                {{ get(item, 'title', '') }}
-                            </template>
-                        </ElButton>
-                    </template>
-                </ElPopconfirm>
-                <ElButton v-else @click="doRequest(item)" :plain="get(item, 'plain', false)"
+                <ElButton @click="doRequest(item)" :plain="get(item, 'plain', false)"
+                    :loading="trans.button === base64Encode(get(item, 'url'))"
                     :type="get(item, 'type', 'default')"
                     :size="get(item, 'size', 'default')"
                     :circle="get(item, 'circle', false)"
@@ -32,81 +19,10 @@
     </template>
     <!--  下拉  -->
     <template v-else-if="get(value, 'style') === 'dropdown'">
-        <template v-for="(item, key) in get(value, 'items')" :key="item">
-            <template v-if="key < get(value, 'length', 5)">
-                <ElPopconfirm title="确认要进行此操作?" v-if="get(item, 'confirm')" @confirm="doRequest(item)">
-                    <template #reference>
-                        <ElButton :plain="get(item, 'plain', false)"
-                            :type="get(item, 'type', 'default')"
-                            :size="get(item, 'size', 'default')"
-                            :circle="get(item, 'circle', false)"
-                            :icon="get(item, 'icon', '') ? get(icon, upperCamelCase(get(item, 'icon'))) : null"
-                            :disabled="get(item, 'disabled', false)">
-                            <template #default v-if="!get(item, 'only', false)">
-                                {{ get(item, 'title', '') }}
-                            </template>
-                        </ElButton>
-                    </template>
-                </ElPopconfirm>
-                <ElButton v-else @click="doRequest(item)"
-                    :plain="get(item, 'plain', false)"
-                    :type="get(item, 'type', 'default')"
-                    :size="get(item, 'size', 'default')"
-                    :circle="get(item, 'circle', false)"
-                    :icon="get(item, 'icon', '') ? get(icon, upperCamelCase(get(item, 'icon'))) : null"
-                    :disabled="get(item, 'disabled', false)">
-                    <template #default v-if="!get(item, 'only', false)">
-                        {{ get(item, 'title', '') }}
-                    </template>
-                </ElButton>
-            </template>
-        </template>
-        <template v-if=" get(value, 'items').length >= get(value, 'length', 5)">
-            <ElDropdown split-button type="default" trigger="click" :hide-on-click="false">
-                更多
-                <template #dropdown>
-                    <ElDropdownMenu>
-                        <template v-for="(item, key) in get(value, 'items')" :key="item">
-                            <template v-if="key >= get(value, 'length', 5)">
-                                <ElDropdownItem v-if="get(item, 'confirm')">
-                                    <ElPopconfirm title="确认要进行此操作?"
-                                        @confirm="doRequest(item)">
-                                        {{ get(item, 'icon', '') ? get(icon, upperCamelCase(get(item, 'icon'))) : '' }}
-                                        <template v-if="!get(item, 'only', false)" #reference>
-                                            {{ get(item, 'title', '') }}
-                                        </template>
-                                    </ElPopconfirm>
-                                </ElDropdownItem>
-                                <ElDropdownItem v-else @click="doRequest(item)">
-                                    {{ get(item, 'icon', '') ? get(icon, upperCamelCase(get(item, 'icon'))) : '' }}
-                                    <template v-if="!get(item, 'only', false)">
-                                        {{ get(item, 'title', '') }}
-                                    </template>
-                                </ElDropdownItem>
-                            </template>
-                        </template>
-                    </ElDropdownMenu>
-                </template>
-            </ElDropdown>
-        </template>
-    </template>
-    <template v-else>
-        <template v-for="item in get(value, 'items')" :key="item">
-            <ElPopconfirm title="确认要进行此操作?" v-if="get(item, 'confirm')" @confirm="doRequest(item)">
-                <template #reference>
-                    <ElButton :plain="get(item, 'plain', false)"
-                        :type="get(item, 'type', 'default')"
-                        :size="get(item, 'size', 'default')"
-                        :circle="get(item, 'circle', false)"
-                        :icon="get(item, 'icon', '') ? get(icon, upperCamelCase(get(item, 'icon'))) : null"
-                        :disabled="get(item, 'disabled', false)">
-                        <template #default v-if="!get(item, 'only', false)">
-                            {{ get(item, 'title', '') }}
-                        </template>
-                    </ElButton>
-                </template>
-            </ElPopconfirm>
-            <ElButton v-else @click="doRequest(item)" :plain="get(item, 'plain', false)"
+        <template v-for="item in trans.dropdownBefore" :key="item">
+            <ElButton @click="doRequest(item)"
+                :loading="trans.button === base64Encode(String(get(item, 'url', '')))"
+                :plain="get(item, 'plain', false)"
                 :type="get(item, 'type', 'default')"
                 :size="get(item, 'size', 'default')"
                 :circle="get(item, 'circle', false)"
@@ -117,13 +33,52 @@
                 </template>
             </ElButton>
         </template>
+        <template v-if="trans.dropdownAfter.length">
+            <ElDropdown trigger="click" :hide-on-click="false" @command="doRequest"
+                style="margin-left: 12px;">
+                <ElButton plain>
+                    更多
+                    <ElIcon class="el-icon--right">
+                        <ArrowDown/>
+                    </ElIcon>
+                </ElButton>
+                <template #dropdown>
+                    <ElDropdownMenu>
+                        <ElDropdownItem v-for="item in trans.dropdownAfter" :key="item" :command="item"
+                            :loading="trans.button === base64Encode(String(get(item, 'url')))"
+                            :icon="get(item, 'icon', '') ? get(icon, upperCamelCase(String(get(item, 'icon')))) : null"
+                            :disabled="get(item, 'disabled', false)">
+                            {{ get(item, 'title', '') }}
+                        </ElDropdownItem>
+                    </ElDropdownMenu>
+                </template>
+            </ElDropdown>
+        </template>
+    </template>
+    <template v-else>
+        <template v-for="item in get(value, 'items')" :key="item">
+            <ElButton @click="doRequest(item)" :plain="get(item, 'plain', false)"
+                :type="get(item, 'type', 'default')"
+                :size="get(item, 'size', 'default')"
+                :circle="get(item, 'circle', false)"
+                :icon="get(item, 'icon', '') ? get(icon, upperCamelCase(get(item, 'icon'))) : null"
+                :loading="trans.button === base64Encode(get(item, 'url'))"
+                :disabled="get(item, 'disabled', false)">
+                <template #default v-if="!get(item, 'only', false)">
+                    {{ get(item, 'title', '') }}
+                </template>
+            </ElButton>
+        </template>
     </template>
 </template>
 <script lang="ts" setup>
-import { get } from "lodash-es";
-import { store } from "@/store";
+import { get, slice } from "lodash-es";
 import { icon } from "@/utils/icon";
-import { upperCamelCase } from "@/utils/utils";
+import { base64Encode, upperCamelCase } from "@/utils/utils";
+import { computed, reactive } from "vue";
+import { useStore } from "@/store";
+import { ElMessageBox } from "element-plus";
+import { ArrowDown } from "@element-plus/icons-vue";
 
 const props = defineProps({
     value: {
@@ -134,13 +89,55 @@ const props = defineProps({
     }
 })
 
+const store = useStore();
+
+const trans = reactive({
+    button: computed(() => store.state.grid.button),
+    dropdownBefore: computed(() => {
+        const items = get(props.value, 'items');
+        const length = get(props.value, 'length');
+        console.log(props.value);
+        if (get(props.value, 'style') === 'dropdown') {
+            console.log(items, items.length, length);
+            console.log(items.length > length);
+            // 相等 返回全部; 例如允许 5个, 一共有 5 个, 则返回全部
+            if (items.length === length) {
+                return items;
+            }
+            // 大于 ; 例如允许5个, 一共有 6 个, 则返回前四个, 后两个进行更多分组
+            if (items.length > length) {
+                return slice(items, 0, length - 1)
+            } else {
+                return items;
+            }
+        }
+        return [];
+    }),
+    dropdownAfter: computed(() => {
+        const items = get(props.value, 'items');
+        const length = get(props.value, 'length');
+        if (get(props.value, 'style') === 'dropdown') {
+            if (items.length > length) {
+                return slice(items, length - 1)
+            }
+        }
+        return [];
+    })
+})
 const doRequest = (item: any) => {
-    if (get(item, 'method') === 'request') {
-        store.dispatch('grid/SetRequest', item);
+    const confirm = get(item, 'confirm', false)
+    if (!confirm) {
+        store.dispatch('grid/DoAction', { action: item });
+        return;
     }
-    if (get(item, 'method') === 'page') {
-        store.dispatch('grid/SetPage', item);
-    }
+    ElMessageBox.confirm(`确认要进行${get(item, 'title')}操作?`, '警告', {
+        confirmButtonText: '确认',
+        cancelButtonText: '取消',
+        type: 'warning',
+    }).then(() => {
+        store.dispatch('grid/DoAction', { action: item });
+    }).catch(() => {
+    })
 }
 
 

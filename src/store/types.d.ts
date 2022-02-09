@@ -24,6 +24,11 @@ export interface ThemeTypes {
 
 export interface GridTypes {
     request: object,
+    action: object,
+    button: string,
+    loading: boolean,
+    reload: boolean,
+    reset: boolean,
 }
 
 export interface AllStateTypes extends RootStateTypes {
