@@ -1,9 +1,9 @@
-import { appVersion } from '@/utils/conf';
-import { localStore } from '@/framework/utils/helper';
+import { deviceId, localStore } from '@/framework/utils/helper';
 import { each, forEach, get, isNaN, isNil, isObject, keys, set, trim } from 'lodash-es';
 import { MD5 } from 'crypto-js';
+import UAParser from "ua-parser-js";
 import axios, { AxiosInstance } from "axios";
-import { pyAppUrl, pyStorageKey } from "@/framework/utils/conf";
+import { pyAppUrl, pyAppVersion, pyStorageKey } from "@/framework/utils/conf";
 import { PyRequestOptions } from "@/framework/utils/types";
 
 // axios instance
@@ -107,30 +107,39 @@ const http = (options: PyRequestOptions) => {
     console.info(options.url, params);
     // stip : 这里使用 data = {...params, token : token || ''}, 则会丢失form表单的数据
 
-    let xApp = {
-        os: 'webapp',
-        version: appVersion
+    let ua = new UAParser();
+    let xHeaders: any = {
+        'x-os': 'webapp',
+        'x-ver': pyAppVersion,
+        'x-id': deviceId(),
+        'x-sys-name': ua.getOS().name,
+        'x-sys-version': ua.getOS().version,
+        'x-sys-device': `${ua.getDevice().type}/${ua.getDevice().vendor}/${ua.getDevice().model}`,
+        'x-sys-cpu': ua.getCPU().architecture,
+    }
+    let xAuthHeaders = {
+        'Content-Type': get(headers, 'Content-Type') ? get(headers, 'Content-Type') : 'application/json',
+        'Authorization': token ? `Bearer ${token}` : '',
+        ...xHeaders
     }
     switch (method.toLowerCase()) {
         case 'get':
             set(params, 'token', token ? token : '');
             return instance.get(url, {
                 params,
-                headers: {
-                    'X-APP': JSON.stringify(xApp)
-                }
+                headers: xHeaders
             });
         case 'post':
         default:
+
             return instance.post(url, params, {
-                headers: {
-                    'X-APP': JSON.stringify(xApp),
-                    'Content-Type': get(headers, 'Content-Type') ? get(headers, 'Content-Type') : 'application/json',
-                    'Authorization': token ? `Bearer ${token}` : ''
-                }
+                headers: xAuthHeaders
             });
         case 'put':
-            return instance.put(url, params);
+            return instance.put(url, params, {
+                // @ts-ignore
+                headers: xAuthHeaders
+            });
     }
 };
 
