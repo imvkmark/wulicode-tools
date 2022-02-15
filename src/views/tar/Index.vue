@@ -2,7 +2,7 @@
     <PxMain :title="trans.title" v-loading="trans.loading">
         <FormWidget v-if="type === 'form'" :attr="form.attr" :description="form.description" :items="form.items"
             :title="form.title" :model="form.model" @submit="onSubmit"/>
-        <GridWidget v-if="type === 'grid'" :cols="grid.cols" :url="grid.url" :page-sizes="grid.pageSizes"/>
+        <GridWidget v-if="type === 'grid'" :filter="grid.filter" :cols="grid.cols" :url="grid.url" :page-sizes="grid.pageSizes"/>
     </PxMain>
 </template>
 <script lang="ts" setup>
@@ -37,6 +37,7 @@ const grid = reactive({
     rows: [],
     cols: [],
     url: '',
+    filter: {},
     pageSizes: [15]
 })
 
@@ -68,6 +69,7 @@ const doRequest = () => {
         } else if (type.value === 'grid') {
             trans.title = get(data, 'title');
             grid.cols = get(data, 'cols');
+            grid.filter = get(data, 'filter');
             grid.url = get(data, 'url');
             grid.pageSizes = get(data, 'page_sizes');
         }

@@ -1,111 +1,128 @@
 @import 'vars.less';
 
 .py--block {
-	width: 100%;
+    width: 100%;
 }
 
 .py--nav {
-	display: flex;
-	z-index: 8;
-	min-width: 5rem;
-	box-sizing: border-box;
-	background-color: #081736;
-	flex-direction: column;
-	height: calc(100vh - 4rem);
-	padding-top: 0;
-	padding-bottom: 0;
-	justify-content: center;
-	ul {
-		color: #FFF;
-		padding-left: 0;
-		width: 100%;
-		li {
-			em {
-				cursor: pointer;
-				display: flex;
-				flex-direction: column;
-				flex-wrap: wrap;
-				min-height: 60px;
-				font-size: 14px;
-				align-content: center;
-				justify-content: center;
-				margin: 16px 0;
-				position: relative;
-				color: #FFF;
-				text-decoration: none;
-				font-style: normal;
-			}
-			&:hover {
-				.el-icon {
-					background: var(--wc-color-light-cyan);
-				}
-			}
-			&.active em {
-				&:before {
-					content: ' ';
-					border-radius: 3px;
-					box-sizing: border-box;
-					border: transparent 1px solid;
-					width: 3px;
-					display: block;
-					position: absolute;
-					background: var(--wc-color-blue);
-					top: 3px;
-					height: 36px;
-				}
-				.el-icon {
-					background: var(--wc-color-blue);
-				}
-			}
-			.el-icon {
-				font-size: 20px;
-				padding: 8px;
-				margin-bottom: 5px;
-				margin-top: 3px;
-				border-radius: 5px;
-				background: var(--wc-color-dark-blue);
-			}
-		}
-	}
-	.side-text {
-		text-align: center;
-	}
+    display: flex;
+    z-index: 8;
+    min-width: 5rem;
+    box-sizing: border-box;
+    background-color: #081736;
+    flex-direction: column;
+    height: calc(100vh - 4rem);
+    padding-top: 0;
+    padding-bottom: 0;
+    justify-content: center;
+    ul {
+        color: #FFF;
+        padding-left: 0;
+        width: 100%;
+        li {
+            em {
+                cursor: pointer;
+                display: flex;
+                flex-direction: column;
+                flex-wrap: wrap;
+                min-height: 60px;
+                font-size: 14px;
+                align-content: center;
+                justify-content: center;
+                margin: 16px 0;
+                position: relative;
+                color: #FFF;
+                text-decoration: none;
+                font-style: normal;
+            }
+            &:hover {
+                .el-icon {
+                    background: var(--wc-color-light-cyan);
+                }
+            }
+            &.active em {
+                &:before {
+                    content: ' ';
+                    border-radius: 3px;
+                    box-sizing: border-box;
+                    border: transparent 1px solid;
+                    width: 3px;
+                    display: block;
+                    position: absolute;
+                    background: var(--wc-color-blue);
+                    top: 3px;
+                    height: 36px;
+                }
+                .el-icon {
+                    background: var(--wc-color-blue);
+                }
+            }
+            .el-icon {
+                font-size: 20px;
+                padding: 8px;
+                margin-bottom: 5px;
+                margin-top: 3px;
+                border-radius: 5px;
+                background: var(--wc-color-dark-blue);
+            }
+        }
+    }
+    .side-text {
+        text-align: center;
+    }
 }
 
 .py--content {
-	height: calc(100vh - 4rem);
-	box-sizing: border-box;
-	flex: 1;
-	min-width: 320px;
-	width: 100%;
+    height: calc(100vh - 4rem);
+    box-sizing: border-box;
+    flex: 1;
+    min-width: 320px;
+    width: 100%;
 }
 
 .py--main {
-	font-size: 14px;
-	.main-handle {
-		padding-top: 10px;
-	}
-	.main-area {
-		flex: auto;
-		background: #FFF;
-		border-radius: 8px;
-		padding: .75rem 1rem;
-	}
-	.main-content {
-		padding-top: 10px;
-		padding-bottom: 10px;
-	}
-	.main-pointer {
-		textarea {
-			&:hover {
-				cursor: pointer !important;
-			}
-		}
-	}
-	.main-mono {
-		font-family: Menlo, monospace;
-	}
-	.main-fixed {
-		max-height: calc(100vh - 10.5rem);
-	}
+    font-size: 14px;
+    .main-handle {
+        padding-top: 10px;
+    }
+    .main-area {
+        flex: auto;
+        background: #FFF;
+        border-radius: 8px;
+        padding: .75rem 1rem;
+    }
+    .main-content {
+        padding-top: 10px;
+        padding-bottom: 10px;
+    }
+    .main-pointer {
+        textarea {
+            &:hover {
+                cursor: pointer !important;
+            }
+        }
+    }
+    .main-mono {
+        font-family: Menlo, monospace;
+    }
+    .main-fixed {
+        max-height: calc(100vh - 10.5rem);
+    }
+}
+
+.py--filter {
+    .filter-label {
+        height: 22px;
+        line-height: 22px;
+    }
+    .el-input-group__prepend {
+        padding: 0 10px;
+    }
+    .el-date-editor.el-input, .el-date-editor.el-input__inner {
+        width: 100%;
+    }
+    // 选择器宽度 100%
+    .filter-select.el-select{
+        width: 100%;
+    }
 }

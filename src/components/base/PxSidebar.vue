@@ -40,6 +40,9 @@ const routes = {
         { name: 'grid.index', title: 'Grid-Button', params: { type: 'button' } },
         { name: 'grid.index', title: 'Grid-Button-Group', params: { type: 'button-group' } },
         { name: 'grid.index', title: 'Grid-Button-Dropdown', params: { type: 'button-dropdown' } },
+        { name: 'grid.index', title: 'Grid-filter', params: { type: 'filter' } },
+        { name: 'grid.index', title: 'Grid-filter-A', params: { type: 'filter-a' } },
+        { name: 'grid.index', title: 'Grid-filter-B', params: { type: 'filter-b' } },
     ],
     form: [
         { name: 'form.index', title: 'Field-Textarea', params: { type: 'field-textarea' } },
