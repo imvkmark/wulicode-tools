@@ -10,20 +10,18 @@ export default function useFluid() {
     const style = ref('');
     const calcFluid = debounce(() => {
         let width = window.innerWidth;
-        if (width <= 480) {
+        if (width < 768) {
             style.value = 'xs';
-        } else if (480 < width && width <= 576) {
+        } else if (768 <= width && width < 992) {
             style.value = 'sm';
-        } else if (576 < width && width <= 768) {
+        } else if (992 <= width && width <= 1200) {
             style.value = 'md';
-        } else if (768 < width && width <= 992) {
+        } else if (1200 < width && width <= 1920) {
             style.value = 'lg';
-        } else if (992 < width && width <= 1200) {
+        } else if (1920 < width) {
             style.value = 'xl';
-        } else if (1200 < width) {
-            style.value = 'xxl';
         }
-        store.dispatch('SetSize', {
+        store.dispatch('poppy/SetSize', {
             size: style.value
         }).then()
     }, 100)

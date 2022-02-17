@@ -1,6 +1,8 @@
 <template>
-    <PxHeader/>
-    <router-view/>
+    <ElScrollbar :always="true" height="100vh">
+        <PxHeader/>
+        <router-view/>
+    </ElScrollbar>
 </template>
 
 <script lang="ts" setup>

@@ -1,15 +1,8 @@
-import { PyGridTypes, PyPoppyTypes, PyRootStateTypes } from "@/framework/store/types";
+import { PyGridTypes, PyNavTypes, PyPoppyTypes, PyRootStateTypes } from "@/framework/store/types";
 
 export interface RootStateTypes extends PyRootStateTypes {
     text: string,
-    loading: boolean,
-    navActive: boolean,
-    sidebarActive: boolean,
-    prefix: string,
-    navs: object,
-    size: string,
-    nav: object,
-    sidebars: object
+    loading: boolean
 }
 
 
@@ -17,18 +10,11 @@ export interface ThemeTypes {
     size: string,
 }
 
-export interface NavTypes {
-    menus: object,
-    navs: object,
-    key: string,
-    prefix: string,
-}
-
-export interface AllStateTypes extends RootStateTypes, PyRootStateTypes {
+export interface AllStateTypes extends RootStateTypes {
     poppy: PyPoppyTypes,
     theme: ThemeTypes,
     grid: PyGridTypes,
-    nav: NavTypes,
+    nav: PyNavTypes,
 }
 
 

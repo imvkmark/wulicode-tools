@@ -51,11 +51,27 @@
 }
 
 .py--content {
-    height: calc(100vh - 4rem);
     box-sizing: border-box;
     flex: 1;
     min-width: 320px;
     width: 100%;
+    .py--main {
+        min-height: calc(100vh - var(--wc-header-height));
+    }
+    &.larger {
+        padding-top: var(--wc-header-height);
+        min-height: 100vh;
+        &.with-menu {
+            padding-left: 240px;
+        }
+    }
+    &.smaller {
+        &.with-menu {
+            .py--main {
+                min-height: calc(100vh - var(--wc-header-height) - var(--wc-menubar-height) - 0.1rem);
+            }
+        }
+    }
 }
 
 .py--main {
@@ -102,5 +118,11 @@
     // 选择器宽度 100%
     .filter-select.el-select {
         width: 100%;
+    }
+}
+
+.py--sidebar-drawer {
+    .el-drawer__body {
+        padding: 0;
     }
 }

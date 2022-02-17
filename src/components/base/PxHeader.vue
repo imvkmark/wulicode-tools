@@ -1,5 +1,5 @@
 <template>
-    <header>
+    <header :class="{fixed : sizeGt(trans.size, 'sm'), absolute : sizeLte(trans.size, 'sm')}">
         <div class="nav">
             <div class="logo">
                 <img src="@/assets/app/logo.png" alt="Wulicode">
@@ -7,10 +7,9 @@
         </div>
         <PxNav/>
     </header>
-    <div class="sidebar" v-if="sizeLte(trans.size, 'md')">
+    <div class="menubar" v-if="sizeLte(trans.size, 'sm') && trans.hasMenu">
         <ElIcon>
-            <Expand v-if="!trans.sidebarActive" @click="store.dispatch('SwitchSidebar', true)"/>
-            <Close v-else @click="store.dispatch('SwitchSidebar', false)"/>
+            <DArrowRight @click="store.dispatch('nav/OpenSidebar')"/>
         </ElIcon>
     </div>
 </template>
@@ -19,15 +18,16 @@
 import { useStore } from '@/store';
 import { computed, defineComponent, reactive } from 'vue';
 import { ArrowLeft, Close, Expand } from '@element-plus/icons';
-import { sizeLte } from "@/framework/utils/helper";
+import { sizeGt, sizeLte } from "@/framework/utils/helper";
 import PxNav from "@/components/base/PxNav.vue";
+import { DArrowRight } from "@element-plus/icons-vue";
 
 const store = useStore();
 const trans = reactive({
-    prefix: computed(() => store.state.prefix),
-    navActive: computed(() => store.state.navActive),
-    sidebarActive: computed(() => store.state.sidebarActive),
-    size: computed(() => store.state.size)
+    prefix: computed(() => store.state.nav.prefix),
+    sidebarActive: computed(() => store.state.nav.sidebarActive),
+    size: computed(() => store.state.poppy.size),
+    hasMenu: computed(() => store.state.nav.menus.length),
 })
 defineComponent({
     ArrowLeft, Expand, Close
@@ -46,6 +46,16 @@ header {
     flex: auto;
     justify-content: space-between;
     border-bottom: 1px solid var(--wc-header-border-color);
+    &.fixed {
+        position: fixed;
+        width: 100%;
+        z-index: 1;
+    }
+    &.absolute {
+        top: 0;
+        left: 0;
+        position: relative;
+    }
     .nav {
         width: 5rem;
         height: 3.5rem;
@@ -59,28 +69,22 @@ header {
                 height: 2rem;
             }
         }
-        .icon {
-            width: 100%;
-            cursor: pointer;
-            height: 4rem;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            .el-icon {
-                font-size: 2rem;
-            }
-        }
     }
-
 }
 
-.sidebar {
-    height: 2rem;
+.menubar {
+    position: sticky;
+    display: flex;
+    top: 0;
+    z-index: 1;
+    background: #fff;
+    height: var(--wc-menubar-height);
     align-items: center;
-    justify-content: center;
+    padding-left: 1rem;
     border-bottom: var(--wc-header-border-color) 1px solid;
     .el-icon {
-        font-size: 1.5rem;
+        font-size: 1.2rem;
+        font-weight: lighter;
         cursor: pointer;
     }
 }

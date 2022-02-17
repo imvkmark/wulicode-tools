@@ -1,5 +1,5 @@
 <template>
-    <div class="login">
+    <div class="login py--main">
         <el-row justify="center">
             <el-col :span="12" :xs="{span:22}" :sm="{span:18}">
                 <div class="login-ctr">
@@ -81,7 +81,6 @@ const onSubmit = () => {
 
 .login {
     background: #081836;
-    min-height: calc(100vh - 4rem);
     display: flex;
     align-items: center;
     .el-row {

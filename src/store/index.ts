@@ -4,19 +4,12 @@ import { AllStateTypes, RootStateTypes } from './types'
 
 import grid from '@/framework/store/grid'
 import poppy from '@/framework/store/poppy'
-import nav from '@/store/nav'
+import nav from '@/framework/store/nav'
 
 export const store = createStore<RootStateTypes>({
     state: {
         text: 'This is Vuex Root.state.text',
-        loading: false,
-        prefix: '',
-        size: '',
-        navs: [],
-        nav: {},
-        navActive: false,
-        sidebarActive: false,
-        sidebars: []
+        loading: false
     },
     getters: {
         loading(state: any) {
@@ -33,18 +26,6 @@ export const store = createStore<RootStateTypes>({
         },
         Loaded({ state }) {
             state.loading = false
-        },
-        SetPrefix({ state }, { prefix }) {
-            state.prefix = prefix
-        },
-        SetSize({ state }, { size }) {
-            state.size = size
-        },
-        SetNavActive({ state }, status) {
-            state.navActive = status
-        },
-        SwitchSidebar({ state }, status) {
-            state.sidebarActive = status
         }
     },
     modules: {
