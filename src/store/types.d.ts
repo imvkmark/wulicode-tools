@@ -9,7 +9,7 @@ export interface RootStateTypes extends PyRootStateTypes {
     navs: object,
     size: string,
     nav: object,
-    sidebars: object,
+    sidebars: object
 }
 
 
@@ -17,10 +17,18 @@ export interface ThemeTypes {
     size: string,
 }
 
+export interface NavTypes {
+    menus: object,
+    navs: object,
+    key: string,
+    prefix: string,
+}
+
 export interface AllStateTypes extends RootStateTypes, PyRootStateTypes {
     poppy: PyPoppyTypes,
     theme: ThemeTypes,
-    grid: PyGridTypes
+    grid: PyGridTypes,
+    nav: NavTypes,
 }
 
 

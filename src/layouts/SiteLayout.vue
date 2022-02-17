@@ -1,6 +1,5 @@
 <template>
     <div class="container">
-        <PxNav/>
         <PxSidebar/>
         <div class="py--content">
             <ElScrollbar>

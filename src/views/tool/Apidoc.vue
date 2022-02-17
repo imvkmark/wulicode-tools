@@ -35,7 +35,7 @@ import PxMain from '@/components/base/PxMain.vue';
 const store = useStore();
 const router = useRouter();
 const trans = reactive({
-    loading: computed(() => store.getters.loading),
+    loading: computed(() => store.state.loading),
     comment: ''
 })
 const value = reactive({

@@ -1,33 +1,26 @@
 <template>
     <header>
-        <div :class="{nav:true, active:trans.navActive}" v-if="trans.prefix">
-            <div v-if="sizeGt(trans.size, 'md')" class="logo">
+        <div class="nav">
+            <div class="logo">
                 <img src="@/assets/app/logo.png" alt="Wulicode">
             </div>
-            <div v-else class="icon">
-                <ElIcon v-if="!trans.navActive" @click="showNav">
-                    <component :is="appNavDefs[trans.prefix]"/>
-                </ElIcon>
-                <ElIcon v-else @click="showNav">
-                    <ArrowLeft/>
-                </ElIcon>
-            </div>
         </div>
-        <div class="sidebar">
-            <ElIcon v-if="sizeLte(trans.size, 'md')">
-                <Expand v-if="!trans.sidebarActive" @click="store.dispatch('SwitchSidebar', true)"/>
-                <Close v-else @click="store.dispatch('SwitchSidebar', false)"/>
-            </ElIcon>
-        </div>
+        <PxNav/>
     </header>
+    <div class="sidebar" v-if="sizeLte(trans.size, 'md')">
+        <ElIcon>
+            <Expand v-if="!trans.sidebarActive" @click="store.dispatch('SwitchSidebar', true)"/>
+            <Close v-else @click="store.dispatch('SwitchSidebar', false)"/>
+        </ElIcon>
+    </div>
 </template>
 
 <script lang="ts" setup>
 import { useStore } from '@/store';
 import { computed, defineComponent, reactive } from 'vue';
-import { appNavDefs } from '@/utils/conf';
 import { ArrowLeft, Close, Expand } from '@element-plus/icons';
-import { sizeGt, sizeLte } from "@/framework/utils/helper";
+import { sizeLte } from "@/framework/utils/helper";
+import PxNav from "@/components/base/PxNav.vue";
 
 const store = useStore();
 const trans = reactive({
@@ -36,9 +29,6 @@ const trans = reactive({
     sidebarActive: computed(() => store.state.sidebarActive),
     size: computed(() => store.state.size)
 })
-const showNav = () => {
-    store.dispatch('SetNavActive', !trans.navActive)
-}
 defineComponent({
     ArrowLeft, Expand, Close
 })
@@ -48,16 +38,17 @@ defineComponent({
 @import "../../assets/style/vars";
 
 header {
-    height: 4rem;
-    display: flex;
-    align-items: center;
+    height: 3.5rem;
     background-color: #FFF;
     box-sizing: border-box;
     width: 100%;
+    display: flex;
+    flex: auto;
+    justify-content: space-between;
     border-bottom: 1px solid var(--wc-header-border-color);
     .nav {
         width: 5rem;
-        height: 4rem;
+        height: 3.5rem;
         display: flex;
         align-items: center;
         justify-content: center;
@@ -79,26 +70,18 @@ header {
                 font-size: 2rem;
             }
         }
-        &.active {
-            .icon {
-                background: var(--wc-nav-bg-color);
-                color: #FFF;
-                .el-icon {
-                    font-size: 2rem;
-                }
-            }
-        }
     }
-    .sidebar {
-        height: 3rem;
-        width: 3rem;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        .el-icon {
-            font-size: 1.5rem;
-            cursor: pointer;
-        }
+
+}
+
+.sidebar {
+    height: 2rem;
+    align-items: center;
+    justify-content: center;
+    border-bottom: var(--wc-header-border-color) 1px solid;
+    .el-icon {
+        font-size: 1.5rem;
+        cursor: pointer;
     }
 }
 </style>

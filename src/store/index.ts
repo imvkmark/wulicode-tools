@@ -4,6 +4,7 @@ import { AllStateTypes, RootStateTypes } from './types'
 
 import grid from '@/framework/store/grid'
 import poppy from '@/framework/store/poppy'
+import nav from '@/store/nav'
 
 export const store = createStore<RootStateTypes>({
     state: {
@@ -47,7 +48,7 @@ export const store = createStore<RootStateTypes>({
         }
     },
     modules: {
-        poppy, grid
+        poppy, grid, nav
     }
 })
 
