@@ -1,29 +1,29 @@
 <template>
     <PxMain title="图片占位符">
         <div class="main-content">
-            <el-form :inline="true">
-                <el-form-item label="背景色">
-                    <el-color-picker v-model="trans.bg" size="small"/>
-                </el-form-item>
-                <el-form-item label="文字色">
-                    <el-color-picker v-model="trans.fc" size="small"/>
-                </el-form-item>
-                <el-form-item label="宽度">
-                    <el-input type="text" placeholder="宽度" style="width: 80px" v-model="trans.width" size="small"/>
-                </el-form-item>
-                <el-form-item label="高度">
-                    <el-input type="text" placeholder="高度" style="width: 80px" v-model="trans.height" size="small"/>
-                </el-form-item>
-                <el-form-item label="文字">
-                    <el-input type="text" placeholder="说明" style="width: 160px" v-model="trans.text" size="small" clearable/>
-                </el-form-item>
-            </el-form>
+            <ElForm :inline="true">
+                <ElFormItem label="背景色">
+                    <ElColorPicker v-model="trans.bg" size="small"/>
+                </ElFormItem>
+                <ElFormItem label="文字色">
+                    <ElColorPicker v-model="trans.fc" size="small"/>
+                </ElFormItem>
+                <ElFormItem label="宽度">
+                    <ElInput type="text" placeholder="宽度" style="width: 80px" v-model="trans.width" size="small"/>
+                </ElFormItem>
+                <ElFormItem label="高度">
+                    <ElInput type="text" placeholder="高度" style="width: 80px" v-model="trans.height" size="small"/>
+                </ElFormItem>
+                <ElFormItem label="文字">
+                    <ElInput type="text" placeholder="说明" style="width: 160px" v-model="trans.text" size="small" clearable/>
+                </ElFormItem>
+            </ElForm>
         </div>
         <div v-if="value.url" class="img-wrapper">
             <img :src="value.url" :alt="trans.text"> <br>
-            <el-tooltip content="点击复制">
+            <ElTooltip content="点击复制">
                 <p @click="onCopy">{{ value.url }}</p>
-            </el-tooltip>
+            </ElTooltip>
         </div>
     </PxMain>
 </template>

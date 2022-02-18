@@ -1,16 +1,16 @@
 <template>
     <PxMain title="动画">
-        <el-row :gutter="20">
-            <el-col :span="12">
+        <ElRow :gutter="20">
+            <ElCol :span="12">
                 <h3>持续转动</h3>
                 <div class="rotate">
                     <img src="@/assets/app/logo.png" alt="LOGO">
                 </div>
-            </el-col>
-            <el-col :span="12">
+            </ElCol>
+            <ElCol :span="12">
 
-            </el-col>
-        </el-row>
+            </ElCol>
+        </ElRow>
     </PxMain>
 </template>
 

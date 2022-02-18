@@ -47,6 +47,6 @@ const jumpTo = (nav: any) => {
 
 </script>
 
-<style scoped lang="less">
+<style lang="less" scoped>
 
 </style>

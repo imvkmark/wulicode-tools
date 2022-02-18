@@ -1,7 +1,7 @@
 /**
  * 项目中定义的导航项目
  */
-import { get } from "lodash-es";
+import { clone, each, get, map, set } from "lodash-es";
 import { base64Encode } from "@/framework/utils/helper";
 import { routerNameKey } from "@/utils/utils";
 
@@ -22,25 +22,6 @@ export const navs: object = {
                     { name: 'tool.base64', title: 'Base64' },
                     { name: 'tool.img', title: '图片占位符' },
                     { name: 'tool.url-decode', title: 'Url 解码' }
-                ]
-            },
-            {
-                title: 'Grid',
-                children: [
-                    { name: 'grid.index', title: 'Grid-Normal', params: { type: 'normal' } },
-                    { name: 'grid.index', title: 'Grid-Button', params: { type: 'button' } },
-                    { name: 'grid.index', title: 'Grid-Button-Group', params: { type: 'button-group' } },
-                    {
-                        name: 'grid.index',
-                        title: 'Grid-Button-Dropdown',
-                        params: { type: 'button-dropdown' }
-                    },
-                    { name: 'grid.index', title: 'Grid-filter', params: { type: 'filter' } },
-                    { name: 'grid.index', title: 'Grid-filter-A', params: { type: 'filter-a' } },
-                    { name: 'grid.index', title: 'Grid-filter-B', params: { type: 'filter-b' } },
-                    { name: 'grid.index', title: 'Grid-filter-C', params: { type: 'filter-c' } },
-                    { name: 'grid.index', title: 'Grid-filter-D', params: { type: 'filter-d' } },
-                    { name: 'grid.index', title: 'Grid-filter-E', params: { type: 'filter-e' } },
                 ]
             },
             {
@@ -66,6 +47,39 @@ export const navs: object = {
         icon: 'user',
         name: 'user.login'
     }
+}
+
+/**
+ * 转换所有的导航到预期的格式
+ * @param totalNavs
+ */
+export const navConvertNav = (totalNavs: {}) => {
+    let newTotalNavs = {};
+    each(totalNavs, (nav, nav_key) => {
+        const menus = get(nav, 'children', []);
+        let newNav = clone(nav);
+        if (menus.length) {
+            const newChildren = map(menus, (menu) => {
+                const submenus = get(menu, 'children', []);
+                let newMenu = clone(menu);
+                if (submenus.length) {
+                    const newChildren = map(submenus, (submenu) => {
+                        return navConvertItem(submenu);
+                    })
+                    set(newMenu, 'children', newChildren)
+                    return newMenu;
+                } else {
+                    return navConvertItem(newMenu);
+                }
+            })
+            set(newNav, 'children', newChildren)
+            // add menus to nav
+            set(newTotalNavs, nav_key.replace('.', '-'), newNav)
+        } else {
+            set(newTotalNavs, nav_key.replace('.', '-'), navConvertItem(newNav))
+        }
+    })
+    return newTotalNavs;
 }
 
 /**

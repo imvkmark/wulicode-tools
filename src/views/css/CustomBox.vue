@@ -37,7 +37,8 @@
 import PxMain from '../../components/base/PxMain.vue';
 
 </script>
-<style lang="less">
+<style lang="less" scoped>
+
 /* Create the cb-checkbox/indicator (hidden when not checked) */
 /* Show the checkmark when checked */
 /* Style the checkmark/indicator */

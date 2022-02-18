@@ -1,16 +1,16 @@
 <template>
     <PxMain title="异常处理">
         <div class="main-content">
-            <el-row :gutter="20">
-                <el-col :span="12">
-                    <el-button @click="onException">触发异常</el-button>
+            <ElRow :gutter="20">
+                <ElCol :span="12">
+                    <ElButton @click="onException">触发异常</ElButton>
                     <p></p>
-                    <el-alert>点击会触发一个自定义异常</el-alert>
-                </el-col>
-                <el-col :span="12">
+                    <ElAlert>点击会触发一个自定义异常</ElAlert>
+                </ElCol>
+                <ElCol :span="12">
 
-                </el-col>
-            </el-row>
+                </ElCol>
+            </ElRow>
         </div>
     </PxMain>
 </template>

@@ -1,23 +1,23 @@
 <template>
     <PxMain title="ApiDoc注释生成">
-        <div class="main-content">
-            <el-row :gutter="20">
-                <el-col :span="12">
-                    <el-form :model="value" :rules="rules" ref="form">
-                        <el-form-item prop="text">
-                            <el-input @input="onInput" v-model="value.text"
+        <div class="main-content main-mono">
+            <ElRow :gutter="20">
+                <ElCol :span="12">
+                    <ElForm :model="value" :rules="rules" ref="form">
+                        <ElFormItem prop="text">
+                            <ElInput @input="onInput" v-model="value.text"
                                 :rows="8" type="textarea" placeholder="输入Json 内容"/>
-                        </el-form-item>
-                    </el-form>
-                </el-col>
-                <el-col :span="12">
-                    <el-tooltip content="点击复制">
-                        <el-input readonly v-model="trans.comment" v-loading="trans.loading" class="main-pointer"
+                        </ElFormItem>
+                    </ElForm>
+                </ElCol>
+                <ElCol :span="12">
+                    <ElTooltip content="点击复制">
+                        <ElInput readonly v-model="trans.comment" v-loading="trans.loading" class="main-pointer"
                             :autosize="{ minRows: 8, maxRows: 16 }" @click="onCopy"
                             :rows="8" type="textarea" placeholder="输出注释"/>
-                    </el-tooltip>
-                </el-col>
-            </el-row>
+                    </ElTooltip>
+                </ElCol>
+            </ElRow>
         </div>
     </PxMain>
 </template>
@@ -35,7 +35,7 @@ import PxMain from '@/components/base/PxMain.vue';
 const store = useStore();
 const router = useRouter();
 const trans = reactive({
-    loading: computed(() => store.state.loading),
+    loading: computed(() => store.state.poppy.loading),
     comment: ''
 })
 const value = reactive({

@@ -34,14 +34,13 @@ const onLinkClick = (name: string, params: any) => {
 }
 </script>
 
-<style scoped lang="less">
+<style lang="less" scoped>
 @import '../../assets/style/vars';
 
 .sidebar {
     background: #FFF;
     min-width: 240px;
     box-sizing: border-box;
-    border-right: 1px solid var(--wc-side-border-color);
     transition: left 0.3s;
     padding: 1rem 0;
     h3 {

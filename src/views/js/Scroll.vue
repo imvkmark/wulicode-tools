@@ -1,7 +1,7 @@
 <template>
     <PxMain title="滚动">
-        <el-row :gutter="20">
-            <el-col :span="12">
+        <ElRow :gutter="20">
+            <ElCol :span="12">
                 <h3>基于页面的滚动</h3>
                 <p>
                     当前每个元素高度 200 <br>
@@ -12,16 +12,16 @@
                     </a>
                 </p>
                 <p>
-                    <el-button plain size="small" hairline @click="refList.scrollTop=0" style="margin-right: 0.5rem;">滚动到顶部</el-button>
-                    <el-button plain size="small" hairline @click="onScrollTo">滚动到 5 (偏移量是 4个单位)</el-button>
+                    <ElButton plain size="small" hairline @click="refList.scrollTop=0" style="margin-right: 0.5rem;">滚动到顶部</ElButton>
+                    <ElButton plain size="small" hairline @click="onScrollTo">滚动到 5 (偏移量是 4个单位)</ElButton>
                 </p>
-            </el-col>
-            <el-col :span="12">
+            </ElCol>
+            <ElCol :span="12">
                 <div class="main-fixed" ref="refList" @scroll="onScroll">
                     <div v-for="i in 10" :key="i" :class="`scroll bg-${i}`">{{ `scroll-${i}` }}</div>
                 </div>
-            </el-col>
-        </el-row>
+            </ElCol>
+        </ElRow>
     </PxMain>
 </template>
 

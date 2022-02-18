@@ -1,15 +1,15 @@
 <template>
     <div class="content">
-        <el-row justify="center">
-            <el-col :lg="{span:12}" :md="{span:16}" :sm="{span:18}" :xs="{span:22}" :span="12">
+        <ElRow justify="center">
+            <ElCol :lg="{span:12}" :md="{span:16}" :sm="{span:18}" :xs="{span:22}" :span="12">
                 <div class="logo">
                     <img src="@/assets/app/logo.png" alt="WuliCode"> Wulicode
                 </div>
                 <div class="input">
                     <ElInput v-model="trans.input"/>
                 </div>
-            </el-col>
-        </el-row>
+            </ElCol>
+        </ElRow>
     </div>
     <div class="footer">
         Copyright 2021 - present zhaody901(At)126.com &nbsp;

@@ -34,7 +34,7 @@ defineComponent({
 })
 </script>
 
-<style scoped lang="less">
+<style lang="less" scoped>
 @import "../../assets/style/vars";
 
 header {

@@ -1,26 +1,26 @@
 <template>
     <PxMain title="Base64 转解码">
         <div class="main-handle">
-            <el-switch v-model="trans.type" active-text="解码" inactive-text="转码" @change="onInput"/>
+            <ElSwitch v-model="trans.type" active-text="解码" inactive-text="转码" @change="onInput"/>
         </div>
         <div class="main-content">
-            <el-row :gutter="20">
-                <el-col :lg="{span:12}" :md="{span:12}" :sm="{span:24}">
-                    <el-form :model="value" :rules="rules" ref="form">
-                        <el-form-item prop="text">
-                            <el-input @input="onInput" @change="onInput" v-model="value.text"
+            <ElRow :gutter="20">
+                <ElCol :lg="{span:12}" :md="{span:12}" :sm="{span:24}">
+                    <ElForm :model="value" :rules="rules" ref="form">
+                        <ElFormItem prop="text">
+                            <ElInput @input="onInput" @change="onInput" v-model="value.text"
                                 :rows="8" type="textarea" placeholder="输入内容"/>
-                        </el-form-item>
-                    </el-form>
-                </el-col>
-                <el-col :lg="{span:12}" :md="{span:12}" :sm="{span:24}">
-                    <el-tooltip content="点击复制">
-                        <el-input readonly v-model="trans.result" v-loading="trans.loading" class="main-pointer"
+                        </ElFormItem>
+                    </ElForm>
+                </ElCol>
+                <ElCol :lg="{span:12}" :md="{span:12}" :sm="{span:24}">
+                    <ElTooltip content="点击复制">
+                        <ElInput readonly v-model="trans.result" v-loading="trans.loading" class="main-pointer"
                             :autosize="{ minRows: 8, maxRows: 16 }" @click="onCopy"
                             :rows="8" type="textarea" placeholder="转换后内容"/>
-                    </el-tooltip>
-                </el-col>
-            </el-row>
+                    </ElTooltip>
+                </ElCol>
+            </ElRow>
         </div>
     </PxMain>
 </template>
@@ -37,7 +37,7 @@ import PxMain from '@/components/base/PxMain.vue';
 const store = useStore();
 const router = useRouter();
 const trans = reactive({
-    loading: computed(() => store.getters.loading),
+    loading: computed(() => store.state.poppy.loading),
     type: false,
     result: '',
     key: 'tool-base64'

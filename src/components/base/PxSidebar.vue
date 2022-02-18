@@ -33,7 +33,8 @@ const onDrawerClose = () => {
 }
 </script>
 
-<style scoped lang="less">
+<style lang="less" scoped>
+
 @import '../../assets/style/vars';
 
 .sidebar-wrapper {
@@ -42,9 +43,13 @@ const onDrawerClose = () => {
     position: fixed;
     top: 0;
     left: 0;
+    background: #fff;
+    border-right: var(--wc-side-border-color) 1px solid;
 }
 
 .sidebar-drawer {
     height: 100vh;
+    background: #fff;
+    border-right: var(--wc-side-border-color) 1px solid;
 }
 </style>

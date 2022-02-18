@@ -1,24 +1,23 @@
 <template>
     <PxMain title="Url解码">
         <div class="main-content">
-            <el-row :gutter="20">
-                <el-col :span="12">
-                    <el-form :model="value" :rules="rules" ref="form">
-                        <el-form-item prop="text">
-                            <el-input @input="onInput" @change="onInput" v-model="value.text"
-                                :rows="8" type="textarea" placeholder="输入内容"/>
-                        </el-form-item>
-                    </el-form>
-                </el-col>
-                <el-col :span="12">
-                    <el-tooltip content="点击复制">
-                        <el-input readonly v-model="trans.result" v-loading="trans.loading" class="main-pointer"
+            <ElRow :gutter="20">
+                <ElCol :span="12">
+                    <ElForm :model="value" :rules="rules" ref="form">
+                        <ElFormItem prop="text">
+                            <ElInput @input="onInput" @change="onInput" v-model="value.text" :rows="8" type="textarea" placeholder="输入内容"/>
+                        </ElFormItem>
+                    </ElForm>
+                </ElCol>
+                <ElCol :span="12">
+                    <ElTooltip content="点击复制">
+                        <ElInput readonly v-model="trans.result" v-loading="trans.loading" class="main-pointer"
                             :autosize="{ minRows: 8, maxRows: 16 }" @click="onCopy"
                             :rows="8" type="textarea" placeholder="转换后内容"/>
-                    </el-tooltip>
-                    <el-alert class="error" v-if="trans.error" type="error" :closable="false">{{ trans.error }}</el-alert>
-                </el-col>
-            </el-row>
+                    </ElTooltip>
+                    <ElAlert v-if="trans.error" show-icon type="error" :closable="false">{{ trans.error }}</ElAlert>
+                </ElCol>
+            </ElRow>
         </div>
     </PxMain>
 </template>
@@ -37,7 +36,7 @@ import PxMain from '@/components/base/PxMain.vue';
 const store = useStore();
 const router = useRouter();
 const trans = reactive({
-    loading: computed(() => store.getters.loading),
+    loading: computed(() => store.state.poppy.loading),
     ori: 'wulicode.com?role=duoli&wechat=imvkmark',
     result: '',
     error: '',

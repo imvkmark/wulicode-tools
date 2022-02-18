@@ -8,7 +8,7 @@
                             <h4>登录</h4>
                             <p>开发中的前后端分离框架</p>
                         </div>
-                        <el-form :model="value" :rules="rules" ref="form" label-width="100px" label-position="top">
+                        <ElForm :model="value" :rules="rules" ref="form" label-width="100px" label-position="top">
                             <el-form-item label="通行证" prop="passport">
                                 <el-input v-model="value.passport"></el-input>
                             </el-form-item>
@@ -18,7 +18,7 @@
                             <el-form-item>
                                 <el-button type="primary" class="py--block" @click="onSubmit()">登录</el-button>
                             </el-form-item>
-                        </el-form>
+                        </ElForm>
                     </div>
                 </div>
             </el-col>

@@ -1,10 +1,7 @@
 <template>
     <div class="container">
         <PxSidebar/>
-        <div :class="{'py--content':true,
-            'with-menu' : trans.hasMenu,
-            smaller : sizeLte(trans.size, 'sm'),
-            larger : sizeGt(trans.size, 'sm'),}">
+        <div :class="{'py--content':true,'with-menu' : trans.hasMenu, smaller : sizeLte(trans.size, 'sm'),larger : sizeGt(trans.size, 'sm'),}">
             <router-view/>
         </div>
     </div>
