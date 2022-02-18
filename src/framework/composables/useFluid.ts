@@ -3,7 +3,7 @@ import { debounce } from 'lodash-es';
 import { onMounted, onUnmounted, ref } from 'vue';
 
 /**
- * 标题的监听和展示
+ * 基于宽度的自动化布局方案
  */
 export default function useFluid() {
     const store = useStore();

@@ -16,10 +16,10 @@ export default function useAuth() {
     const { userToLogin, userOnLogin } = useUserUtil();
 
     // 处理 token, 存在 qs Token , 则覆盖本地的 token, 否则用户登录之后的token 也是可以使用的
-    let token = localStore(pyStorageKey.TOKEN) ? localStore(pyStorageKey.TOKEN) : '';
+    let token = localStore(pyStorageKey.token) ? localStore(pyStorageKey.token) : '';
     const qsToken = get(router.currentRoute.value, 'query.token', '');
     if (qsToken) {
-        localStore(pyStorageKey.TOKEN, qsToken);
+        localStore(pyStorageKey.token, qsToken);
         token = qsToken;
     }
 

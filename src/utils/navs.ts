@@ -1,16 +1,19 @@
 /**
  * 项目中定义的导航项目
  */
+import { get } from "lodash-es";
+import { base64Encode } from "@/framework/utils/helper";
+import { routerNameKey } from "@/utils/utils";
+
 export const navs: object = {
     home: {
         title: '主页',
-        icon: 'home',
+        icon: 'home-filled',
         name: 'home.index'
     },
     demo: {
         title: 'Demo',
-        icon: 'tool',
-        name: 'tool.apidoc',
+        icon: 'lightning',
         children: [
             {
                 title: '工具',
@@ -41,26 +44,6 @@ export const navs: object = {
                 ]
             },
             {
-                title: 'Form',
-                children: [
-                    { name: 'form.index', title: 'Field-Textarea', params: { type: 'field-textarea' } },
-                    { name: 'form.index', title: 'Field-Radio', params: { type: 'field-radio' } },
-                    { name: 'form.index', title: 'Field-Checkbox', params: { type: 'field-checkbox' } },
-                    { name: 'form.index', title: 'Field-Text', params: { type: 'field-text' } },
-                    { name: 'form.index', title: 'Field-Number', params: { type: 'field-number' } },
-                    { name: 'form.index', title: 'Field-Color', params: { type: 'field-color' } },
-                    { name: 'form.index', title: 'Field-Date', params: { type: 'field-date' } },
-                    { name: 'form.index', title: 'Field-Select', params: { type: 'field-select' } },
-                    { name: 'form.index', title: 'Field-Switch', params: { type: 'field-switch' } },
-                    { name: 'form.index', title: 'Field-File', params: { type: 'field-file' } },
-                    { name: 'form.index', title: 'Field-Image', params: { type: 'field-image' } },
-                    { name: 'form.index', title: 'Field-Editor', params: { type: 'field-editor' } },
-                    { name: 'form.index', title: 'Rule-Text', params: { type: 'rule-text' } },
-                    { name: 'form.index', title: 'Rule-Required', params: { type: 'rule-required' } },
-                    { name: 'form.index', title: 'Rule-Date', params: { type: 'rule-date' } }
-                ]
-            },
-            {
                 title: 'Js',
                 children: [
                     { name: 'js.sentry', title: '异常' },
@@ -82,5 +65,50 @@ export const navs: object = {
         title: '用户',
         icon: 'user',
         name: 'user.login'
+    }
+}
+
+/**
+ * 转换服务端 Item => Router Item
+ * @param item
+ */
+export const navConvertItem = (item: any) => {
+    const type = get(item, 'type', '');
+    let params = {
+        type: base64Encode(get(item, 'path', ''))
+    }
+    // 存在 name 的为框架自定义的路由, 否则是需要转换的
+    if (get(item, 'name')) {
+        let name = get(item, 'name');
+        let params = get(item, 'params', {});
+        return {
+            name,
+            icon: get(item, 'icon', ''),
+            key: routerNameKey(name, params),
+            title: get(item, 'title', ''),
+            params: params,
+            query: get(item, 'query', {})
+        }
+    }
+    if (type === 'form') {
+        let name = 'form.index';
+        return {
+            name: 'form.index',
+            icon: get(item, 'icon', ''),
+            key: routerNameKey(name, params),
+            title: get(item, 'title', ''),
+            params: params,
+            query: get(item, 'query', {})
+        }
+    } else {
+        let name = 'grid.index';
+        return {
+            name: name,
+            icon: get(item, 'icon', ''),
+            key: routerNameKey(name, params),
+            title: get(item, 'title', ''),
+            params: params,
+            query: get(item, 'query', {})
+        }
     }
 }

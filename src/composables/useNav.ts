@@ -22,54 +22,48 @@ export default function useNav() {
             }
             let navChildren = get(nav, 'children', []);
             if (navChildren.length) {
-                each(get(nav, 'children', []), (menu) => {
+                each(navChildren, (menu) => {
                     if (matched) {
                         return;
                     }
                     const submenus = get(menu, 'children', []);
                     if (submenus.length) {
                         map(submenus, (submenu) => {
-                            let name = get(submenu, 'name', '')
-                            let params = get(submenu, 'params', {});
-                            let submenu_key = routerNameKey(name, params);
-                            if (key === submenu_key) {
+                            if (key === get(submenu, 'key', '')) {
                                 matched = menu_key;
                             }
                         })
                     } else {
-                        if (key === routerNameKey(get(menu, 'name', ''), get(menu, 'params', {}))) {
+                        if (key === get(menu, 'key', '')) {
                             matched = menu_key;
                         }
                     }
                 })
             } else {
-                if (key === routerNameKey(get(nav, 'name', ''), get(nav, 'params', {}))) {
+                if (key === get(nav, 'key', '')) {
                     matched = menu_key;
                 }
             }
         })
         return matched;
     }
+
     const setPrefix = function () {
         let name = String(router.currentRoute.value.name);
         let params = get(router.currentRoute.value, 'params', {});
         let key = routerNameKey(name, params)
         let prefix = findPrefix(key);
+        console.log('set-prefix', key, prefix);
         store.dispatch('nav/SetPrefix', {
             prefix, key
         }).then()
     }
     onMounted(() => {
-        store.dispatch('nav/Init').then(() => {
-            setPrefix();
-        })
+        store.dispatch('nav/Init').then()
     })
-    watch(() => router.currentRoute.value.fullPath, () => {
+
+    // Nav Init 之后触发
+    watch([() => store.state.nav.navs, () => router.currentRoute.value.fullPath], () => {
         setPrefix();
-    })
-    watch(() => store.state.poppy.token, (newVal) => {
-        if (newVal) {
-            store.dispatch('nav/AppendUserPerms').then()
-        }
     })
 }

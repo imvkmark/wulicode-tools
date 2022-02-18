@@ -25,6 +25,7 @@ const trans = reactive({
     key: computed(() => store.state.nav.key)
 })
 const onLinkClick = (name: string, params: any) => {
+    console.log(name, params);
     router.push({
         name,
         params

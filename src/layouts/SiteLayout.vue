@@ -12,21 +12,17 @@
 
 <script lang="ts" setup>
 import useAuth from '@/composables/useAuth';
-import useClearCache from '@/composables/useClearCache';
-import useInit from '@/composables/useInit';
-import useTkd from '@/composables/useTkd';
-import useFluid from '@/composables/useFluid';
+import useInit from '@/framework/composables/useInit';
+import useFluid from '@/framework/composables/useFluid';
 import PxSidebar from '@/components/base/PxSidebar.vue';
 import { sizeGt, sizeLte } from "@/framework/utils/helper";
 import { computed, reactive } from "vue";
 import { useStore } from "@/store";
 import useNav from "@/composables/useNav";
 
-useClearCache()
 useNav();
 useInit();
 useAuth();
-useTkd();
 useFluid();
 const store = useStore();
 const trans = reactive({
