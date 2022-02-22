@@ -1,4 +1,4 @@
-import { deviceId, localStore } from '@/framework/utils/helper';
+import { deviceId, localStore, pyWarning } from '@/framework/utils/helper';
 import { each, forEach, get, isNaN, isNil, isObject, keys, set, trim } from 'lodash-es';
 import { MD5 } from 'crypto-js';
 import UAParser from "ua-parser-js";
@@ -108,14 +108,18 @@ const http = (options: PyRequestOptions) => {
     // stip : 这里使用 data = {...params, token : token || ''}, 则会丢失form表单的数据
 
     let ua = new UAParser();
+    if (typeof pyAppVersion === 'undefined' || pyAppVersion === 'undefined') {
+        pyWarning('PY_APP_VERSION not defined at vite.config.ts with key `import.meta.env.PY_APP_VERSION`')
+    }
     let xHeaders: any = {
         'x-os': 'webapp',
         'x-ver': pyAppVersion,
         'x-id': deviceId(),
         'x-sys-name': ua.getOS().name,
         'x-sys-version': ua.getOS().version,
-        'x-sys-device': `${ua.getDevice().type}/${ua.getDevice().vendor}/${ua.getDevice().model}`,
-        'x-sys-cpu': ua.getCPU().architecture,
+        'x-sys-device': `${get(ua.getDevice(), 'type', '')}/${get(ua.getDevice(), 'vendor', '')}/${get(ua.getDevice(), 'model', '')}`,
+        'x-sys-cpu': get(ua.getCPU(), 'architecture', ''),
+        'X-Requested-With': 'XMLHttpRequest',
     }
     let xAuthHeaders = {
         'Content-Type': get(headers, 'Content-Type') ? get(headers, 'Content-Type') : 'application/json',
@@ -131,7 +135,6 @@ const http = (options: PyRequestOptions) => {
             });
         case 'post':
         default:
-
             return instance.post(url, params, {
                 headers: xAuthHeaders
             });

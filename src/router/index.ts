@@ -24,7 +24,8 @@ const routes: Array<RouteRecordRaw> = [
             { path: 'js/scroll', component: () => import('@/views/js/Scroll.vue'), name: 'js.scroll' },
             { path: 'js/info', component: () => import('@/views/js/Info.vue'), name: 'js.info' },
             { path: 'form/:type', component: () => import('@/framework/views/Form.vue'), name: 'form.index' },
-            { path: 'grid/:type', component: () => import('@/framework/views/Grid.vue'), name: 'grid.index' }
+            { path: 'grid/:type', component: () => import('@/framework/views/Grid.vue'), name: 'grid.index' },
+            { path: 'setting/:type', component: () => import('@/framework/views/Setting.vue'), name: 'setting.index' }
         ]
     },
     {

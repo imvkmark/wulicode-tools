@@ -1,8 +1,9 @@
-import { computed, onMounted, reactive, watch } from 'vue'
+import { computed, onMounted, onUnmounted, reactive, watch } from 'vue'
 import { useStore } from '@/store';
 import { each, get, map } from "lodash-es";
 import { routerNameKey } from "@/utils/utils";
 import { useRouter } from "vue-router";
+import { emitter, PY_USER_LOGIN, PY_USER_LOGOUT } from "@/framework/bus/mitt";
 
 /**
  * 初始化
@@ -58,6 +59,15 @@ export default function useNav() {
             prefix, key
         }).then()
     }
+
+    // 用户(登录|退出)重新获取菜单
+    emitter.on(PY_USER_LOGIN, () => {
+        store.dispatch('nav/Init').then()
+    })
+    emitter.on(PY_USER_LOGOUT, () => {
+        store.dispatch('nav/Init').then()
+    })
+
     onMounted(() => {
         store.dispatch('nav/Init').then()
     })
@@ -65,5 +75,9 @@ export default function useNav() {
     // Nav Init 之后触发
     watch([() => store.state.nav.navs, () => router.currentRoute.value.fullPath], () => {
         setPrefix();
+    })
+
+    onUnmounted(() => {
+        emitter.off(PY_USER_LOGIN);
     })
 }

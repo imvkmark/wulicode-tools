@@ -1,9 +1,7 @@
 <template>
-    <div class="container">
-        <PxSidebar/>
-        <div :class="{'py--content':true,'with-menu' : trans.hasMenu, smaller : sizeLte(trans.size, 'sm'),larger : sizeGt(trans.size, 'sm'),}">
-            <router-view/>
-        </div>
+    <PxSidebar/>
+    <div :class="{'py--content':true,'with-menu' : trans.hasMenu, smaller : sizeLte(trans.size, 'sm'),larger : sizeGt(trans.size, 'sm'),}">
+        <router-view/>
     </div>
 </template>
 
@@ -33,7 +31,6 @@ const trans = reactive({
 <style scoped lang="less">
 .container {
     position: relative;
-    display: flex;
     box-sizing: border-box;
 }
 </style>

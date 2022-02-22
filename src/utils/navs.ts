@@ -15,6 +15,8 @@ export const navs: object = {
         title: 'Demo',
         icon: 'lightning',
         children: [
+
+
             {
                 title: '工具',
                 children: [
@@ -45,7 +47,20 @@ export const navs: object = {
     user: {
         title: '用户',
         icon: 'user',
-        name: 'user.login'
+        children: [
+            {
+                title: '用户信息',
+                children: [
+                    {
+                        "name": "form.index",
+                        "title": "修改密码",
+                        "params": {
+                            "type": base64Encode("/api/backend/mgr-app/user/password")
+                        }
+                    },
+                ]
+            },
+        ],
     }
 }
 
@@ -108,6 +123,16 @@ export const navConvertItem = (item: any) => {
         let name = 'form.index';
         return {
             name: 'form.index',
+            icon: get(item, 'icon', ''),
+            key: routerNameKey(name, params),
+            title: get(item, 'title', ''),
+            params: params,
+            query: get(item, 'query', {})
+        }
+    } else if (type === 'setting') {
+        let name = 'setting.index';
+        return {
+            name: name,
             icon: get(item, 'icon', ''),
             key: routerNameKey(name, params),
             title: get(item, 'title', ''),

@@ -1,5 +1,5 @@
 import vue from '@vitejs/plugin-vue'
-import viteSentry from 'vite-plugin-sentry'
+import viteSentry, { ViteSentryPluginOptions } from 'vite-plugin-sentry'
 // 获取 package 的版本号
 import pkgJson from './package.json';
 // 如果编辑器提示 path 模块找不到，则可以安装一下 @types/node -> npm i @types/node -D
@@ -23,32 +23,34 @@ export default defineConfig(({ mode }) => {
         }
     }
 
+    const sentryConfig: ViteSentryPluginOptions = {
+        debug: true,
+        url: process.env.VITE_SENTRY_URL,
+        authToken: String(process.env.VITE_SENTRY_TOKEN),
+        org: 'dadi',
+        project: 'wulicode-webapp',
+        release: `${mode}-${pkgJson.version}`,
+        deploy: {
+            env: `${mode}`
+        },
+        setCommits: {
+            auto: false
+        },
+        sourceMaps: {
+            include: [
+                `build/wulicode-${mode}/assets`
+            ],
+            ignore: ['node_modules'],
+            urlPrefix: '~/webapp/assets'
+        }
+    }
+
     return {
         envDir: './config/',
         plugins: [
             vue(),
             // 使用 NODE_ENV, production 时候才会执行错误搜集
-            viteSentry({
-                debug: true,
-                url: process.env.VITE_SENTRY_URL,
-                authToken: process.env.VITE_SENTRY_TOKEN,
-                org: 'dadi',
-                project: 'wulicode-webapp',
-                release: `${mode}-${pkgJson.version}`,
-                deploy: {
-                    env: `${mode}`
-                },
-                setCommits: {
-                    auto: false
-                },
-                sourceMaps: {
-                    include: [
-                        `build/wulicode-${mode}/assets`
-                    ],
-                    ignore: ['node_modules'],
-                    urlPrefix: '~/webapp/assets'
-                }
-            })
+            viteSentry(sentryConfig)
         ],
         resolve: {
             alias: {
@@ -57,7 +59,7 @@ export default defineConfig(({ mode }) => {
         },
         base: '/webapp/',
         define: {
-            'import.meta.env.DEF_APP_VERSION': JSON.stringify(pkgJson.version)
+            'import.meta.env.PY_APP_VERSION': JSON.stringify(pkgJson.version)
         },
         build: {
             outDir: `build/wulicode-${mode}`,
