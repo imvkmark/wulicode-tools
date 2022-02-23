@@ -12,7 +12,7 @@ export const navs: object = {
         name: 'home.index'
     },
     demo: {
-        title: 'Demo',
+        title: '工具',
         icon: 'lightning',
         children: [
 
@@ -43,24 +43,6 @@ export const navs: object = {
                 ]
             },
         ]
-    },
-    user: {
-        title: '用户',
-        icon: 'user',
-        children: [
-            {
-                title: '用户信息',
-                children: [
-                    {
-                        "name": "py:form.index",
-                        "title": "修改密码",
-                        "params": {
-                            "type": base64Encode("/api/backend/mgr-app/user/password")
-                        }
-                    },
-                ]
-            },
-        ],
     }
 }
 

@@ -76,7 +76,7 @@ header {
     position: sticky;
     display: flex;
     top: 0;
-    z-index: 1;
+    z-index: 4;
     background: #fff;
     height: var(--wc-menubar-height);
     align-items: center;
