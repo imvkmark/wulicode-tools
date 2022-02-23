@@ -56,7 +56,7 @@ const requestSign = (params: any, token = '') => {
     kvStr = kvStr.slice(0, -1);
     let v1Md5 = MD5(MD5(kvStr).toString() + token).toString();
     if (debug) {
-        console.log(kvStr, MD5(kvStr).toString(), v1Md5);
+        console.warn(kvStr, MD5(kvStr).toString(), v1Md5);
     }
     return v1Md5.charAt(1) + v1Md5.charAt(3) + v1Md5.charAt(15) + v1Md5.charAt(31)
 };

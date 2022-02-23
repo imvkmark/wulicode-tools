@@ -38,7 +38,6 @@ const jumpTo = (nav: any) => {
         }
     }
     let last = findLast(nav);
-    console.log(last);
     router.push({
         name: get(last, 'name'),
         params: get(last, 'params')
