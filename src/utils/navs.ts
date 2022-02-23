@@ -52,7 +52,7 @@ export const navs: object = {
                 title: '用户信息',
                 children: [
                     {
-                        "name": "form.index",
+                        "name": "py:form.index",
                         "title": "修改密码",
                         "params": {
                             "type": base64Encode("/api/backend/mgr-app/user/password")
@@ -120,9 +120,9 @@ export const navConvertItem = (item: any) => {
         }
     }
     if (type === 'form') {
-        let name = 'form.index';
+        let name = 'py:form.index';
         return {
-            name: 'form.index',
+            name,
             icon: get(item, 'icon', ''),
             key: routerNameKey(name, params),
             title: get(item, 'title', ''),
@@ -130,9 +130,9 @@ export const navConvertItem = (item: any) => {
             query: get(item, 'query', {})
         }
     } else if (type === 'setting') {
-        let name = 'setting.index';
+        let name = 'py:setting.index';
         return {
-            name: name,
+            name,
             icon: get(item, 'icon', ''),
             key: routerNameKey(name, params),
             title: get(item, 'title', ''),
@@ -140,7 +140,7 @@ export const navConvertItem = (item: any) => {
             query: get(item, 'query', {})
         }
     } else {
-        let name = 'grid.index';
+        let name = 'py:grid.index';
         return {
             name: name,
             icon: get(item, 'icon', ''),

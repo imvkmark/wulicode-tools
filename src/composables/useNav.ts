@@ -54,7 +54,6 @@ export default function useNav() {
         let params = get(router.currentRoute.value, 'params', {});
         let key = routerNameKey(name, params)
         let prefix = findPrefix(key);
-        console.log('set-prefix', key, prefix);
         store.dispatch('nav/SetPrefix', {
             prefix, key
         }).then()

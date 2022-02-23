@@ -2,12 +2,13 @@
     <ElScrollbar :always="true" height="100vh">
         <PxHeader/>
         <router-view/>
+        <Listen/>
     </ElScrollbar>
 </template>
 
 <script lang="ts" setup>
 import PxHeader from '@/components/base/PxHeader.vue';
-</script>
+import Listen from "@/framework/components/element/Listen.vue";</script>
 
 <style lang="less">
 @import "./assets/style/vars";

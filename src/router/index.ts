@@ -1,16 +1,17 @@
 import { createRouter, createWebHashHistory, Router, RouteRecordRaw } from 'vue-router'
-import SiteLayout from '@/layouts/SiteLayout.vue';
-import { get } from 'lodash-es';
+import MgrLayout from '@/framework/layouts/MgrLayout.vue';
+import { get, merge } from 'lodash-es';
+import { frameworkRoutes } from "@/framework/router";
 
-const routes: Array<RouteRecordRaw> = [
+const routes: Array<RouteRecordRaw> = merge([
     {
         path: '/',
-        component: SiteLayout,
+        component: MgrLayout,
         redirect: '/tool/base64'
     },
     {
         path: '/',
-        component: SiteLayout,
+        component: MgrLayout,
         children: [
             { path: 'home', component: () => import('@/views/home/Home.vue'), name: 'home.index' },
             { path: 'tool/apidoc', component: () => import('@/views/tool/Apidoc.vue'), name: 'tool.apidoc' },
@@ -23,13 +24,10 @@ const routes: Array<RouteRecordRaw> = [
             { path: 'js/sentry', component: () => import('@/views/js/Sentry.vue'), name: 'js.sentry' },
             { path: 'js/scroll', component: () => import('@/views/js/Scroll.vue'), name: 'js.scroll' },
             { path: 'js/info', component: () => import('@/views/js/Info.vue'), name: 'js.info' },
-            { path: 'form/:type', component: () => import('@/framework/views/Form.vue'), name: 'form.index' },
-            { path: 'grid/:type', component: () => import('@/framework/views/Grid.vue'), name: 'grid.index' },
-            { path: 'setting/:type', component: () => import('@/framework/views/Setting.vue'), name: 'setting.index' }
         ]
     },
     {
-        path: '/user', component: SiteLayout, children: [
+        path: '/user', component: MgrLayout, children: [
             {
                 path: 'cp',
                 component: () => import('@/views/user/Cp.vue'),
@@ -44,7 +42,7 @@ const routes: Array<RouteRecordRaw> = [
             }
         ]
     }
-]
+], frameworkRoutes)
 
 const router: Router = createRouter({
     history: createWebHashHistory(),
