@@ -3,13 +3,15 @@
         <MagicStick/>
     </ElIcon>
     <ElDrawer v-model="trans.visible" title="主题设定">
-        <ElFormItem label="元素大小" :size="trans.elementSize">
-            <ElRadioGroup :model-value="trans.elementSize" @update:model-value="onUpdateElementSize">
-                <ElRadioButton label="small">小号</ElRadioButton>
-                <ElRadioButton label="default">默认</ElRadioButton>
-                <ElRadioButton label="large">大号</ElRadioButton>
-            </ElRadioGroup>
-        </ElFormItem>
+        <ElForm>
+            <ElFormItem label="元素大小" :size="trans.elementSize">
+                <ElRadioGroup :model-value="trans.elementSize" @update:model-value="onUpdateElementSize">
+                    <ElRadioButton label="small">小号</ElRadioButton>
+                    <ElRadioButton label="default">默认</ElRadioButton>
+                    <ElRadioButton label="large">大号</ElRadioButton>
+                </ElRadioGroup>
+            </ElFormItem>
+        </ElForm>
     </ElDrawer>
 </template>
 
