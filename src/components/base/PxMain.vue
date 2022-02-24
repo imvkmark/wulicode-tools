@@ -4,6 +4,10 @@
         smaller : sizeLte(trans.size, 'sm'),
         'with-menu' : trans.hasMenu,
         larger : sizeGt(trans.size, 'sm')}">
+        <h3 class="main-title" v-if="title">
+            {{ title }}
+            <small v-if="description">{{ description }}</small>
+        </h3>
         <div class="main-area">
             <slot/>
         </div>
