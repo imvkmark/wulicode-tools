@@ -1,5 +1,5 @@
 <template>
-    <div :class="{'py--nav' : true}">
+    <div class="py--nav">
         <ul>
             <li :class="{active:trans.prefix === key}" v-for="(menu, key) in trans.navs" :key="key"
                 @click="jumpTo(menu)">

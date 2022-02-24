@@ -5,7 +5,10 @@
                 <img src="@/assets/app/logo.png" alt="Wulicode">
             </div>
         </div>
-        <PxNav/>
+        <div class="right">
+            <PxNav/>
+            <PxTheme/>
+        </div>
     </header>
     <div class="menubar" v-if="sizeLte(trans.size, 'sm') && trans.hasMenu">
         <ElIcon>
@@ -21,6 +24,7 @@ import { ArrowLeft, Close, Expand } from '@element-plus/icons';
 import { sizeGt, sizeLte } from "@/framework/utils/helper";
 import PxNav from "@/components/base/PxNav.vue";
 import { DArrowRight } from "@element-plus/icons-vue";
+import PxTheme from "@/components/base/PxTheme.vue";
 
 const store = useStore();
 const trans = reactive({
@@ -70,7 +74,11 @@ header {
             }
         }
     }
+    .right {
+        display: flex;
+    }
 }
+
 
 .menubar {
     position: sticky;
