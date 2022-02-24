@@ -39,8 +39,6 @@ defineComponent({
 </script>
 
 <style lang="less" scoped>
-@import "../../assets/style/vars";
-
 header {
     height: 3.5rem;
     background-color: #FFF;

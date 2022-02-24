@@ -35,7 +35,6 @@ const { userLogout } = useUserUtil();
 </script>
 
 <style scoped lang="less">
-@import '../../assets/style/vars';
 
 .login {
     .logo {
@@ -50,7 +49,7 @@ const { userLogout } = useUserUtil();
             height: 40px;
             line-height: 40px;
             font-size: 18px;
-            color: @textColor;
+            color: var(--wc-color-text);
             text-align: center;
             margin: 0;
         }

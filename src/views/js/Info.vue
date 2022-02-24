@@ -10,5 +10,4 @@ const agent = window.navigator.userAgent
 </script>
 
 <style scoped lang="less">
-@import '../../assets/style/vars';
 </style>

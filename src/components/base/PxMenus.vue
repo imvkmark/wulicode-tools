@@ -34,8 +34,6 @@ const onLinkClick = (name: string, params: any) => {
 </script>
 
 <style lang="less" scoped>
-@import '../../assets/style/vars';
-
 .sidebar {
     background: #FFF;
     min-width: 240px;
@@ -61,7 +59,7 @@ const onLinkClick = (name: string, params: any) => {
             cursor: pointer;
             &.active {
                 span {
-                    border-left: 2px solid @primaryColor;
+                    border-left: 2px solid var(--wc-color-primary);
                 }
             }
             span {

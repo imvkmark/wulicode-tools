@@ -34,9 +34,6 @@ const onDrawerClose = () => {
 </script>
 
 <style lang="less" scoped>
-
-@import '../../assets/style/vars';
-
 .sidebar-wrapper {
     margin-top: var(--wc-header-height);
     height: calc(100vh - var(--wc-header-height));

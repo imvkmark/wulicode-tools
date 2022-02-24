@@ -77,7 +77,6 @@ const onSubmit = () => {
 </script>
 
 <style scoped lang="less">
-@import '../../assets/style/vars';
 
 .login {
     background: #081836;
@@ -104,7 +103,7 @@ const onSubmit = () => {
         height: 40px;
         line-height: 40px;
         font-size: 18px;
-        color: @textColor;
+        color: var(--wc-color-text);
         text-align: center;
         margin: 0;
     }
