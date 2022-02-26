@@ -1,7 +1,7 @@
 <template>
     <div class="login py--main">
-        <el-row justify="center">
-            <el-col :span="12" :xs="{span:22}" :sm="{span:18}">
+        <ElRow justify="center">
+            <ElCol :span="12" :xs="{span:22}" :sm="{span:18}">
                 <div class="login-ctr">
                     <div class="form">
                         <div class="form-desc">
@@ -9,20 +9,22 @@
                             <p>开发中的前后端分离框架</p>
                         </div>
                         <ElForm :model="value" :rules="rules" ref="form" label-width="100px" label-position="top">
-                            <el-form-item label="通行证" prop="passport">
-                                <el-input v-model="value.passport"></el-input>
-                            </el-form-item>
-                            <el-form-item label="密码" prop="password">
-                                <el-input v-model="value.password"></el-input>
-                            </el-form-item>
-                            <el-form-item>
-                                <el-button type="primary" class="py--block" @click="onSubmit()">登录</el-button>
-                            </el-form-item>
+                            <ElFormItem label="通行证" prop="passport">
+                                <ElInput v-model="value.passport"/>
+                            </ElFormItem>
+                            <ElFormItem label="密码" prop="password">
+                                <ElInput v-model="value.password"/>
+                            </ElFormItem>
+                            <ElFormItem>
+                                <ElButton type="primary" class="py--block" @click="onSubmit()">
+                                    登录
+                                </ElButton>
+                            </ElFormItem>
                         </ElForm>
                     </div>
                 </div>
-            </el-col>
-        </el-row>
+            </ElCol>
+        </ElRow>
     </div>
 </template>
 
@@ -109,7 +111,7 @@ const onSubmit = () => {
     }
     p {
         font-size: 12px;
-        color: @assistColor;
+        color: var(--wc-text-color);
         text-align: center;
         margin-top: 0;
     }

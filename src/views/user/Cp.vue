@@ -55,7 +55,7 @@ const { userLogout } = useUserUtil();
         }
         p {
             font-size: 12px;
-            color: @assistColor;
+            color: var(--wc-text-color);
             text-align: center;
             margin-top: 0;
         }
