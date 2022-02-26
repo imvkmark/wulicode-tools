@@ -1,12 +1,12 @@
 <template>
     <ElDialog v-model="trans.visible">
         <div class="search">
-            <ElInput v-model="trans.kw" size="large"/>
+            <ElInput ref="inputRef" v-model="trans.kw" size="large" :prefix-icon="Search" clearable/>
             <ElScrollbar height="60vh">
                 <ul>
                     <li v-for="(nav, title) in searched" :key="nav">
                         <h3>{{ title }}</h3>
-                        <p v-for="menu in nav" :key="menu" @click="goNav(menu)">
+                        <p v-for="(menu, key) in nav" :key="key" @click="goNav(menu)">
                             {{ get(menu, 'titleAll') }}
                         </p>
                     </li>
@@ -16,10 +16,12 @@
     </ElDialog>
 </template>
 <script lang="ts" setup>
-import { computed, onMounted, reactive, watch } from 'vue';
+import { computed, onMounted, reactive, ref, watch } from 'vue';
 import { useRouter } from 'vue-router';
 import { useStore } from '@/store';
-import { each, filter, get, groupBy, keys, lowerCase } from "lodash-es";
+import { each, filter, get, groupBy, lowerCase } from "lodash-es";
+import { ElInput } from "element-plus";
+import { Search } from '@element-plus/icons-vue'
 
 const props = defineProps({
     modelValue: {
@@ -36,16 +38,17 @@ const emit = defineEmits([
 
 let router = useRouter();
 let store = useStore();
+const inputRef: any = ref<InstanceType<typeof ElInput>>();
 const trans = reactive({
     navs: computed(() => store.state.nav.navs),
-    format: [],
-    visible: true,
+    visible: false,
     kw: '',
 });
 
 const searched = computed(() => {
-    let filtered = filter(trans.format, (item) => {
-        return String(get(item, 'titleCi')).indexOf(lowerCase(trans.kw)) >= 0
+    let formatValues = toPlainNavs()
+    let filtered = filter(formatValues, (item) => {
+        return trans.kw ? String(get(item, 'titleCi')).indexOf(lowerCase(trans.kw)) >= 0 : true;
     });
     return groupBy(filtered, function (item) {
         return get(item, 'navTitle')
@@ -61,36 +64,36 @@ const goNav = (nav: any) => {
     trans.visible = false;
 }
 
+const convertToSearch = (nav: any, menu: any, submenu: any, level: number) => {
+    let from;
+    if (level === 1) {
+        from = nav;
+    } else if (level === 2) {
+        from = menu;
+    } else {
+        from = submenu
+    }
 
-const init = () => {
-    const convertToSearch = (nav: any, menu: any, submenu: any, level: number) => {
-        let from;
-        if (level === 1) {
-            from = nav;
-        } else if (level === 2) {
-            from = menu;
-        } else {
-            from = submenu
-        }
-
-        const navTitle = level >= 1 ? get(nav, 'title') : '';
-        const menuTitle = level >= 2 ? get(menu, 'title') : '';
-        const subMenuTitle = level >= 3 ? get(submenu, 'title') : '';
-        const titleAll = `${navTitle ? navTitle : ''} ${menuTitle ? '-' + menuTitle : ''} ${subMenuTitle ? '-' + subMenuTitle : ''}`;
-        const titleCi = lowerCase(titleAll);
-        return {
-            navTitle,
-            menuTitle,
-            subMenuTitle,
-            titleAll,
-            titleCi,
-            route: {
-                name: get(from, 'name'),
-                params: get(from, 'params'),
-                query: get(from, 'query'),
-            }
+    const navTitle = level >= 1 ? get(nav, 'title') : '';
+    const menuTitle = level >= 2 ? get(menu, 'title') : '';
+    const subMenuTitle = level >= 3 ? get(submenu, 'title') : '';
+    const titleAll = `${navTitle ? navTitle : ''} ${menuTitle ? '-' + menuTitle : ''} ${subMenuTitle ? '-' + subMenuTitle : ''}`;
+    const titleCi = lowerCase(titleAll);
+    return {
+        navTitle,
+        menuTitle,
+        subMenuTitle,
+        titleAll,
+        titleCi,
+        route: {
+            name: get(from, 'name'),
+            params: get(from, 'params'),
+            query: get(from, 'query'),
         }
     }
+}
+
+const toPlainNavs = () => {
     let allPlainNavs = <any>[];
     each(trans.navs, (nav) => {
         const menus = get(nav, 'children', []);
@@ -109,20 +112,16 @@ const init = () => {
             allPlainNavs.push(convertToSearch(nav, nav, nav, 1))
         }
     })
-    trans.format = allPlainNavs;
+    return allPlainNavs;
 }
 
-watch(() => trans.navs, () => {
-    init();
-})
 watch(() => props.modelValue, (newVal) => {
-    trans.visible = newVal
+    trans.visible = newVal;
+    inputRef.value.focus();
 })
 
 onMounted(() => {
-    if (keys(trans.navs).length) {
-        init();
-    }
+    inputRef.value.focus();
     trans.visible = props.modelValue;
 })
 </script>
@@ -137,6 +136,22 @@ onMounted(() => {
         font-size: 1.2rem;
         &:hover {
             color: var(--wc-link-active-color);
+        }
+    }
+    ul {
+        padding-left: 0;
+        li {
+            list-style: none;
+            p {
+                border: 1px solid var(--wc-color-light-cyan);
+                padding: 0.4rem;
+                border-radius: .3rem;
+                margin: 0.5rem 0;
+                cursor: pointer;
+                &:hover {
+                    background: var(--wc-bg-color);
+                }
+            }
         }
     }
 }

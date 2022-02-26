@@ -1,8 +1,11 @@
 <template>
     <div class="search">
-        <ElIcon class="search-icon" @click="onSearchClick">
-            <Search/>
-        </ElIcon>
+        <em @click="onSearchClick" @keydown.meta.k="onSearchClick">
+            <span v-if="sizeGt(trans.size, 'xs')">⌘ + K</span>
+            <ElIcon class="search-icon">
+                <Search/>
+            </ElIcon>
+        </em>
         <PxSearch v-model="trans.showSearch"/>
     </div>
     <div class="py--nav">
@@ -12,27 +15,29 @@
                 <ElIcon>
                     <component :is="icon[upperCamelCase(menu.icon)]"/>
                 </ElIcon>
-                <span class="side-text">{{ menu.title }}</span>
+                <span class="side-text" v-if="sizeGt(trans.size, 'xs')">{{ menu.title }}</span>
             </li>
         </ul>
     </div>
 </template>
 
 <script lang="ts" setup>
-import { computed, reactive } from 'vue';
+import { computed, onMounted, reactive } from 'vue';
 import { useRouter } from 'vue-router';
 import { useStore } from '@/store';
 import { icon } from "@/framework/utils/icon";
-import { upperCamelCase } from "@/framework/utils/helper";
+import { sizeGt, upperCamelCase } from "@/framework/utils/helper";
 import { first, get } from "lodash-es";
 import { Search } from "@element-plus/icons-vue";
 import PxSearch from "@/components/base/PxSearch.vue";
+import key from 'keymaster'
 
 // 监听路由前缀的变化
 let router = useRouter();
 let store = useStore();
 const trans = reactive({
     navs: computed(() => store.state.nav.navs),
+    size: computed(() => store.state.poppy.size),
     prefix: computed(() => store.state.nav.prefix),
     showSearch: false
 });
@@ -57,15 +62,38 @@ const jumpTo = (nav: any) => {
     });
 }
 
+onMounted(() => {
+    key('⌘+k', onSearchClick);
+})
 </script>
 
 <style lang="less" scoped>
 .search {
+    em {
+        > span {
+            font-size: 0.875rem;
+            padding-left: 0.72rem;
+        }
+        display: flex;
+        align-items: center;
+        font-style: normal;
+        border: 1px solid var(--wc-side-border-color);
+        background: var(--wc-bg-color);
+        color: var(--wc-text-color);
+        border-radius: 2rem;
+
+        height: 2.5rem;
+        margin-top: 0.4rem;
+        &:hover {
+            cursor: pointer;
+            border-color: var(--wc-link-color);
+        }
+    }
     .search-icon {
         cursor: pointer;
-        height: 3.5rem;
-        margin-right: 1rem;
-        margin-left: 1rem;
+
+        margin-right: 0.72rem;
+        margin-left: 0.72rem;
         font-size: 1.2rem;
         &:hover {
             color: var(--wc-link-active-color);
