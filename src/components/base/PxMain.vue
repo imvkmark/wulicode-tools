@@ -35,12 +35,4 @@ defineComponent({
 </script>
 
 <style lang="less" scoped>
-.py--main {
-    box-sizing: border-box;
-    display: flex;
-    flex-direction: column;
-    width: 100%;
-    overflow-y: auto;
-    padding: 0.8rem 1.2rem 0.8rem;
-}
 </style>

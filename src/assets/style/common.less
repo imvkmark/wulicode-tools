@@ -75,12 +75,25 @@
 }
 
 .py--main {
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    overflow-y: auto;
+    padding: 0.8rem 1.2rem 0.8rem;
     font-size: 14px;
+    position: relative;
     .main-title {
-        margin-top: 0.3rem;
+        margin: 0 0 0.3rem 0;
+        height: 2rem;
         small {
             font-weight: lighter;
         }
+    }
+    .main-actions {
+        position: absolute;
+        top: 0.6rem;
+        right: 1.2rem;
     }
     .main-handle {
         padding-top: 10px;
