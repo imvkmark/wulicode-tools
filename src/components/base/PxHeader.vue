@@ -7,7 +7,7 @@
         </div>
         <div class="right">
             <PxNav/>
-            <PxTheme/>
+            <PxTheme v-if="trans.isLogin"/>
         </div>
     </header>
     <div class="menubar" v-if="sizeLte(trans.size, 'sm') && trans.hasMenu">
@@ -32,6 +32,7 @@ const trans = reactive({
     sidebarActive: computed(() => store.state.nav.sidebarActive),
     size: computed(() => store.state.poppy.size),
     hasMenu: computed(() => store.state.nav.menus.length),
+    isLogin: computed(() => store.state.poppy.token),
 })
 defineComponent({
     ArrowLeft, Expand, Close

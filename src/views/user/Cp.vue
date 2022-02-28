@@ -1,7 +1,7 @@
 <template>
     <div class="login">
-        <el-row>
-            <el-col :span="12" :offset="6">
+        <ElRow>
+            <ElCol :span="12" :offset="6">
                 <div class="logo">
                     <img src="@/assets/app/logo.png" alt="Wulicode">
                     <h4>Wulicode</h4>
@@ -13,8 +13,8 @@
                     </p>
                     <el-button @click="userLogout">退出登录</el-button>
                 </div>
-            </el-col>
-        </el-row>
+            </ElCol>
+        </ElRow>
     </div>
 </template>
 

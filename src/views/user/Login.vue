@@ -82,11 +82,6 @@ const onSubmit = () => {
 
 .login {
     background: #081836;
-    display: flex;
-    align-items: center;
-    .el-row {
-        flex: 1;
-    }
 }
 
 .login-ctr {

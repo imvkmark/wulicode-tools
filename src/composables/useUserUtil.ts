@@ -1,8 +1,7 @@
 import { useStore } from '@/store';
 import { get } from 'lodash-es';
 import { useRouter } from 'vue-router';
-import { apiPySystemAuthLogout } from '@/framework/services/poppy';
-import { isUrl, toast } from '@/framework/utils/helper';
+import { isUrl } from '@/framework/utils/helper';
 
 /**
  * 登录和 Token 的保存以及跳转
@@ -49,16 +48,14 @@ export default function useUserUtil() {
         goWith();
     }
 
-    const userLogout = function () {
-        apiPySystemAuthLogout().then(({ success, message }) => {
-            toast(message, success)
-            if (!success) {
-                return;
-            }
-            store.dispatch('poppy/Logout').then(() => {
-                router.push({ name: 'user.login' }).then()
-            });
-        })
+    const userLogout = function (fun: Function = () => {
+    }) {
+        store.dispatch('poppy/Logout').then(() => {
+            router.push({ name: 'user.login' }).then()
+        });
+        if (typeof fun === 'function') {
+            fun();
+        }
     }
 
     /**

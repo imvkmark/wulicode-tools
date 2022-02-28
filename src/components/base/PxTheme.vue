@@ -11,8 +11,11 @@
                     <ElRadioButton label="large">大号</ElRadioButton>
                 </ElRadioGroup>
             </ElFormItem>
-            <ElFormItem label="清理缓存" :size="trans.elementSize">
+            <ElFormItem label="清理缓存">
                 <ElButton :loading="trans.clearing" @click="onClearCache">清理</ElButton>
+            </ElFormItem>
+            <ElFormItem label="退出登录">
+                <ElButton @click="onLogout" type="danger" plain>退出</ElButton>
             </ElFormItem>
         </ElForm>
     </ElDrawer>
@@ -26,6 +29,9 @@ import { MagicStick } from "@element-plus/icons-vue";
 import { pyStorageKey } from "@/framework/utils/conf";
 import { localStore, toast } from "@/framework/utils/helper";
 import { apiMgrAppHomeClearCache } from "@/framework/services/mgr-app";
+import useUserUtil from "@/composables/useUserUtil";
+import { ElMessageBox } from "element-plus";
+
 
 // 监听路由前缀的变化
 let router = useRouter();
@@ -34,7 +40,10 @@ const trans = reactive({
     elementSize: computed(() => store.state.poppy.elementSize),
     visible: false,
     clearing: false,
+    loading: computed(() => store.state.poppy.loading),
 });
+
+const { userLogout } = useUserUtil();
 
 const onUpdateElementSize = (value: string) => {
     store.commit('poppy/SET_ELEMENT_SIZE', value)
@@ -54,6 +63,24 @@ const onClearCache = () => {
         }, 1000);
     })
 }
+
+const onLogout = () => {
+    ElMessageBox.confirm(
+        '确认退出登录?',
+        '确认', {
+            confirmButtonText: '确认',
+            cancelButtonText: '取消',
+            type: 'warning',
+        }
+    ).then(() => {
+        userLogout(() => {
+            store.dispatch('nav/Destruct')
+            trans.visible = false;
+            toast('已退出登录');
+        });
+    })
+}
+
 
 </script>
 
