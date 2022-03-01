@@ -17,7 +17,7 @@ import { computed, reactive } from 'vue'
 import { useRouter } from 'vue-router';
 import { useStore } from '@/store';
 import { sizeLte } from "@/framework/utils/helper";
-import PxMenus from "@/components/base/PxMenus.vue";
+import PxMenus from "@/framework/components/base/PxMenus.vue";
 
 const router = useRouter();
 const store = useStore();

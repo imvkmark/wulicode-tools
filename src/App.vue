@@ -7,11 +7,10 @@
 </template>
 
 <script lang="ts" setup>
-import PxHeader from '@/components/base/PxHeader.vue';
+import PxHeader from '@/framework/components/base/PxHeader.vue';
 import Listen from "@/framework/components/element/Listen.vue";</script>
 
 <style lang="less">
-@import "./assets/style/vars";
 
 body {
     background: var(--wc-bg-color);

@@ -30,7 +30,7 @@ import { ElForm } from 'element-plus';
 import { copyText } from 'vue3-clipboard'
 import { debounce, each, get } from 'lodash-es';
 import qs from 'qs';
-import PxMain from '@/components/base/PxMain.vue';
+import PxMain from '@/framework/components/base/PxMain.vue';
 
 
 const store = useStore();

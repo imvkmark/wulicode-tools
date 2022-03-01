@@ -2,7 +2,7 @@
     <header :class="{fixed : sizeGt(trans.size, 'sm'), absolute : sizeLte(trans.size, 'sm')}">
         <div class="nav" @click="onLogoClick">
             <div class="logo">
-                <img src="@/assets/app/logo.png" alt="Wulicode">
+                <img src="@/framework/assets/image/logo.png" alt="Wulicode">
             </div>
         </div>
         <div class="right">
@@ -21,9 +21,9 @@
 import { useStore } from '@/store';
 import { computed, reactive } from 'vue';
 import { sizeGt, sizeLte } from "@/framework/utils/helper";
-import PxNav from "@/components/base/PxNav.vue";
+import PxNav from "@/framework/components/base/PxNav.vue";
 import { DArrowRight } from "@element-plus/icons-vue";
-import PxTheme from "@/components/base/PxTheme.vue";
+import PxTheme from "@/framework/components/base/PxTheme.vue";
 import { useRouter } from "vue-router";
 
 const store = useStore();

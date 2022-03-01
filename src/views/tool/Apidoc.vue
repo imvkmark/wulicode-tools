@@ -30,7 +30,7 @@ import { apiOpToolApidoc } from '@/services/op';
 import { toast } from '@/framework/utils/helper';
 import { ElForm } from 'element-plus';
 import { copyText } from 'vue3-clipboard'
-import PxMain from '@/components/base/PxMain.vue';
+import PxMain from '@/framework/components/base/PxMain.vue';
 
 const store = useStore();
 const router = useRouter();

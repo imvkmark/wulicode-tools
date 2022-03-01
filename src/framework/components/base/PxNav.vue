@@ -29,7 +29,7 @@ import { icon } from "@/framework/utils/icon";
 import { sizeGt, upperCamelCase } from "@/framework/utils/helper";
 import { first, get } from "lodash-es";
 import { Search } from "@element-plus/icons-vue";
-import PxSearch from "@/components/base/PxSearch.vue";
+import PxSearch from "@/framework/components/base/PxSearch.vue";
 import key from 'keymaster'
 
 // 监听路由前缀的变化

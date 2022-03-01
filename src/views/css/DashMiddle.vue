@@ -8,7 +8,7 @@
     </PxMain>
 </template>
 <script lang="ts" setup>
-import PxMain from '../../components/base/PxMain.vue';
+import PxMain from '../../framework/components/base/PxMain.vue';
 </script>
 
 // url : https://www.yudouyudou.com/jiaochengheji/Html_css/1248.html

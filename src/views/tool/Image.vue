@@ -32,7 +32,7 @@ import { trimEnd, trimStart } from 'lodash-es';
 import { onMounted, reactive, watch } from 'vue';
 import { copyText } from 'vue3-clipboard';
 import { toast } from '@/framework/utils/helper';
-import PxMain from '@/components/base/PxMain.vue';
+import PxMain from '@/framework/components/base/PxMain.vue';
 import { pyAppUrl } from "@/framework/utils/conf";
 
 
