@@ -1,3 +1,10 @@
+/* element-style - rewrite
+ * ---------------------------------------- */
+// 修复滚动条居于 menubar 下面的情况
+.el-scrollbar__bar {
+    z-index: 10;
+}
+
 .py--block {
     width: 100%;
 }
@@ -75,8 +82,6 @@
 
 .py--main {
     box-sizing: border-box;
-    display: flex;
-    flex-direction: column;
     width: 100%;
     overflow-y: auto;
     padding: 0.8rem 1.2rem 0.8rem;
@@ -85,9 +90,8 @@
     .main-title {
         margin: 0 0 0.3rem 0;
         height: 2rem;
-        small {
-            font-weight: lighter;
-        }
+        display: flex;
+        align-items: center;
     }
     .main-actions {
         position: absolute;

@@ -1,6 +1,6 @@
 <template>
     <header :class="{fixed : sizeGt(trans.size, 'sm'), absolute : sizeLte(trans.size, 'sm')}">
-        <div class="nav">
+        <div class="nav" @click="onLogoClick">
             <div class="logo">
                 <img src="@/assets/app/logo.png" alt="Wulicode">
             </div>
@@ -19,14 +19,15 @@
 
 <script lang="ts" setup>
 import { useStore } from '@/store';
-import { computed, defineComponent, reactive } from 'vue';
-import { ArrowLeft, Close, Expand } from '@element-plus/icons';
+import { computed, reactive } from 'vue';
 import { sizeGt, sizeLte } from "@/framework/utils/helper";
 import PxNav from "@/components/base/PxNav.vue";
 import { DArrowRight } from "@element-plus/icons-vue";
 import PxTheme from "@/components/base/PxTheme.vue";
+import { useRouter } from "vue-router";
 
 const store = useStore();
+const router = useRouter();
 const trans = reactive({
     prefix: computed(() => store.state.nav.prefix),
     sidebarActive: computed(() => store.state.nav.sidebarActive),
@@ -34,9 +35,13 @@ const trans = reactive({
     hasMenu: computed(() => store.state.nav.menus.length),
     isLogin: computed(() => store.state.poppy.token),
 })
-defineComponent({
-    ArrowLeft, Expand, Close
-})
+
+const onLogoClick = () => {
+    router.push({
+        name: 'user.cp'
+    })
+}
+
 </script>
 
 <style lang="less" scoped>
@@ -93,6 +98,12 @@ header {
         font-size: 1.2rem;
         font-weight: lighter;
         cursor: pointer;
+    }
+    .filter {
+        cursor: pointer;
+        &.active {
+            color: var(--wc-color-primary);
+        }
     }
 }
 </style>

@@ -1,9 +1,10 @@
 <template>
     <ElIcon @click="onSwitchDrawer" class="theme">
-        <MagicStick/>
+        <Stamp/>
     </ElIcon>
-    <ElDrawer v-model="trans.visible" title="主题设定">
+    <ElDrawer v-model="trans.visible" title="用户设定" :size="sizePercent(trans.size)">
         <ElForm :size="trans.elementSize">
+            <ElDivider content-position="left">主题</ElDivider>
             <ElFormItem label="元素大小">
                 <ElRadioGroup :model-value="trans.elementSize" @update:model-value="onUpdateElementSize">
                     <ElRadioButton label="small">小号</ElRadioButton>
@@ -14,6 +15,7 @@
             <ElFormItem label="清理缓存">
                 <ElButton :loading="trans.clearing" @click="onClearCache">清理</ElButton>
             </ElFormItem>
+            <ElDivider content-position="left">用户信息</ElDivider>
             <ElFormItem label="退出登录">
                 <ElButton @click="onLogout" type="danger" plain>退出</ElButton>
             </ElFormItem>
@@ -25,9 +27,9 @@
 import { computed, reactive } from 'vue';
 import { useRouter } from 'vue-router';
 import { useStore } from '@/store';
-import { MagicStick } from "@element-plus/icons-vue";
+import { Stamp } from "@element-plus/icons-vue";
 import { pyStorageKey } from "@/framework/utils/conf";
-import { localStore, toast } from "@/framework/utils/helper";
+import { localStore, sizePercent, toast } from "@/framework/utils/helper";
 import { apiMgrAppHomeClearCache } from "@/framework/services/mgr-app";
 import useUserUtil from "@/composables/useUserUtil";
 import { ElMessageBox } from "element-plus";
@@ -38,6 +40,7 @@ let router = useRouter();
 let store = useStore();
 const trans = reactive({
     elementSize: computed(() => store.state.poppy.elementSize),
+    size: computed(() => store.state.poppy.size),
     visible: false,
     clearing: false,
     loading: computed(() => store.state.poppy.loading),

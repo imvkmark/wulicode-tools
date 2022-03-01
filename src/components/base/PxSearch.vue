@@ -1,5 +1,5 @@
 <template>
-    <ElDialog v-model="trans.visible">
+    <ElDialog v-model="trans.visible" :width="sizePercent(trans.size)">
         <div class="search">
             <ElInput ref="inputRef" v-model="trans.kw" size="large" :prefix-icon="Search" clearable/>
             <ElScrollbar height="60vh">
@@ -22,6 +22,7 @@ import { useStore } from '@/store';
 import { each, filter, get, groupBy, lowerCase } from "lodash-es";
 import { ElInput } from "element-plus";
 import { Search } from '@element-plus/icons-vue'
+import { sizePercent } from "@/framework/utils/helper";
 
 const props = defineProps({
     modelValue: {
@@ -41,6 +42,7 @@ let store = useStore();
 const inputRef: any = ref<InstanceType<typeof ElInput>>();
 const trans = reactive({
     navs: computed(() => store.state.nav.navs),
+    size: computed(() => store.state.poppy.size),
     visible: false,
     kw: '',
 });
