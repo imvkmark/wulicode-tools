@@ -60,18 +60,16 @@ export default function useNav() {
     }
 
     // 用户(登录|退出)重新获取菜单
-    emitter.on(PY_USER_LOGIN, () => {
-        store.dispatch('nav/Init').then()
-    })
-    emitter.on(PY_USER_LOGOUT, () => {
-        store.dispatch('nav/Init').then()
-    })
-
     onMounted(() => {
-        store.dispatch('nav/Init').then()
+        const menus = store.state.poppy.menus;
+        store.dispatch('nav/Init', menus).then()
     })
 
     // Nav Init 之后触发
+    watch(() => store.state.poppy.menus, (menus) => {
+        store.dispatch('nav/Init', menus).then()
+    })
+
     watch([() => store.state.nav.navs, () => router.currentRoute.value.fullPath], () => {
         setPrefix();
     })
