@@ -9,7 +9,7 @@ import { sentryDsnUrl } from '@/utils/conf';
 import ElementPlus from 'element-plus'
 import zhCn from 'element-plus/es/locale/lang/zh-cn'
 import 'element-plus/dist/index.css'
-import '@/assets/style/style.less';
+import '@/assets/less/style.less';
 import mavonEditor from 'mavon-editor'
 import 'mavon-editor/dist/css/index.css'
 import { pyAppIsProd, pyAppMode, pyAppVersion } from "@/framework/utils/conf";

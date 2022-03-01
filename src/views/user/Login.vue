@@ -5,7 +5,7 @@
                 <div class="login-ctr">
                     <div class="form">
                         <div class="form-desc">
-                            <h4>登录</h4>
+                            <h4>{{ trans.title }}登录</h4>
                             <p>开发中的前后端分离框架</p>
                         </div>
                         <ElForm :model="value" :rules="rules" ref="form" label-width="100px" label-position="top">
@@ -29,7 +29,7 @@
 </template>
 
 <script lang="ts" setup>
-import { reactive, ref } from 'vue'
+import { computed, reactive, ref } from 'vue'
 import { apiPySystemAuthLogin } from '@/framework/services/poppy';
 import { useStore } from '@/store';
 import { get } from 'lodash-es';
@@ -38,6 +38,10 @@ import { toast } from '@/framework/utils/helper';
 import { ElForm } from 'element-plus';
 import useUserUtil from '@/composables/useUserUtil';
 
+const store = useStore();
+const trans = reactive({
+    title: computed(() => get(store.state.poppy.core, 'py-system.title'))
+})
 const form: any = ref<InstanceType<typeof ElForm>>();
 const value = reactive({
     passport: '',
@@ -53,7 +57,6 @@ const rules = reactive({
     ]
 })
 const router = useRouter();
-const store = useStore();
 
 const { userLogin } = useUserUtil();
 
