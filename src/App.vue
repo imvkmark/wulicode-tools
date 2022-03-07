@@ -8,7 +8,8 @@
 
 <script lang="ts" setup>
 import PxHeader from '@/framework/components/base/PxHeader.vue';
-import Listen from "@/framework/components/element/Listen.vue";</script>
+import Listen from "@/framework/components/element/Listen.vue";
+</script>
 
 <style lang="less">
 
