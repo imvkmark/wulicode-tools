@@ -121,10 +121,20 @@ export const navConvertItem = (item: any) => {
             params: params,
             query: get(item, 'query', {})
         }
+    } else if (type === 'table') {
+        let name = 'py:table.index';
+        return {
+            name,
+            icon: get(item, 'icon', ''),
+            key: routerNameKey(name, params),
+            title: get(item, 'title', ''),
+            params: params,
+            query: get(item, 'query', {})
+        }
     } else {
         let name = 'py:grid.index';
         return {
-            name: name,
+            name,
             icon: get(item, 'icon', ''),
             key: routerNameKey(name, params),
             title: get(item, 'title', ''),
