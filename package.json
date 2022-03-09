@@ -13,7 +13,8 @@
         "test": "jest --config ./jest.config.js",
         "format": "prettier --write ./src",
         "lint": "eslint ./src --ext .vue,.js,.ts",
-        "lint-fix": "eslint --fix ./src --ext .vue,.js,.ts"
+        "lint-fix": "eslint --fix ./src --ext .vue,.js,.ts",
+        "prepare": "husky install config/.husky"
     },
     "keywords": [
         "Vite",
@@ -49,6 +50,8 @@
         "vuex": "^4.0.0"
     },
     "devDependencies": {
+        "@commitlint/cli": "^16.2.1",
+        "@commitlint/config-conventional": "^16.2.1",
         "@types/crypto-js": "^4.1.1",
         "@types/keymaster": "^1.6.30",
         "@types/lodash-es": "^4.17.6",
@@ -63,6 +66,7 @@
         "eslint": "^8.10.0",
         "eslint-plugin-import": "^2.25.3",
         "eslint-plugin-vue": "^8.5.0",
+        "husky": "^7.0.4",
         "jest": "^27.5.1",
         "less": "^4.1.2",
         "ts-jest": "^27.1.1",
