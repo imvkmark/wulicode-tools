@@ -12,7 +12,7 @@
                 </ElCol>
                 <ElCol :span="12">
                     <ElTooltip content="点击复制">
-                        <ElInput readonly v-model="trans.comment" v-loading="trans.loading" class="main-pointer"
+                        <ElInput readonly v-model="trans.comment" v-loading="store.getters['poppy/isLoading']()" class="main-pointer"
                             :autosize="{ minRows: 8, maxRows: 16 }" @click="onCopy"
                             :rows="8" type="textarea" placeholder="输出注释"/>
                     </ElTooltip>
@@ -35,7 +35,6 @@ import PxMain from '@/framework/components/base/PxMain.vue';
 const store = useStore();
 const router = useRouter();
 const trans = reactive({
-    loading: computed(() => store.state.poppy.loading),
     comment: ''
 })
 const value = reactive({

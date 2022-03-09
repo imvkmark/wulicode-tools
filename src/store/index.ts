@@ -2,7 +2,6 @@ import { InjectionKey } from 'vue'
 import { createStore, Store, useStore as baseUseStore } from 'vuex'
 import { AllStateTypes, RootStateTypes } from './types'
 
-import grid from '@/framework/store/grid'
 import poppy from '@/framework/store/poppy'
 import nav from '@/framework/store/nav'
 
@@ -26,7 +25,7 @@ export const store = createStore<RootStateTypes>({
         }
     },
     modules: {
-        poppy, grid, nav
+        poppy, nav
     }
 })
 

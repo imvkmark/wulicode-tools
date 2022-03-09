@@ -1,4 +1,4 @@
-import { PyGridTypes, PyNavTypes, PyPoppyTypes, PyRootStateTypes } from "@/framework/store/types";
+import { PyNavTypes, PyPoppyTypes, PyRootStateTypes } from "@/framework/store/types";
 
 export interface RootStateTypes extends PyRootStateTypes {
     text: string,
@@ -13,7 +13,6 @@ export interface ThemeTypes {
 export interface AllStateTypes extends RootStateTypes {
     poppy: PyPoppyTypes,
     theme: ThemeTypes,
-    grid: PyGridTypes,
     nav: PyNavTypes,
 }
 
