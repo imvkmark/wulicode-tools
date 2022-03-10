@@ -14,7 +14,8 @@
         "format": "prettier --write ./src",
         "lint": "eslint ./src --ext .vue,.js,.ts",
         "lint-fix": "eslint --fix ./src --ext .vue,.js,.ts",
-        "prepare": "husky install config/.husky"
+        "prepare": "husky install config/.husky",
+        "changelog": "conventional-changelog -p angular -i CHANGELOG.md -s -r 0"
     },
     "keywords": [
         "Vite",
@@ -22,7 +23,6 @@
         "TypeScript",
         "Starter"
     ],
-    "web-types": "src/utils/types/web-types.json",
     "author": "duoli",
     "license": "MIT",
     "lint-staged": {

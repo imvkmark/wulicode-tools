@@ -1,4 +1,3 @@
-import { localStore } from '@/framework/utils/helper';
 import { useStore } from '@/store';
 import { get } from 'lodash-es';
 import { useRouter } from 'vue-router';
@@ -6,6 +5,7 @@ import { onMounted, watch } from 'vue';
 import useUserUtil from '@/composables/useUserUtil';
 import { emitter, PY_USER_LOGIN } from '@/framework/bus/mitt';
 import { pyStorageKey } from "@/framework/utils/conf";
+import { localStore } from "@/framework/utils/util";
 
 /**
  * 登录和 Token 的保存以及跳转

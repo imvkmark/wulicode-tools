@@ -1,4 +1,5 @@
-import { deviceId, localStore, pyWarning } from '@/framework/utils/helper';
+import { pyWarning } from '@/framework/utils/helper';
+import { deviceId, localStore } from "@/framework/utils/util";
 import { each, forEach, get, isNaN, isNil, isObject, keys, set, trim } from 'lodash-es';
 import { MD5 } from 'crypto-js';
 import UAParser from "ua-parser-js";

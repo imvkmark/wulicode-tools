@@ -34,9 +34,9 @@ import { apiPySystemAuthLogin } from '@/framework/services/poppy';
 import { useStore } from '@/store';
 import { get } from 'lodash-es';
 import { useRouter } from 'vue-router';
-import { toast } from '@/framework/utils/helper';
 import { ElForm } from 'element-plus';
 import useUserUtil from '@/composables/useUserUtil';
+import { toast } from "@/framework/utils/util";
 
 const store = useStore();
 const trans = reactive({
