@@ -1,6 +1,6 @@
 <template>
     <ElSelect :model-value="modelValue" @update:model-value="(val) => emit('update:modelValue', val)"
-        :disabled="get(attr, 'disabled', false)" :placeholder="get(attr, 'placeholder', '')" :clearable="true">
+        :disabled="get(attr, 'disabled', false)" :placeholder="get(attr, 'placeholder', '')" :clearable="true" :filterable="get(attr, 'filterable', false)">
         <template v-if="get(attr, 'group', false) === true">
             <ElOptionGroup v-for="group in get(attr, 'options')" :key="get(group, 'label')" :label="get(group, 'label')">
                 <ElOption v-for="item in group.options" :key="item.value" :label="item.label" :value="item.value" :disabled="get(item, 'disabled')"/>
@@ -18,7 +18,7 @@ import { get } from 'lodash-es';
 const props = defineProps({
     attr: Object,
     modelValue: {
-        type: String,
+        type: [String, Number],
         default: () => {
             return ''
         }

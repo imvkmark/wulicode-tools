@@ -1,5 +1,5 @@
 <template>
-    <ElSelect v-model="val" :placeholder="get(attr, 'placeholder', '')" :clearable="true" class="filter-select">
+    <ElSelect v-model="val" :placeholder="get(attr, 'placeholder', '')" :clearable="true" class="filter-select" :filterable="get(attr, 'filterable', false)">
         <template v-if="get(attr, 'group', false) === true">
             <ElOptionGroup v-for="group in get(attr, 'options')" :key="get(group, 'label')"
                 :label="get(group, 'label')">

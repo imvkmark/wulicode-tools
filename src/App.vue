@@ -3,7 +3,6 @@
         <PxHeader/>
         <router-view/>
         <Listen/>
-
     </ElScrollbar>
 </template>
 
