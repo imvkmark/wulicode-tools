@@ -51,7 +51,7 @@
 <script lang="ts" setup>
 import { computed, onMounted, reactive, watch } from 'vue';
 import { apiPySystemUploadFile } from '@/framework/services/poppy';
-import { Delete, Document, Film, Headset, Plus, ZoomIn } from '@element-plus/icons';
+import { Delete, Document, Film, Headset, Plus, ZoomIn } from '@element-plus/icons-vue';
 import { urlExtension } from '@/framework/utils/helper';
 import { first, get, includes, map } from 'lodash-es';
 import { pyFileExtensions } from "@/framework/utils/conf";

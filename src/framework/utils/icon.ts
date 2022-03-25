@@ -279,7 +279,7 @@ import {
     WindPower,
     ZoomIn,
     ZoomOut
-} from '@element-plus/icons';
+} from '@element-plus/icons-vue';
 
 export const icon = {
     AddLocation,

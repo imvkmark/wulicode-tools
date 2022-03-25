@@ -59,7 +59,7 @@
 import { computed, nextTick, onMounted, reactive, ref, watch } from 'vue';
 import { each, first, get, isEmpty, isEqual, isNull, merge, omit, pick, set, unset } from 'lodash-es';
 import PxMain from '@/framework/components/base/PxMain.vue';
-import { Bell } from "@element-plus/icons";
+import { Bell } from "@element-plus/icons-vue";
 import { useRouter } from 'vue-router';
 import { useStore } from "@/store";
 import { base64Decode, base64Encode, queryDecode, queryEncode } from "@/framework/utils/helper";

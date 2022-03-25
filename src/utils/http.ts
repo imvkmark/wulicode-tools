@@ -1,4 +1,3 @@
-import { pyWarning } from '@/framework/utils/helper';
 import { deviceId, localStore } from "@/framework/utils/util";
 import { each, forEach, get, isNaN, isNil, isObject, keys, set, trim } from 'lodash-es';
 import { MD5 } from 'crypto-js';
@@ -109,9 +108,6 @@ const http = (options: PyRequestOptions) => {
     // stip : 这里使用 data = {...params, token : token || ''}, 则会丢失form表单的数据
 
     let ua = new UAParser();
-    if (typeof pyAppVersion === 'undefined' || pyAppVersion === 'undefined') {
-        pyWarning('PY_APP_VERSION not defined at vite.config.ts with key `import.meta.env.PY_APP_VERSION`')
-    }
     let xHeaders: any = {
         'x-os': 'webapp',
         'x-ver': pyAppVersion,

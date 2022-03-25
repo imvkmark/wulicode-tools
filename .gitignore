@@ -50,4 +50,4 @@ Thumbs.db
 
 # Project
 config/.env.*.local
-.sentryclirc
+pnpm-lock.yaml

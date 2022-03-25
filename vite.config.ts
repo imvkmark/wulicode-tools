@@ -1,5 +1,4 @@
 import vue from '@vitejs/plugin-vue'
-import viteSentry, { ViteSentryPluginOptions } from 'vite-plugin-sentry'
 // 获取 package 的版本号
 import pkgJson from './package.json';
 // 如果编辑器提示 path 模块找不到，则可以安装一下 @types/node -> npm i @types/node -D
@@ -23,51 +22,28 @@ export default defineConfig(({ mode }) => {
         }
     }
 
-    const sentryConfig: ViteSentryPluginOptions = {
-        debug: true,
-        url: process.env.VITE_SENTRY_URL,
-        authToken: String(process.env.VITE_SENTRY_TOKEN),
-        org: 'dadi',
-        project: 'wulicode-webapp',
-        release: `${mode}-${pkgJson.version}`,
-        deploy: {
-            env: `${mode}`
-        },
-        setCommits: {
-            auto: false
-        },
-        sourceMaps: {
-            include: [
-                `build/wulicode-${mode}/assets`
-            ],
-            ignore: ['node_modules'],
-            urlPrefix: '~/webapp/assets'
-        }
-    }
-
     return {
         envDir: './config/',
         plugins: [
             vue(),
-            // 使用 NODE_ENV, production 时候才会执行错误搜集
-            viteSentry(sentryConfig)
         ],
         resolve: {
             alias: {
                 '@': resolve(__dirname, 'src/') // 设置 `@` 指向 `src` 目录
             }
         },
-        base: '/webapp/',
+        base: '/tools/',
         define: {
             'import.meta.env.PY_APP_VERSION': JSON.stringify(pkgJson.version)
         },
         build: {
             outDir: `build/wulicode-${mode}`,
-            sourcemap: true,
+            sourcemap: false,
             rollupOptions: {
                 output: {
                     manualChunks: {
                         lodash: ['lodash-es'],
+                        element: ['element-plus'],
                         crypto: ['crypto-js']
                     }
                 }
