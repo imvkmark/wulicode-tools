@@ -1,52 +1,54 @@
 <template>
-    <div class="login py--main">
-        <ElRow justify="center">
-            <ElCol :span="12" :xs="{span:22}" :sm="{span:18}">
-                <div class="login-ctr">
-                    <div class="form">
-                        <div class="form-desc">
-                            <h4>{{ trans.title }}登录</h4>
-                            <p>开发中的前后端分离框架</p>
-                        </div>
-                        <ElForm :model="value" :rules="rules" ref="form" label-width="100px" label-position="top">
-                            <ElFormItem label="通行证" prop="passport">
-                                <ElInput v-model="value.passport"/>
-                            </ElFormItem>
-                            <ElFormItem label="密码" prop="password">
-                                <ElInput v-model="value.password"/>
-                            </ElFormItem>
-                            <ElFormItem>
-                                <ElButton type="primary" class="py--block" @click="onSubmit()">
-                                    登录
-                                </ElButton>
-                            </ElFormItem>
-                        </ElForm>
-                    </div>
+    <div :class="{login:true,'dev--login':true, 'large': sizeGte(trans.media, 'md')}">
+        <div class="login-side">
+            &nbsp;
+        </div>
+        <div class="login-login">
+            <div class="form login-form">
+                <div class="form-desc">
+                    <img :src="trans.logo" :alt="trans.title" v-if="trans.logo">
+                    <h4>{{ trans.title }}登录</h4>
                 </div>
-            </ElCol>
-        </ElRow>
+                <ElForm :model="value" :rules="rules" ref="form" label-width="100px" label-position="top" size="large" @keyup.enter="onSubmit">
+                    <ElFormItem label="通行证" prop="passport">
+                        <ElInput v-model="value.passport"/>
+                    </ElFormItem>
+                    <ElFormItem label="密码" prop="password">
+                        <ElInput v-model="value.password" type="password"/>
+                    </ElFormItem>
+                    <ElFormItem>
+                        <ElButton type="warning" class="py--block" @click="onSubmit" v-loading="store.getters['poppy/isLoading'](trans.loginUrl)">
+                            登 录
+                        </ElButton>
+                    </ElFormItem>
+                </ElForm>
+            </div>
+        </div>
     </div>
 </template>
 
 <script lang="ts" setup>
 import { computed, reactive, ref } from 'vue'
-import { apiPySystemAuthLogin } from '@/framework/services/poppy';
 import { useStore } from '@/store';
 import { get } from 'lodash-es';
 import { useRouter } from 'vue-router';
 import { ElForm } from 'element-plus';
 import useUserUtil from '@/composables/useUserUtil';
-import { toast } from "@/framework/utils/util";
+import { toast } from "@/utils/util";
+import request from "@/utils/request";
+import { sizeGte } from "@/utils/helper";
 
 const store = useStore();
 const trans = reactive({
-    title: computed(() => get(store.state.poppy.core, 'py-system.title'))
+    title: computed(() => get(store.state.poppy.core, 'py-system.title')),
+    logo: computed(() => get(store.state.poppy.core, 'py-system.logo')),
+    loginUrl: computed(() => get(store.state.poppy.core, 'py-mgr-app.auth_url')),
+    media: computed(() => store.state.poppy.media),
 })
 const form: any = ref<InstanceType<typeof ElForm>>();
 const value = reactive({
     passport: '',
-    password: '',
-    captcha: ''
+    password: ''
 })
 const rules = reactive({
     passport: [
@@ -63,15 +65,17 @@ const { userLogin } = useUserUtil();
 const onSubmit = () => {
     form.value.validate((valid: boolean) => {
         if (valid) {
-            apiPySystemAuthLogin({
-                passport: value.passport,
-                password: value.password,
-                guard: 'backend'
-            }).then(({ success, data, resp }) => {
-                toast(resp)
+            request({
+                url: trans.loginUrl,
+                params: {
+                    passport: value.passport,
+                    password: value.password,
+                }
+            }).then(({ success, message, data }) => {
+                toast(message, success)
                 if (success) {
                     userLogin({
-                        token: get(data, 'token')
+                        token: get(data, 'token'),
                     })
                 }
             })
@@ -82,15 +86,31 @@ const onSubmit = () => {
 </script>
 
 <style scoped lang="less">
-
-.login {
-    background: #081836;
+.dev--login {
+    background: url('../../assets/app/bg-develop.jpg');
 }
 
-.login-ctr {
+.login {
+    color: #fff;
+    min-height: 100vh;
     display: flex;
     width: 100%;
-    flex-direction: column;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+}
+
+.login-side {
+    background-size: cover;
+    width: 40vw;
+    height: 100vh;
+}
+
+.login-login {
+    width: 60vw;
+    height: 100vh;
+    display: flex;
+    flex-direction: row;
     align-items: center;
     justify-content: center;
 }
@@ -99,11 +119,14 @@ const onSubmit = () => {
     display: flex;
     flex-direction: column;
     align-items: center;
+    img {
+        max-height: 60px;
+    }
     h4 {
         height: 40px;
         line-height: 40px;
         font-size: 18px;
-        color: var(--wc-color-text);
+        color: #fff;
         text-align: center;
         margin: 0;
     }
@@ -117,11 +140,13 @@ const onSubmit = () => {
 
 .form {
     width: 100%;
-    background: #FFF;
+    color: #A86924;
+    background: rgba(37, 142, 166, 0.8);
+    background: #258EA6;
     padding: 30px;
     box-sizing: border-box;
     box-shadow: 0 0 18px 0 rgba(0, 0, 0, 0.20);
     border-radius: 5px;
-    max-width: 40rem;
+    max-width: 35rem;
 }
 </style>

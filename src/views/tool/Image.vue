@@ -31,9 +31,9 @@
 import { trimEnd, trimStart } from 'lodash-es';
 import { onMounted, reactive, watch } from 'vue';
 import { copyText } from 'vue3-clipboard';
-import PxMain from '@/framework/components/base/PxMain.vue';
-import { pyAppUrl } from "@/framework/utils/conf";
-import { toast } from "@/framework/utils/util";
+import PxMain from '@/components/base/PxMain.vue';
+import { pyAppUrl } from "@/utils/conf";
+import { toast } from "@/utils/util";
 
 
 const trans = reactive({

@@ -1,17 +1,22 @@
-import { deviceId, localStore } from "@/framework/utils/util";
-import { each, forEach, get, isNaN, isNil, isObject, keys, set, trim } from 'lodash-es';
+import { deviceId, localStore } from "@/utils/util";
+import { each, forEach, get, isNaN, isNil, isObject, keys, set, trim, unset } from 'lodash-es';
 import { MD5 } from 'crypto-js';
 import UAParser from "ua-parser-js";
 import axios, { AxiosInstance } from "axios";
-import { pyAppUrl, pyAppVersion, pyStorageKey } from "@/framework/utils/conf";
-import { PyRequestOptions } from "@/framework/utils/types";
+import { PyRequestOptions } from "@/utils/types";
+import { pyAppUrl, pyAppVersion, pyStorageKey } from "@/utils/conf";
 
 // axios instance
 // todo https://juejin.cn/post/6997805598507008007
 // 这里需要细致化请求
 // 拦截器可以查看 : https://axios-http.com/zh/docs/interceptors
+let url = pyAppUrl;
+if (!url) {
+    url = `${window.location.protocol}//${window.location.host}`
+}
+
 const instance: AxiosInstance = axios.create({
-    baseURL: pyAppUrl,
+    baseURL: url,
     timeout: 20000 // 请求超时 20s
 });
 // 添加请求拦截器
@@ -63,9 +68,9 @@ const requestSign = (params: any, token = '') => {
 
 
 // 请求方法
-const http = (options: PyRequestOptions) => {
+const http = (options: PyRequestOptions, type = 'backend') => {
     let { method = 'post', params: oriParams = {}, url, headers = {} } = options;
-
+    console.log(options);
     let params: any;
     if (oriParams instanceof FormData) {
         params = new FormData();
@@ -99,17 +104,19 @@ const http = (options: PyRequestOptions) => {
         })
     }
 
-
-    let token = localStore(pyStorageKey.token);
+    let token = localStore(`${pyStorageKey.token}-${type}`);
     set(params, 'timestamp', Math.round(new Date().getTime() / 1000));
-    set(params, 'sign', requestSign(params, token ? token : ''));
+    const sign = requestSign(params, token ? token : '');
+    set(params, 'sign', sign);
 
     console.info(options.url, params);
     // stip : 这里使用 data = {...params, token : token || ''}, 则会丢失form表单的数据
 
     let ua = new UAParser();
+
     let xHeaders: any = {
-        'x-os': 'webapp',
+        'x-type': type,
+        'x-os': 'mgrapp',
         'x-ver': pyAppVersion,
         'x-id': deviceId(),
         'x-sys-name': ua.getOS().name,
@@ -118,10 +125,14 @@ const http = (options: PyRequestOptions) => {
         'x-sys-cpu': get(ua.getCPU(), 'architecture', ''),
         'X-Requested-With': 'XMLHttpRequest',
     }
+
+    let contentType = get(headers, 'Content-Type', 'application/json');
+    unset(headers, 'Content-Type');
+
     let xAuthHeaders = {
-        'Content-Type': get(headers, 'Content-Type') ? get(headers, 'Content-Type') : 'application/json',
+        'Content-Type': contentType,
         'Authorization': token ? `Bearer ${token}` : '',
-        ...xHeaders
+        ...xHeaders, ...headers
     }
     switch (method.toLowerCase()) {
         case 'get':
@@ -137,7 +148,6 @@ const http = (options: PyRequestOptions) => {
             });
         case 'put':
             return instance.put(url, params, {
-                // @ts-ignore
                 headers: xAuthHeaders
             });
     }

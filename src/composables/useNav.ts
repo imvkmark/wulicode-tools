@@ -3,7 +3,7 @@ import { useStore } from '@/store';
 import { each, get, map } from "lodash-es";
 import { routerNameKey } from "@/utils/utils";
 import { useRouter } from "vue-router";
-import { emitter, PY_USER_LOGIN, PY_USER_LOGOUT } from "@/framework/bus/mitt";
+import { emitter, PY_USER_LOGIN, PY_USER_LOGOUT } from "@/bus/mitt";
 
 /**
  * 初始化

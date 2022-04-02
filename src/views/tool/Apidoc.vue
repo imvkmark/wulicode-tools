@@ -29,8 +29,8 @@ import { useRouter } from 'vue-router';
 import { apiOpToolApidoc } from '@/services/op';
 import { ElForm } from 'element-plus';
 import { copyText } from 'vue3-clipboard'
-import PxMain from '@/framework/components/base/PxMain.vue';
-import { toast } from "@/framework/utils/util";
+import PxMain from '@/components/base/PxMain.vue';
+import { toast } from "@/utils/util";
 
 const store = useStore();
 const router = useRouter();

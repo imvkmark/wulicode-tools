@@ -1,5 +1,5 @@
 
-import request from "@/framework/utils/request";
+import request from "@/utils/request";
 
 /**
  * Api Tool 转换

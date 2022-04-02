@@ -1,7 +1,7 @@
 import { useStore } from '@/store';
 import { get } from 'lodash-es';
 import { useRouter } from 'vue-router';
-import { isUrl } from '@/framework/utils/helper';
+import { isUrl } from '@/utils/helper';
 
 /**
  * 登录和 Token 的保存以及跳转
@@ -13,10 +13,11 @@ export default function useUserUtil() {
     /**
      * 跳转到指定界面或者用户中心
      */
-    const goWith = () => {
+    const goWithCp = () => {
         const go = get(router.currentRoute.value, 'query.go', '');
         if (!go) {
-            router.push({ name: 'user.cp' }).then()
+            let name = 'user.cp';
+            router.push({ name }).then()
         } else {
             let to = window.atob(go);
             if (isUrl(to)) {
@@ -28,16 +29,12 @@ export default function useUserUtil() {
     }
 
     /**
-     * 用户登录成功之后调用
+     * 管理员登录成功之后调用
      * @param data
      */
     const userLogin = function (data: any) {
-        const { token } = data;
-        // set store
-        store.dispatch('poppy/Login', {
-            token
-        }).then(() => {
-            goWith();
+        store.dispatch('poppy/Login', data).then(() => {
+            goWithCp();
         });
     }
 
@@ -45,17 +42,7 @@ export default function useUserUtil() {
         if (router.currentRoute.value.name !== 'user.login') {
             return;
         }
-        goWith();
-    }
-
-    const userLogout = function (fun: Function = () => {
-    }) {
-        store.dispatch('poppy/Logout').then(() => {
-            router.push({ name: 'user.login' }).then()
-        });
-        if (typeof fun === 'function') {
-            fun();
-        }
+        goWithCp();
     }
 
     /**
@@ -72,7 +59,6 @@ export default function useUserUtil() {
     return {
         userOnLogin,
         userLogin,
-        userLogout,
         userToLogin
     }
 }

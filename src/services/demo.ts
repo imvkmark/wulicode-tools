@@ -1,4 +1,4 @@
-import request from "@/framework/utils/request";
+import request from "@/utils/request";
 
 
 export async function apiDemo(type: string, params: object, method: string) {

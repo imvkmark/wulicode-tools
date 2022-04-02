@@ -4,7 +4,7 @@
             <ElCol :span="12">
                 <h3>持续转动</h3>
                 <div class="rotate">
-                    <img src="@/framework/assets/image/logo.png" alt="LOGO">
+                    <img src="@/assets/app/logo.png" alt="LOGO">
                 </div>
             </ElCol>
             <ElCol :span="12">
@@ -16,7 +16,7 @@
 
 <script lang="ts" setup>
 import { onMounted, reactive, ref } from 'vue'
-import PxMain from '@/framework/components/base/PxMain.vue';
+import PxMain from '@/components/base/PxMain.vue';
 
 const refList: any = ref(null);
 const trans = reactive({

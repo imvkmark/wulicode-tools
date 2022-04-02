@@ -1,0 +1,49 @@
+.dev--login {
+    .login-form {
+        border-radius: 8px;
+        box-shadow: 0 3px 10px 0 rgb(0 0 0 / 10%)
+    }
+    .el-form-item__label {
+        font-size: 15px;
+        color: #fff;
+    }
+    .el-form-item.is-error .el-input__inner {
+        box-shadow: none;
+        border-color: #f56c6c;
+    }
+    .el-input__inner {
+        border-radius: 4px;
+        background: rgba(49, 51, 57, 0.1);
+        border: 1px solid rgba(49, 51, 57, 0.1);
+        box-shadow: none;
+        padding: 0 12px;
+        font-size: 16px;
+        color: #B9BBBE;
+
+        &:hover {
+            border-color: rgba(230, 162, 60, 0.7);
+        }
+        &:active, &:focus {
+            border-color: #E6A23C;
+        }
+    }
+    .el-button {
+        border-radius: 2px;
+        font-size: 16px;
+        letter-spacing: 0.5rem;
+    }
+}
+.py--dev {
+    display: flex;
+    flex-direction: row;
+}
+
+.dev--apidoc {
+    display: flex;
+    .apidoc-request_label {
+        .el-form-item__label {
+            font-size: 13px;
+            margin-bottom: 2px!important;
+        }
+    }
+}

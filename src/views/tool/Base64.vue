@@ -31,8 +31,8 @@ import { useRouter } from 'vue-router';
 import { ElForm } from 'element-plus';
 import { copyText } from 'vue3-clipboard'
 import { debounce, get } from 'lodash-es';
-import PxMain from '@/framework/components/base/PxMain.vue';
-import { localStore, toast } from "@/framework/utils/util";
+import PxMain from '@/components/base/PxMain.vue';
+import { localStore, toast } from "@/utils/util";
 
 const store = useStore();
 const router = useRouter();

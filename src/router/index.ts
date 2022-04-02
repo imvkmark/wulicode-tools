@@ -1,9 +1,10 @@
 import { createRouter, createWebHashHistory, Router, RouteRecordRaw } from 'vue-router'
-import MgrLayout from '@/framework/layouts/MgrLayout.vue';
-import { get, merge } from 'lodash-es';
-import { frameworkRoutes } from "@/framework/router";
+import MgrLayout from '@/layouts/MgrLayout.vue';
+import DevLayout from '@/layouts/DevLayout.vue';
+import BlankLayout from '@/layouts/BlankLayout.vue';
+import { get } from 'lodash-es';
 
-const routes: Array<RouteRecordRaw> = merge([
+const routes: Array<RouteRecordRaw> = [
     {
         path: '/',
         component: MgrLayout,
@@ -27,22 +28,33 @@ const routes: Array<RouteRecordRaw> = merge([
         ]
     },
     {
+        path: '/user/',
+        component: BlankLayout,
+        children: [
+            { path: 'login', component: () => import('@/views/user/Login.vue'), name: 'user.login' },
+        ]
+    },
+    {
+        path: '/dev/', component: DevLayout, children: [
+            {
+                path: 'apidoc',
+                component: () => import('@/views/dev/ApiDoc.vue'),
+                name: 'dev.apidoc',
+                meta: { title: '开发者中心', auth: true }
+            },
+        ]
+    },
+    {
         path: '/user', component: MgrLayout, children: [
             {
                 path: 'cp',
                 component: () => import('@/views/user/Cp.vue'),
                 name: 'user.cp',
                 meta: { title: '用户控制中心', auth: true }
-            },
-            {
-                path: 'login',
-                component: () => import('@/views/user/Login.vue'),
-                name: 'user.login',
-                meta: { title: '登录' }
             }
         ]
     }
-], frameworkRoutes)
+];
 
 const router: Router = createRouter({
     history: createWebHashHistory(),

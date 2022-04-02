@@ -27,7 +27,7 @@
 
 <script lang="ts" setup>
 import { onMounted, reactive, ref } from 'vue'
-import PxMain from '@/framework/components/base/PxMain.vue';
+import PxMain from '@/components/base/PxMain.vue';
 
 const refList: any = ref(null);
 const trans = reactive({
