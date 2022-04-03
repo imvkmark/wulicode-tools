@@ -16,7 +16,7 @@ export default function useUserUtil() {
     const goWithCp = () => {
         const go = get(router.currentRoute.value, 'query.go', '');
         if (!go) {
-            let name = 'user.cp';
+            let name = 'dev.cp';
             router.push({ name }).then()
         } else {
             let to = window.atob(go);

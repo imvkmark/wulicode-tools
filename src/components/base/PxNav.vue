@@ -12,9 +12,7 @@
         <ul>
             <li :class="{active:trans.prefix === key}" v-for="(menu, key) in trans.navs" :key="key"
                 @click="jumpTo(menu)">
-                <ElIcon>
-                    <component :is="icon[upperCamelCase(menu.icon)]"/>
-                </ElIcon>
+                <XIcon :type="menu.icon"></XIcon>
                 <span class="side-text" v-if="sizeGt(trans.media, 'xs')">{{ menu.title }}</span>
             </li>
         </ul>
@@ -31,6 +29,7 @@ import { first, get } from "lodash-es";
 import { Search } from "@element-plus/icons-vue";
 import PxSearch from "@/components/base/PxSearch.vue";
 import key from 'keymaster'
+import XIcon from "@/components/element/XIcon.vue";
 
 // 监听路由前缀的变化
 let router = useRouter();
@@ -47,19 +46,26 @@ const onSearchClick = () => {
 }
 
 const jumpTo = (nav: any) => {
-    let findLast: any = (parent: object) => {
+    let findFirst: any = (parent: object) => {
         let children = get(parent, 'children', []);
         if (children.length) {
-            return findLast(first(children));
+            return findFirst(first(children));
         } else {
             return parent;
         }
     }
-    let last = findLast(nav);
-    router.push({
-        name: get(last, 'name'),
-        params: get(last, 'params')
-    });
+    let topItem = findFirst(nav);
+    let name = get(topItem, 'name', '');
+    let url = get(topItem, 'url', '');
+    console.log(name, url);
+    if (name) {
+        router.push({
+            name: get(topItem, 'name'),
+            params: get(topItem, 'params')
+        });
+    } else if (url) {
+        window.open(url);
+    }
 }
 
 onMounted(() => {

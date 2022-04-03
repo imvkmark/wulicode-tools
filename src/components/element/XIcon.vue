@@ -1,6 +1,7 @@
 <template>
     <ElIcon :class="get(props, 'className')" v-if="props.type">
-        <component :is="get(icon, iconType)"/>
+        <SvgIcon v-if="hasSvg()" :name="svgType()"/>
+        <component v-else :is="get(icon, iconType)"/>
     </ElIcon>
 </template>
 <script lang="ts" setup>
@@ -8,15 +9,24 @@ import { icon } from "@/utils/icon";
 import { get } from "lodash-es"
 import { toRef } from "vue";
 import { upperCamelCase } from "@/utils/helper";
+import SvgIcon from "@/components/element/SvgIcon.vue";
 
 const props = defineProps({
     type: {
-        type: String
+        type: String,
+        default: "",
     },
     className: {
         type: [String, Object]
     }
 })
+const hasSvg = () => {
+    console.log(props.type)
+    return props.type.indexOf('svg|') > -1;
+}
+const svgType = () => {
+    return props.type?.substring(4);
+}
 const iconType = upperCamelCase(String(toRef(props, 'type').value));
 </script>
 

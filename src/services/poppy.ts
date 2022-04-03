@@ -16,9 +16,6 @@ export async function apiPySystemAuthLogin(params: object) {
     return request({
         url: '/api_v1/system/auth/login',
         params: {
-            guard: 'web',
-            device_type: 'h5',
-            device_id: deviceId(),
             ...params
         }
     });

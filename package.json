@@ -40,6 +40,7 @@
         "lodash-es": "^4.17.21",
         "mitt": "^3.0.0",
         "qs": "^6.10.2",
+        "svg-sprite-loader": "^6.0.11",
         "ua-parser-js": "^1.0.2",
         "vue": "^3.2.31",
         "vue-json-viewer": "3",
@@ -72,5 +73,28 @@
         "vite": "^2.8.6",
         "vite-plugin-sentry": "^1.0.13",
         "vue-tsc": "^0.33.5"
+    },
+    "commitlint": {
+        "extends": [
+            "@commitlint/config-conventional"
+        ],
+        "rules": {
+            "type-enum": [
+                2,
+                "always",
+                [
+                    "bug",
+                    "feat",
+                    "fix",
+                    "docs",
+                    "style",
+                    "refactor",
+                    "test",
+                    "chore",
+                    "revert",
+                    "merge"
+                ]
+            ]
+        }
     }
 }

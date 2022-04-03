@@ -74,6 +74,7 @@ const poppy: Module<PyPoppyTypes, PyRootStateTypes> = {
         },
 
         /**
+         * todo 获取用户信息
          * 获取用户信息
          * @param commit
          * @param state

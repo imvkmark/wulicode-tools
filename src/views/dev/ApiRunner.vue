@@ -119,7 +119,7 @@ import { useRouter } from 'vue-router';
 import request from "@/utils/request";
 import apiRequest from "@/utils/dev/request";
 import { each, filter, find, first, get, groupBy, isEmpty, map, merge, set } from "lodash-es";
-import { base64Decode, base64Encode, pyWarning, stripTags } from "@/utils/helper";
+import { base64Decode, base64Encode, stripTags } from "@/utils/helper";
 import { ElForm } from "element-plus/es";
 import DevApiDocCert from "@/components/dev/DevApiDocCerts.vue";
 import { pyStorageDevApidocCertsKey, pyStorageDevApidocSourcesKey } from "@/utils/conf";
@@ -245,7 +245,6 @@ const manageSource = () => {
 
 const selectUrl = (clk: string = '') => {
     let url = clk ? clk : (get(router.currentRoute.value.query, 'url', '') ? base64Decode(String(get(router.currentRoute.value.query, 'url', ''))): '');
-    pyWarning(url);
     apiRef.value = find(source.content, (item: any) => {
         return get(item, 'url') === url;
     });

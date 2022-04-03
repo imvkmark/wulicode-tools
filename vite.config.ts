@@ -1,5 +1,5 @@
 import vue from '@vitejs/plugin-vue'
-// 获取 package 的版本号
+import { svgBuilder } from './src/utils/main/svgBuilder';
 import pkgJson from './package.json';
 // 如果编辑器提示 path 模块找不到，则可以安装一下 @types/node -> npm i @types/node -D
 import { resolve } from 'path'
@@ -26,6 +26,7 @@ export default defineConfig(({ mode }) => {
         envDir: './config/',
         plugins: [
             vue(),
+            svgBuilder('./src/assets/svg/')
         ],
         resolve: {
             alias: {

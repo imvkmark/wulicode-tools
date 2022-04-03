@@ -8,13 +8,12 @@ const routes: Array<RouteRecordRaw> = [
     {
         path: '/',
         component: MgrLayout,
-        redirect: '/tool/base64'
+        redirect: '/tool/img'
     },
     {
         path: '/',
         component: MgrLayout,
         children: [
-            { path: 'home', component: () => import('@/views/home/Home.vue'), name: 'home.index' },
             { path: 'tool/apidoc', component: () => import('@/views/tool/Apidoc.vue'), name: 'tool.apidoc' },
             { path: 'tool/img', component: () => import('@/views/tool/Image.vue'), name: 'tool.img' },
             { path: 'tool/base64', component: () => import('@/views/tool/Base64.vue'), name: 'tool.base64' },
@@ -28,7 +27,7 @@ const routes: Array<RouteRecordRaw> = [
         ]
     },
     {
-        path: '/user/',
+        path: '/',
         component: BlankLayout,
         children: [
             { path: 'login', component: () => import('@/views/user/Login.vue'), name: 'user.login' },
@@ -37,23 +36,19 @@ const routes: Array<RouteRecordRaw> = [
     {
         path: '/dev/', component: DevLayout, children: [
             {
-                path: 'apidoc',
-                component: () => import('@/views/dev/ApiDoc.vue'),
-                name: 'dev.apidoc',
+                path: 'api-runner',
+                component: () => import('@/views/dev/ApiRunner.vue'),
+                name: 'dev.api_runner',
                 meta: { title: '开发者中心', auth: true }
             },
-        ]
-    },
-    {
-        path: '/user', component: MgrLayout, children: [
             {
                 path: 'cp',
-                component: () => import('@/views/user/Cp.vue'),
-                name: 'user.cp',
+                component: () => import('@/views/dev/Cp.vue'),
+                name: 'dev.cp',
                 meta: { title: '用户控制中心', auth: true }
             }
         ]
-    }
+    },
 ];
 
 const router: Router = createRouter({

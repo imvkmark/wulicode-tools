@@ -40,7 +40,7 @@ export default function useDevelopAuth() {
         () => router.currentRoute.value.name,
         (newVal) => {
             let token = store.state.poppy.backendToken;
-            if (newVal === 'dev.login' && token) {
+            if (newVal === 'user.login' && token) {
                 store.dispatch('poppy/Login', {
                     token
                 }).then();

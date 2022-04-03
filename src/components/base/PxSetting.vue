@@ -115,6 +115,7 @@ onMounted(() => {
 <style lang="less" scoped>
 .theme {
     cursor: pointer;
+    color: #fff;
     height: 3.5rem;
     margin-right: 1rem;
     margin-left: 1rem;

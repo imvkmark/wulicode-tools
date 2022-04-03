@@ -37,6 +37,7 @@ import useUserUtil from '@/composables/useUserUtil';
 import { toast } from "@/utils/util";
 import request from "@/utils/request";
 import { sizeGte } from "@/utils/helper";
+import { apiPySystemAuthLogin } from "@/services/poppy";
 
 const store = useStore();
 const trans = reactive({
@@ -65,14 +66,11 @@ const { userLogin } = useUserUtil();
 const onSubmit = () => {
     form.value.validate((valid: boolean) => {
         if (valid) {
-            request({
-                url: trans.loginUrl,
-                params: {
-                    passport: value.passport,
-                    password: value.password,
-                }
+            apiPySystemAuthLogin({
+                passport: value.passport,
+                password: value.password,
             }).then(({ success, message, data }) => {
-                toast(message, success)
+                toast(message, !success)
                 if (success) {
                     userLogin({
                         token: get(data, 'token'),

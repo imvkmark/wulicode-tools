@@ -2,14 +2,13 @@
  * 项目中定义的导航项目
  */
 import { clone, each, get, map, set } from "lodash-es";
-import { base64Encode } from "@/utils/helper";
 import { routerNameKey } from "@/utils/utils";
 
 export const navs: object = {
     home: {
-        title: '主页',
-        icon: 'home-filled',
-        name: 'home.index'
+        title: 'ApiRunner',
+        icon: 'promotion',
+        name: 'dev.api_runner'
     },
     demo: {
         title: '工具',
@@ -20,9 +19,9 @@ export const navs: object = {
             {
                 title: '工具',
                 children: [
+                    { name: 'tool.img', title: '图片占位符' },
                     { name: 'tool.apidoc', title: 'ApiDoc' },
                     { name: 'tool.base64', title: 'Base64' },
-                    { name: 'tool.img', title: '图片占位符' },
                     { name: 'tool.url-decode', title: 'Url 解码' }
                 ]
             },
@@ -43,7 +42,12 @@ export const navs: object = {
                 ]
             },
         ]
-    }
+    },
+    github: {
+        title: 'Github',
+        icon: 'svg|github',
+        url: 'https://github.com/imvkmark/wulicode-tools',
+    },
 }
 
 /**
@@ -84,10 +88,6 @@ export const navConvertNav = (totalNavs: {}) => {
  * @param item
  */
 export const navConvertItem = (item: any) => {
-    const type = get(item, 'type', '');
-    let params = {
-        type: base64Encode(get(item, 'path', ''))
-    }
     // 存在 name 的为框架自定义的路由, 否则是需要转换的
     if (get(item, 'name')) {
         let name = get(item, 'name');
@@ -100,46 +100,8 @@ export const navConvertItem = (item: any) => {
             params: params,
             query: get(item, 'query', {})
         }
-    }
-    if (type === 'form') {
-        let name = 'py:form.index';
-        return {
-            name,
-            icon: get(item, 'icon', ''),
-            key: routerNameKey(name, params),
-            title: get(item, 'title', ''),
-            params: params,
-            query: get(item, 'query', {})
-        }
-    } else if (type === 'setting') {
-        let name = 'py:setting.index';
-        return {
-            name,
-            icon: get(item, 'icon', ''),
-            key: routerNameKey(name, params),
-            title: get(item, 'title', ''),
-            params: params,
-            query: get(item, 'query', {})
-        }
-    } else if (type === 'table') {
-        let name = 'py:table.index';
-        return {
-            name,
-            icon: get(item, 'icon', ''),
-            key: routerNameKey(name, params),
-            title: get(item, 'title', ''),
-            params: params,
-            query: get(item, 'query', {})
-        }
     } else {
-        let name = 'py:grid.index';
-        return {
-            name,
-            icon: get(item, 'icon', ''),
-            key: routerNameKey(name, params),
-            title: get(item, 'title', ''),
-            params: params,
-            query: get(item, 'query', {})
-        }
+        set(item, 'key', routerNameKey(get(item, 'name', '')));
+        return item;
     }
 }

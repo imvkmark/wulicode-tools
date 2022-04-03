@@ -1,5 +1,5 @@
 import { Module } from 'vuex'
-import { PyNavTypes, PyRootStateTypes } from "@/framework/store/types";
+import { PyNavTypes, PyRootStateTypes } from "@/store/types";
 import { clone, get, merge } from "lodash-es";
 import { navConvertNav, navs as defaultNavs } from "@/utils/navs";
 import { pyStorageKey } from "@/utils/conf";
