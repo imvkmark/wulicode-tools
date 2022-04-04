@@ -2,7 +2,7 @@
     <div class="source">
         <ElRow :gutter="4">
             <ElCol :span="24">
-                <ElForm label-position="top">
+                <ElForm label-position="left" label-width="80px">
                     <ElFormItem label="标题">
                         <ElInput v-model="trans.title" placeholder="标题"/>
                     </ElFormItem>
@@ -34,11 +34,27 @@
                                     </ElButton>
                                 </template>
                             </ElPopconfirm>
-
                         </template>
                     </ElTableColumn>
                 </ElTable>
-                <ElAlert style="margin-top: 0.5rem;" title="常用 : Authorization:Bearer {token}" type="warning" :closable="false"/>
+            </ElCol>
+        </ElRow>
+        <ElRow :gutter="4">
+            <ElCol>
+                <h5 style="margin-bottom: 0.2rem;">可用文档</h5>
+                <ElTable :data="domains">
+                    <ElTableColumn label="域名" prop="domain"/>
+                    <ElTableColumn width="100" align="center">
+                        <template #default="scope">
+                            <ElButton circle type="primary" size="small" plain @click="refreshDomain(scope.row)">
+                                <XIcon type="refresh"/>
+                            </ElButton>
+                            <ElButton circle type="primary" size="small" plain @click="addDomain(scope.row)">
+                                <XIcon type="document-add"/>
+                            </ElButton>
+                        </template>
+                    </ElTableColumn>
+                </ElTable>
             </ElCol>
         </ElRow>
     </div>
@@ -49,11 +65,15 @@ import { find, get } from "lodash-es";
 import { toast } from "@/utils/util";
 import XIcon from "@/components/element/XIcon.vue";
 import { isUrl } from "@/utils/helper";
-import { apiMiscApidocAdd, apiMiscApidocDelete } from "@/services/misc";
+import { apiMiscApidocAdd, apiMiscApidocDelete, apiMiscApidocRefresh } from "@/services/misc";
 
 
 const props = defineProps({
     sources: {
+        type: Array,
+        default: () => []
+    },
+    domains: {
         type: Array,
         default: () => []
     }
@@ -67,12 +87,28 @@ const trans = reactive({
 const emit = defineEmits([
     'active',
     'delete',
+    'refresh',
     'add'
 ])
 
 
 const activeSource = (row: any) => {
     emit('active', get(row, 'key'));
+}
+
+const addDomain = (row: any) => {
+    trans.url = get(row, 'domain')
+}
+
+const refreshDomain = (row: any) => {
+    apiMiscApidocRefresh({
+        url: get(row, 'domain')
+    }).then(({ success, message }) => {
+        toast(message, success);
+        if (success) {
+            emit('refresh');
+        }
+    })
 }
 
 const addSource = () => {
@@ -84,7 +120,7 @@ const addSource = () => {
         toast('请输入正确的地址', false);
         return;
     }
-    if (find(props.apis, { title: trans.title })) {
+    if (find(props.sources, { title: trans.title })) {
         toast('已存在标识, 无法添加', false);
         return;
     }
@@ -103,11 +139,6 @@ const addSource = () => {
 
 
 const deleteSource = (row: any) => {
-    // activated not delete
-    if (get(row, 'active')) {
-        toast('当前已激活接口文档不得删除');
-        return;
-    }
     apiMiscApidocDelete({
         key: get(row, 'key'),
     }).then(({ success, message }) => {

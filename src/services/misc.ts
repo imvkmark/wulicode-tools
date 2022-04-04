@@ -22,6 +22,17 @@ export async function apiMiscApidocDelete(params: object) {
 }
 
 /**
+ * 刷新文档
+ * @param params
+ */
+export async function apiMiscApidocRefresh(params: object) {
+    return request({
+        url: '/api/misc/apidoc/refresh',
+        params
+    });
+}
+
+/**
  * 请求 Data Json 数据
  * @param params
  */

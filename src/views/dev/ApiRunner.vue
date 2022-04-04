@@ -113,7 +113,10 @@
     </div>
     <ElDrawer v-model="trans.visible" :title="trans.drawer === 'cert' ? '设置凭证' : '接口来源'">
         <DevApiDocCert v-if="trans.drawer === 'cert'" :key-name="get(source.active, 'key')"/>
-        <DevApiDocSource v-if="trans.drawer === 'source'" @delete="deleteSource" @add="addSource" @active="activeSource" :sources="sourcesRef"/>
+        <DevApiDocSource v-if="trans.drawer === 'source'"
+            @delete="deleteSource" @add="addSource" @active="activeSource" @refresh="refreshSource"
+            :sources="sourcesRef" :domains="sourcesDomainRef"
+        />
     </ElDrawer>
 </template>
 
@@ -150,6 +153,8 @@ const source = reactive({
 })
 // 当前接口定义
 const sourcesRef: any = ref([]);
+// 当前可用域名列表
+const sourcesDomainRef: any = ref([]);
 // 分组过的接口定义
 const sourceGrouped = computed(() => {
     let filtered = filter(source.content, (item) => {
@@ -241,6 +246,9 @@ const result = reactive({
     message: ''
 })
 
+const refreshSource = () => {
+    fetchApiDoc()
+}
 
 const addSource = () => {
     fetchApiDoc()
@@ -320,8 +328,12 @@ const fetchApiDoc = () => {
         // save to local activated
         localStore(pyStorageDevApidocApiCurrentKey(), get(activated, 'key'));
 
-        // load activated certs todo
-        apiCerts.value = localStore(pyStorageDevApidocCertsKey());
+        // load activated certs
+        apiCerts.value = get(data, 'certs');
+        localStore(pyStorageDevApidocCertsKey(), get(data, 'certs'))
+
+        // list domain
+        sourcesDomainRef.value = get(data, 'domains');
         selectUrl();
     });
 }
