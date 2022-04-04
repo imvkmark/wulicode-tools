@@ -3,14 +3,14 @@
         <ElRow :gutter="4">
             <ElCol :span="24">
                 <ElForm label-position="top">
-                    <ElFormItem label="标识">
-                        <ElInput v-model="trans.source" placeholder="标识"/>
+                    <ElFormItem label="标题">
+                        <ElInput v-model="trans.title" placeholder="标题"/>
                     </ElFormItem>
-                    <ElFormItem label="来源地址">
-                        <ElInput v-model="trans.url" placeholder="来源地址"/>
+                    <ElFormItem label="文档地址">
+                        <ElInput v-model="trans.url" placeholder="文档地址所在的目录"/>
                     </ElFormItem>
                     <ElFormItem>
-                        <ElButton type="primary" class="py--block" @click="onSubmit">添加来源</ElButton>
+                        <ElButton type="primary" class="py--block" @click="addSource">添加文档</ElButton>
                     </ElFormItem>
                 </ElForm>
             </ElCol>
@@ -18,70 +18,65 @@
         <ElRow :gutter="4">
             <ElCol>
                 <ElTable :data="sources">
-                    <ElTableColumn label="Source" width="100" align="center">
-                        <template #default="scope">
-                            <ElInput v-model="scope.row.source" placeholder="name"/>
-                        </template>
+                    <ElTableColumn label="标题" width="100" align="center" prop="title">
                     </ElTableColumn>
-                    <ElTableColumn label="Url" align="center">
-                        <template #default="scope">
-                            <ElInput v-model="scope.row.url" readonly placeholder="value"/>
-                        </template>
+                    <ElTableColumn label="KEY" align="center" prop="key">
                     </ElTableColumn>
                     <ElTableColumn width="100" align="center">
                         <template #default="scope">
                             <ElButton :type="scope.row.active? 'success' : 'info'" size="small" circle @click="activeSource(scope.row)">
                                 <XIcon type="check"/>
                             </ElButton>
-                            <ElButton circle type="danger" size="small" plain @click="removeSource(scope.row)">
-                                <XIcon type="delete"/>
-                            </ElButton>
+                            <ElPopconfirm :title="`确定要移除${get(scope.row, 'title')}?`" @confirm="deleteSource(scope.row)">
+                                <template #reference>
+                                    <ElButton circle type="danger" size="small" plain>
+                                        <XIcon type="delete"/>
+                                    </ElButton>
+                                </template>
+                            </ElPopconfirm>
+
                         </template>
                     </ElTableColumn>
                 </ElTable>
-                <ElAlert style="margin-top: 0.5rem;" title="当前凭证的数据默认取已登录的后台/Develop账号缓存(当类型匹配时候), 需要显式通过 Authorization:Bearer {token} 覆盖"
-                    type="warning" :closable="false"/>
+                <ElAlert style="margin-top: 0.5rem;" title="常用 : Authorization:Bearer {token}" type="warning" :closable="false"/>
             </ElCol>
         </ElRow>
     </div>
 </template>
 <script lang="ts" setup>
-import { onMounted, reactive, ref, watch } from 'vue'
-import { useRouter } from 'vue-router';
-import { useStore } from '@/store';
-import { find, get, indexOf, map, set } from "lodash-es";
-import { localStore, toast } from "@/utils/util";
+import { reactive } from 'vue'
+import { find, get } from "lodash-es";
+import { toast } from "@/utils/util";
 import XIcon from "@/components/element/XIcon.vue";
-import { pyStorageDevApidocSourcesKey } from "@/utils/conf";
-import { emitter } from "@/bus/mitt";
 import { isUrl } from "@/utils/helper";
+import { apiMiscApidocAdd, apiMiscApidocDelete } from "@/services/misc";
 
-const sources: any = ref([]);
+
+const props = defineProps({
+    sources: {
+        type: Array,
+        default: () => []
+    }
+});
+
 const trans = reactive({
-    source: '',
+    title: '',
     url: '',
-})
+});
+
+const emit = defineEmits([
+    'active',
+    'delete',
+    'add'
+])
+
 
 const activeSource = (row: any) => {
-    sources.value = map(sources.value, (item) => {
-        if (get(item, 'source') === get(row, 'source')) {
-            set(item, 'active', true);
-        } else {
-            set(item, 'active', false);
-        }
-        return item;
-    });
-    emitter.emit('dev:apidoc-source-active', row);
-}
-const removeSource = (row: any) => {
-    let index = indexOf(sources.value, row);
-    if (index > -1) {
-        sources.value.splice(index, 1);
-    }
+    emit('active', get(row, 'key'));
 }
 
-const onSubmit = () => {
-    if (!trans.source || !trans.url) {
+const addSource = () => {
+    if (!trans.title || !trans.url) {
         toast('请完善输入数据', false);
         return;
     }
@@ -89,31 +84,39 @@ const onSubmit = () => {
         toast('请输入正确的地址', false);
         return;
     }
-    if (find(sources.value, { source: trans.source })) {
+    if (find(props.apis, { title: trans.title })) {
         toast('已存在标识, 无法添加', false);
         return;
     }
-    sources.value.push({
-        source: trans.source,
-        url: trans.url,
-        delete: true
+    apiMiscApidocAdd({
+        title: trans.title,
+        url: trans.url
+    }).then(({ success, message }) => {
+        toast(message, success);
+        if (success) {
+            emit('add');
+            trans.title = '';
+            trans.url = '';
+        }
     })
-    trans.source = '';
-    trans.url = '';
 }
 
-watch(() => sources.value, (val) => {
-    localStore(pyStorageDevApidocSourcesKey(), val);
-    emitter.emit('dev:apidoc-sources-updated', val);
-}, { deep: true })
 
-
-onMounted(() => {
-    sources.value = localStore(pyStorageDevApidocSourcesKey()) || [];
-})
-
-const router = useRouter();
-const store = useStore();
+const deleteSource = (row: any) => {
+    // activated not delete
+    if (get(row, 'active')) {
+        toast('当前已激活接口文档不得删除');
+        return;
+    }
+    apiMiscApidocDelete({
+        key: get(row, 'key'),
+    }).then(({ success, message }) => {
+        toast(message, success);
+        if (success) {
+            emit('delete');
+        }
+    })
+}
 </script>
 
 <style lang="less" scoped>

@@ -6,21 +6,18 @@
         <router-link :to="{name: 'tool.img'}">
             <XIcon type="lightning"/>
         </router-link>
-        <PxSetting v-if="trans.isLogin"/>
+        <a href="https://github.com/imvkmark/wulicode-tools/issues" target="_blank">
+            <XIcon type="svg|github"/>
+        </a>
+        <PxSetting/>
     </div>
 </template>
 <script lang="ts" setup>
-import { useRouter } from 'vue-router';
-import { useStore } from '@/store';
 import PxSetting from "@/components/base/PxSetting.vue";
-import { computed, reactive } from "vue";
 import XIcon from "@/components/element/XIcon.vue";
+import { useRouter } from "vue-router";
 
 const router = useRouter();
-const store = useStore();
-const trans = reactive({
-    isLogin: computed(() => store.state.poppy.token),
-})
 </script>
 
 <style lang="less" scoped>

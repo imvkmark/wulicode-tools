@@ -4,7 +4,8 @@
             <ElScrollbar>
                 <div class="group-search">
                     <h3>
-                        接口查询 <small>{{ get(source.active, 'source') }}</small>
+                        接口查询
+                        <ElTag>{{ get(source.active, 'title') }}</ElTag>
                         <span class="group-setting">
                             <XIcon type="setting" @click="manageSource"/>
                         </span>
@@ -35,8 +36,12 @@
                         <template v-else>无</template>
                     </ElTag>
                     <span class="form-setting">
-                    <XIcon type="setting" @click="manageCert"/>
-                </span>
+                        <XIcon type="setting" @click="manageCert"/>
+                    </span>
+                    <span :class="{'form-save' : true, 'form-saving': apiUploading}">
+                        <XIcon type="clock" v-if="apiUploading"/>
+                        <XIcon type="cloudy" v-else @click="saveCert"/>
+                    </span>
                 </h3>
                 <h4>{{ api.title }}</h4>
                 <p v-if="api.description">
@@ -107,8 +112,8 @@
         </div>
     </div>
     <ElDrawer v-model="trans.visible" :title="trans.drawer === 'cert' ? '设置凭证' : '接口来源'">
-        <DevApiDocCert v-if="trans.drawer === 'cert'"/>
-        <DevApiDocSource v-if="trans.drawer === 'source'"/>
+        <DevApiDocCert v-if="trans.drawer === 'cert'" :key-name="get(source.active, 'key')"/>
+        <DevApiDocSource v-if="trans.drawer === 'source'" @delete="deleteSource" @add="addSource" @active="activeSource" :sources="sourcesRef"/>
     </ElDrawer>
 </template>
 
@@ -116,31 +121,35 @@
 import { computed, onMounted, onUnmounted, reactive, ref } from 'vue'
 import { useStore } from '@/store';
 import { useRouter } from 'vue-router';
-import request from "@/utils/request";
 import apiRequest from "@/utils/dev/request";
-import { each, filter, find, first, get, groupBy, isEmpty, map, merge, set } from "lodash-es";
+import { each, filter, find, first, get, groupBy, isEmpty, isEqual, map, merge, set } from "lodash-es";
 import { base64Decode, base64Encode, stripTags } from "@/utils/helper";
 import { ElForm } from "element-plus/es";
 import DevApiDocCert from "@/components/dev/DevApiDocCerts.vue";
-import { pyStorageDevApidocCertsKey, pyStorageDevApidocSourcesKey } from "@/utils/conf";
-import { baseUrl, localStore, toast } from "@/utils/util";
+import { pyStorageDevApidocApiCurrentKey, pyStorageDevApidocApiLastSavedCertsKey, pyStorageDevApidocCertsKey } from "@/utils/conf";
+import { localStore, toast } from "@/utils/util";
 import XIcon from "@/components/element/XIcon.vue";
 import { emitter } from "@/bus/mitt";
 import DevApiDocSource from "@/components/dev/DevApiDocSources.vue";
+import { apiMiscApidocJson, apiMiscApidocSaveCert } from "@/services/misc";
 
 const store = useStore();
 const router = useRouter();
+
+emitter.on('dev:apidoc-certs-update', (certs) => {
+    apiCerts.value = certs;
+})
 
 // sources
 const source = reactive({
     kw: '',          // 查询关键字
     content: [],     // '所有定义
     active: computed(() => {  // 当前激活的接口
-        return find(sourceUrlsRef.value, { active: true });
+        return find(sourcesRef.value, { active: true });
     }),
 })
 // 当前接口定义
-const sourceUrlsRef: any = ref([]);
+const sourcesRef: any = ref([]);
 // 分组过的接口定义
 const sourceGrouped = computed(() => {
     let filtered = filter(source.content, (item) => {
@@ -163,13 +172,28 @@ const sourceGrouped = computed(() => {
         return get(item, 'group');
     })
 })
+const activeSource = (key: any) => {
+    sourcesRef.value = map(sourcesRef.value, (item) => {
+        if (get(item, 'key') === key) {
+            set(item, 'active', true);
+        } else {
+            set(item, 'active', false);
+        }
+        return item;
+    });
+    localStore(pyStorageDevApidocApiCurrentKey(), key);
+    let activated = find(sourcesRef.value, { active: true });
+    source.content = eval(get(activated, 'content'));
+}
 
-
-// api
+/* Api
+ * ---------------------------------------- */
 const apiRef: any = ref({});
 const apiParamsRef = ref({});
 const apiQueryRef = ref({});
 const apiCerts: any = ref([]);
+const apiUploading = ref(false);
+let apiSaveHandler: any = null;
 const api = reactive({
     url: computed(() => {
         return get(apiRef.value, 'url');
@@ -206,7 +230,7 @@ const api = reactive({
         return get(apiRef.value, 'query', []);
     }),
     cert: computed(() => {
-        return find(apiCerts.value, { active: true });
+        return find(apiCerts.value, { active: true, key: get(source.active, 'key') });
     }),
 })
 
@@ -217,16 +241,14 @@ const result = reactive({
     message: ''
 })
 
-emitter.on('dev:apidoc-certs-update', (certs: any) => {
-    apiCerts.value = certs;
-})
-emitter.on('dev:apidoc-source-active', (row: any) => {
-    let url = get(row, 'url');
-    fetchApiDoc(url);
-})
-emitter.on('dev:apidoc-sources-updated', (sources: any) => {
-    sourceUrlsRef.value = sources
-})
+
+const addSource = () => {
+    fetchApiDoc()
+}
+const deleteSource = () => {
+    fetchApiDoc()
+}
+
 
 const trans = reactive({
     visible: false,
@@ -234,17 +256,36 @@ const trans = reactive({
 });
 
 const manageCert = () => {
-    trans.visible = !trans.visible;
+    trans.visible = true;
     trans.drawer = 'cert';
 }
 
+const saveCert = () => {
+    let lastSaved = localStore(pyStorageDevApidocApiLastSavedCertsKey());
+    if (isEqual(lastSaved, apiCerts.value)) {
+        return;
+    }
+    apiUploading.value = true;
+    apiMiscApidocSaveCert({
+        cert: apiCerts.value
+    }).then(({ success }) => {
+        if (success) {
+            setTimeout(() => {
+                apiUploading.value = false;
+            }, 1000);
+            localStore(pyStorageDevApidocApiLastSavedCertsKey(), apiCerts.value);
+        }
+    });
+}
+
+
 const manageSource = () => {
-    trans.visible = !trans.visible;
+    trans.visible = true;
     trans.drawer = 'source';
 }
 
 const selectUrl = (clk: string = '') => {
-    let url = clk ? clk : (get(router.currentRoute.value.query, 'url', '') ? base64Decode(String(get(router.currentRoute.value.query, 'url', ''))): '');
+    let url = clk ? clk : (get(router.currentRoute.value.query, 'url', '') ? base64Decode(String(get(router.currentRoute.value.query, 'url', ''))) : '');
     apiRef.value = find(source.content, (item: any) => {
         return get(item, 'url') === url;
     });
@@ -257,31 +298,30 @@ const selectUrl = (clk: string = '') => {
     result.message = '';
     router.push({
         query: {
-            url: base64Encode(url)
+            url: base64Encode(url),
         }
     })
 }
 
-const fetchApiDoc = (url: string = '') => {
-    let reqUrl;
-    if (url) {
-        reqUrl = url;
-    } else {
-        if (!isEmpty(source.active)) {
-            reqUrl = get(source.active, 'url');
-        } else {
-            reqUrl = baseUrl('/api/misc/apidoc/json', { type: 'web' });
+const fetchApiDoc = () => {
+    let current = localStore(pyStorageDevApidocApiCurrentKey());
+    apiMiscApidocJson({
+        current: current
+    }).then(({ data }) => {
+        sourcesRef.value = get(data, 'sources');
+        let activatedKey = localStore(pyStorageDevApidocApiCurrentKey());
+        let activated = find(sourcesRef.value, { key: activatedKey });
+        if (isEmpty(activated)) {
+            activated = first(sourcesRef.value);
         }
-    }
-    request({
-        url: reqUrl,
-    }, 'develop').then(({ data }) => {
-        source.content = eval(get(data, 'apidoc'));
+        set(activated, 'active', true);
+        source.content = eval(get(activated, 'content'));
 
-        if (isEmpty(localStore(pyStorageDevApidocSourcesKey()))) {
-            localStore(pyStorageDevApidocSourcesKey(), get(data, 'sources'));
-            sourceUrlsRef.value = get(data, 'sources');
-        }
+        // save to local activated
+        localStore(pyStorageDevApidocApiCurrentKey(), get(activated, 'key'));
+
+        // load activated certs todo
+        apiCerts.value = localStore(pyStorageDevApidocCertsKey());
         selectUrl();
     });
 }
@@ -352,18 +392,15 @@ const onRequest = () => {
     })
 }
 onMounted(() => {
-    sourceUrlsRef.value = localStore(pyStorageDevApidocSourcesKey());
-    apiCerts.value = localStore(pyStorageDevApidocCertsKey());
     fetchApiDoc();
-
-    //
-
+    apiSaveHandler = setInterval(() => {
+        saveCert();
+    }, 1000 * 15);
 })
 
 onUnmounted(() => {
-    emitter.off('dev:apidoc-certs-update')
-    emitter.off('dev:apidoc-source-active')
-    emitter.off('dev:apidoc-sources-updated')
+    emitter.off('dev:apidoc-certs-update');
+    clearInterval(apiSaveHandler)
 })
 
 </script>
@@ -454,6 +491,18 @@ onUnmounted(() => {
             &:hover {
                 color: var(--wc-color-primary);
             }
+        }
+        .form-save {
+            position: absolute;
+            right: 1.8rem;
+            top: 0.5rem;
+            cursor: pointer;
+            &:hover {
+                color: var(--wc-color-primary);
+            }
+        }
+        .form-saving {
+            color: green;
         }
     }
     h4 {

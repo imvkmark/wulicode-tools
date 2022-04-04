@@ -1,6 +1,6 @@
 import { createRouter, createWebHashHistory, Router, RouteRecordRaw } from 'vue-router'
 import MgrLayout from '@/layouts/MgrLayout.vue';
-import DevLayout from '@/layouts/DevLayout.vue';
+import UserLayout from '@/layouts/UserLayout.vue';
 import BlankLayout from '@/layouts/BlankLayout.vue';
 import { get } from 'lodash-es';
 
@@ -34,7 +34,7 @@ const routes: Array<RouteRecordRaw> = [
         ]
     },
     {
-        path: '/dev/', component: DevLayout, children: [
+        path: '/dev/', component: UserLayout, children: [
             {
                 path: 'api-runner',
                 component: () => import('@/views/dev/ApiRunner.vue'),

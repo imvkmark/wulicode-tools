@@ -10,11 +10,10 @@
 <script lang="ts" setup>
 import DevTab from "@/components/dev/DevTab.vue";
 import useGlobalInit from "@/composables/useGlobalInit";
-import useDevelopAuth from "@/composables/useDevelopAuth";
+import useAuth from "@/composables/useAuth";
 
 useGlobalInit();
-useDevelopAuth();
-
+useAuth();
 </script>
 <style scoped lang="less">
 .container {

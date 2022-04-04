@@ -1,9 +1,8 @@
-import { computed, onMounted, onUnmounted, reactive, watch } from 'vue'
+import { computed, onMounted, reactive, watch } from 'vue'
 import { useStore } from '@/store';
 import { each, get, map } from "lodash-es";
 import { routerNameKey } from "@/utils/utils";
 import { useRouter } from "vue-router";
-import { emitter, PY_USER_LOGIN, PY_USER_LOGOUT } from "@/bus/mitt";
 
 /**
  * 初始化
@@ -72,9 +71,5 @@ export default function useNav() {
 
     watch([() => store.state.nav.navs, () => router.currentRoute.value.fullPath], () => {
         setPrefix();
-    })
-
-    onUnmounted(() => {
-        emitter.off(PY_USER_LOGIN);
     })
 }

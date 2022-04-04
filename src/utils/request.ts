@@ -2,6 +2,7 @@ import { get } from 'lodash-es';
 import { PyRequestOptions } from "@/utils/types";
 import http from '@/utils/http';
 import { emitter, PY_CORE_EXCEPTION, PY_CORE_LOADED, PY_CORE_LOADING, PY_USER_LOGOUT } from "@/bus/mitt";
+import { pyWarning } from "@/utils/helper";
 
 export default function request(options: PyRequestOptions, type = 'user') {
     emitter.emit(PY_CORE_LOADING, options);
@@ -34,6 +35,7 @@ export default function request(options: PyRequestOptions, type = 'user') {
                 msg = data.message || statusText;
                 exception.status = code
                 if (code === 401) {
+                    pyWarning(PY_USER_LOGOUT, exception, '......');
                     msg = '无权访问, 请登录后重试';
                     exception.message = msg;
                     emitter.emit(PY_USER_LOGOUT, { exception, type });

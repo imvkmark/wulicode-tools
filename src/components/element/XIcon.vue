@@ -21,7 +21,6 @@ const props = defineProps({
     }
 })
 const hasSvg = () => {
-    console.log(props.type)
     return props.type.indexOf('svg|') > -1;
 }
 const svgType = () => {

@@ -15,10 +15,8 @@ import { computed, reactive } from "vue";
 import { useStore } from "@/store";
 import useNav from "@/composables/useNav";
 import useGlobalTheme from "@/composables/useGlobalTheme";
-import useGlobalAction from "@/composables/useGlobalAction";
 import PxHeader from "@/components/base/PxHeader.vue";
 
-useGlobalAction();
 useGlobalInit();
 useGlobalTheme()
 useNav();

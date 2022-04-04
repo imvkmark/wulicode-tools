@@ -14,9 +14,6 @@ export interface PyPoppyTypes {
     media: string,
     style: string,
     title: string,
-    grid: string,
-    motion: object,
-    menus: object,
 }
 
 export interface PyPoppyAction {

@@ -4,7 +4,7 @@ import { MD5 } from 'crypto-js';
 import UAParser from "ua-parser-js";
 import axios, { AxiosInstance } from "axios";
 import { PyRequestOptions } from "@/utils/types";
-import { pyAppUrl, pyAppVersion, pyStorageKey } from "@/utils/conf";
+import { pyAppUrl, pyAppVersion, pyStorageKey, pyStorageTokenKey } from "@/utils/conf";
 
 // axios instance
 // todo https://juejin.cn/post/6997805598507008007
@@ -68,7 +68,7 @@ const requestSign = (params: any, token = '') => {
 
 
 // 请求方法
-const http = (options: PyRequestOptions, type = 'backend') => {
+const http = (options: PyRequestOptions) => {
     let { method = 'post', params: oriParams = {}, url, headers = {} } = options;
     console.log(options);
     let params: any;
@@ -104,7 +104,7 @@ const http = (options: PyRequestOptions, type = 'backend') => {
         })
     }
 
-    let token = localStore(`${pyStorageKey.token}-${type}`);
+    let token = localStore(pyStorageTokenKey());
     set(params, 'timestamp', Math.round(new Date().getTime() / 1000));
     const sign = requestSign(params, token ? token : '');
     set(params, 'sign', sign);
@@ -115,7 +115,7 @@ const http = (options: PyRequestOptions, type = 'backend') => {
     let ua = new UAParser();
 
     let xHeaders: any = {
-        'x-type': type,
+        'x-type': 'user',
         'x-os': 'mgrapp',
         'x-ver': pyAppVersion,
         'x-id': deviceId(),

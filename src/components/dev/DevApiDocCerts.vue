@@ -11,14 +11,14 @@
         <ElRow :gutter="4">
             <ElCol>
                 <ElTabs v-model="trans.current" :closable="certsRef.length > 1" @edit="onTabEdit">
-                    <ElTabPane v-for="cert in certsRef" :label="get(cert, 'label')" :name="get(cert, 'label')" :key="cert">
+                    <ElTabPane v-for="cert in trans.certs" :label="get(cert, 'label')" :name="get(cert, 'label')" :key="cert">
                         <ElInput :model-value="cert.label" @update:model-value="updateCertLabel">
                             <template #prepend>凭证名称</template>
                         </ElInput>
                         <ElInput :model-value="cert.url" @update:model-value="updateCertUrl" style="margin-top:0.2rem">
                             <template #prepend>请求地址</template>
                         </ElInput>
-                        <ElButton type="warning" style="margin-top:0.2rem" plain @click="addHeader(cert)">添加 Header</ElButton>
+                        <ElButton type="warning" style="margin-top:0.2rem" size="small" plain @click="addHeader(cert)">添加 Header</ElButton>
                         <ElTable :data="cert['headers']">
                             <ElTableColumn label="Header" width="100" align="center">
                                 <template #default="scope">
@@ -38,7 +38,7 @@
                                 </template>
                             </ElTableColumn>
                         </ElTable>
-                        <ElButton type="primary" style="margin-top:0.2rem" plain @click="addParam(cert)">添加 Param</ElButton>
+                        <ElButton type="primary" style="margin-top:0.2rem" plain size="small" @click="addParam(cert)">添加 Param</ElButton>
                         <ElTable :data="cert['params']">
                             <ElTableColumn label="参数" width="100" align="center">
                                 <template #default="scope">
@@ -58,9 +58,9 @@
                                 </template>
                             </ElTableColumn>
                         </ElTable>
-                        <ElButton style="margin-top: 0.2rem;" type="primary" @click="setDefault(cert)">激活凭证</ElButton>
-                        <ElAlert style="margin-top: 0.2rem;" title="凭证不绑定接口"
-                            type="warning" :closable="false"/>
+                        <ElButton style="margin-top: 0.2rem;" type="primary" :disabled="get(cert, 'active')" @click="setDefault(cert)">
+                            {{ get(cert, 'active') ? '当前默认凭证' : '使用此凭证作为默认凭证' }}
+                        </ElButton>
                     </ElTabPane>
                 </ElTabs>
             </ElCol>
@@ -69,63 +69,73 @@
 </template>
 <script lang="ts" setup>
 import { computed, onMounted, reactive, ref, watch } from 'vue'
-import { filter, find, first, get, indexOf, map, set } from "lodash-es";
+import { filter, find, get, indexOf, map, set } from "lodash-es";
 import { localStore, toast } from "@/utils/util";
 import XIcon from "@/components/element/XIcon.vue";
 import { pyStorageDevApidocCertsKey } from "@/utils/conf";
 import { emitter } from "@/bus/mitt";
 
+const props = defineProps({
+    keyName: {
+        type: String,
+        required: true,
+        default: '',
+    }
+})
+
+const certsRef: any = ref([]);
+const trans = reactive({
+    certs: computed(() => {
+        return filter(certsRef.value, { key: props.keyName })
+    }),
+    active: computed(() => {
+        return find(certsRef.value, { active: true, key: props.keyName })
+    }),
+    cert: '',
+    current: ''
+})
+
+const fetchCurrent = () => {
+    return find(certsRef.value, {
+        label: trans.current,
+        key: props.keyName,
+    });
+}
+
 const removeHeader = (header: any) => {
-    certsRef.value = map(certsRef.value, function (item: any) {
-        if (get(item, 'label') === trans.current) {
-            let index = indexOf(get(item, 'headers'), header);
-            if (index > -1) {
-                item.headers.splice(index, 1);
-            }
-        }
-        return item;
-    })
+    let current = fetchCurrent();
+    let index = indexOf(get(current, 'headers'), header);
+    if (index > -1) {
+        current.headers.splice(index, 1);
+    }
 }
 
 const updateCertLabel = (value: any) => {
     if (value === '') {
         return;
     }
-    certsRef.value = map(certsRef.value, function (item: any) {
-        if (get(item, 'label') === trans.current) {
-            set(item, 'label', value);
-        }
-        return item;
-    });
-    trans.current = value;
+    let current = fetchCurrent()
+    current.label = value;
 }
 const updateCertUrl = (value: any) => {
-    if (value === '') {
-        return;
-    }
-    certsRef.value = map(certsRef.value, function (item: any) {
-        if (get(item, 'active')) {
-            set(item, 'url', value);
-        }
-        return item;
-    })
+    let current = fetchCurrent()
+    current.url = value;
 }
 
 const removeParam = (param: any) => {
-    certsRef.value = map(certsRef.value, function (item: any) {
-        if (item.label === trans.active) {
-            let index = indexOf(get(item, 'params'), param);
-            if (index > -1) {
-                item.params.splice(index, 1);
-            }
-        }
-        return item;
-    })
+    let current = fetchCurrent();
+    let index = indexOf(get(current, 'params'), param);
+    if (index > -1) {
+        current.params.splice(index, 1);
+    }
 }
 
 const setDefault = (cert: any) => {
     let label = get(cert, 'label');
     certsRef.value = map(certsRef.value, function (item: any) {
+        if (get(item, 'key') !== props.keyName) {
+            return item;
+        }
         if (get(item, 'label') === label) {
             set(item, 'active', true);
         } else {
@@ -135,11 +145,18 @@ const setDefault = (cert: any) => {
     })
 }
 
+/**
+ * 删除 Tab
+ * @param label
+ */
 const onTabEdit = (label: string) => {
     certsRef.value = filter(certsRef.value, function (cert) {
-        return cert.label !== label
+        return cert.label !== label && cert.key === props.keyName;
     })
-    trans.active = get(first(certsRef.value), 'label')
+    let one = find(certsRef.value, { key: props.keyName });
+    if (one) {
+        set(one, 'active', true);
+    }
 }
 
 const addHeader = (cert: any) => {
@@ -156,21 +173,13 @@ const addParam = (cert: any) => {
 }
 
 
-const certsRef: any = ref([]);
-const trans = reactive({
-    active: computed(() => {
-        return get(find(certsRef.value, { active: true }), 'label')
-    }),
-    cert: '',
-    current: ''
-})
 const addCert = () => {
     if (!trans.cert) {
         toast('请输入凭证', true);
         return;
     }
     let allCerts = filter(certsRef.value, function (cert) {
-        return cert.label === trans.cert
+        return cert.label === trans.cert && cert.key === props.keyName
     })
     if (allCerts.length > 0) {
         toast('已存在凭证, 无需添加', true);
@@ -179,7 +188,7 @@ const addCert = () => {
     certsRef.value.push({
         label: trans.cert,
         active: false,
-        type: 'user',
+        key: props.keyName,
         headers: [],
         params: [],
     })
@@ -196,6 +205,7 @@ onMounted(() => {
     let hds = [
         {
             label: '默认',
+            key: props.keyName,
             headers: [{ key: '', value: '' }],
             params: [{ key: '', value: '' }]
         }
@@ -205,8 +215,7 @@ onMounted(() => {
         hds = storeHeaders
     }
     certsRef.value = hds;
-    trans.current = trans.active;
-
+    trans.current = get(trans.active, 'label');
 })
 </script>
 

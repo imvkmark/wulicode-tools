@@ -5,7 +5,6 @@ import { apiPySystemCoreInfo } from '@/services/poppy';
 import { emitter, PY_USER_LOGIN } from '@/bus/mitt'
 import { PyRequestOptions } from "@/utils/types";
 import { deviceId, localStore, sessionStore } from "@/utils/util";
-import request from "@/utils/request";
 import { PyPoppyTypes, PyRootStateTypes } from "@/store/types";
 import { pyStorageKey, pyStorageTokenKey } from "@/utils/conf";
 
@@ -25,19 +24,8 @@ const poppy: Module<PyPoppyTypes, PyRootStateTypes> = {
         // request
         loading: {},
 
-        motion: {
-            type: '',
-            action: '',
-            addition: {},
-        },
-        action: {},
-
         // 标题
         title: '',
-
-        menus: [],
-
-        grid: '',
     },
     getters: {
         isLoading: (state) => (url: string = '') => {
@@ -81,16 +69,7 @@ const poppy: Module<PyPoppyTypes, PyRootStateTypes> = {
          * @constructor
          */
         Fetch({ commit, state }) {
-            let userUrl = get(state.core, 'py-mgr-app.info_url')
-            request({
-                url: userUrl
-            }).then(({ success, data }) => {
-                if (!success) {
-                    return;
-                }
-                state.user = get(data, 'user', {});
-                state.menus = get(data, 'menus', []);
-            })
+            return;
         },
 
         /**
@@ -110,8 +89,8 @@ const poppy: Module<PyPoppyTypes, PyRootStateTypes> = {
          */
         Logout({ state }) {
             localStore(pyStorageTokenKey(), null);
+            state.token = '';
             state.user = {};
-            state.menus = [];
         },
 
         /**
@@ -170,7 +149,6 @@ const poppy: Module<PyPoppyTypes, PyRootStateTypes> = {
          * 设置页面的标题
          */
         ClearCache() {
-            localStore(pyStorageKey.navs, null);
             sessionStore(pyStorageKey.core, null);
         },
 

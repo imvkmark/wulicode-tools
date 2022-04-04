@@ -1,7 +1,7 @@
 import { pyAppMode, pyAppUrl, pyStorageKey } from "@/utils/conf";
 import { MD5 } from "crypto-js";
 import { httpBuildQuery, isInteger, uniqueId } from "@/utils/helper";
-import { each, forEach, isString } from "lodash-es";
+import { each, forEach } from "lodash-es";
 import { ElMessage } from "element-plus/es";
 
 
@@ -149,32 +149,20 @@ function _sessionStore(key: any, val: any) {  // 本地数据存储封装，随�
 
 /**
  * 封装 ele 的状态显示
- * @param {string|object} resp
- * @param {boolean|string|integer} warning
+ * @param {string} resp
+ * @param {boolean|string|integer} success
  */
-export const toast = (resp: any, warning: any = true) => {
-    let type = warning;
-    if (isInteger(warning)) {
-        type = Boolean(warning);
+export const toast = (resp: any, success: any = true) => {
+    let type = success;
+    if (isInteger(success)) {
+        type = Boolean(success);
     }
-    if (isString(resp)) {
-        if (type === true) {
-            ElMessage.success(resp);
-        } else if (type === false) {
-            ElMessage.warning(resp);
-        } else {
-            ElMessage.error(resp);
-        }
-
+    if (type === true) {
+        ElMessage.success(resp);
+    } else if (type === false) {
+        ElMessage.warning(resp);
     } else {
-        const { message, status } = resp;
-        if (status === 0) {                         // 成功
-            ElMessage.success(message)
-        } else if (status > 0 && status <= 1000) {  // http error
-            ElMessage.error(message)
-        } else {                                    // project error
-            ElMessage.warning(message);
-        }
+        ElMessage.error(resp);
     }
 }
 

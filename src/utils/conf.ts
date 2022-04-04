@@ -22,7 +22,6 @@ export const pyStorageKey = {
     deviceId: 'x-device-id',
     localCache: 'x-local-cache',
     core: 'x-core',
-    token: 'x-token',
     theme: 'x-theme',
     navs: 'x-navs',
 }
@@ -34,11 +33,14 @@ export const pyFileExtensions = {
 }
 
 export const pyStorageTokenKey = () => {
-    return `${pyStorageKey.token}`
+    return `x-token`
 }
 
-export const pyStorageDevApidocSourcesKey = () => {
-    return `x-dev-apidoc-sources`
+export const pyStorageDevApidocApiLastSavedCertsKey = () => {
+    return `x-dev-apidoc-api-last-saved-certs`
+}
+export const pyStorageDevApidocApiCurrentKey = () => {
+    return `x-dev-apidoc-api-current`
 }
 
 export const pyStorageDevApidocCertsKey = () => {
