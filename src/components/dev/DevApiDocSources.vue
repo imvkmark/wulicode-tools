@@ -44,8 +44,11 @@
                 <h5 style="margin-bottom: 0.2rem;">可用文档</h5>
                 <ElTable :data="domains">
                     <ElTableColumn label="域名" prop="domain"/>
-                    <ElTableColumn width="100" align="center">
+                    <ElTableColumn width="130" align="center">
                         <template #default="scope">
+                            <ElButton circle type="primary" size="small" plain @click="openDomain(scope.row)">
+                                <XIcon type="reading"/>
+                            </ElButton>
                             <ElButton circle type="primary" size="small" plain @click="refreshDomain(scope.row)">
                                 <XIcon type="refresh"/>
                             </ElButton>
@@ -98,6 +101,10 @@ const activeSource = (row: any) => {
 
 const addDomain = (row: any) => {
     trans.url = get(row, 'domain')
+}
+const openDomain = (row: any) => {
+    let url = get(row, 'domain');
+    window.open(url);
 }
 
 const refreshDomain = (row: any) => {
