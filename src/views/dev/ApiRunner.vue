@@ -54,22 +54,44 @@
                 <ElForm label-position="top" class="form-form" @keyup.enter="onRequest">
                     <ElDivider v-if="api.parameters.length">参数</ElDivider>
                     <ElFormItem v-for="param in api.parameters" :key="param">
-                        <ElInput v-model="apiParamsRef[get(param, 'field')]"/>
+                        <ElInput v-model="apiParamsRef[get(param, 'field')]">
+                            <template #suffix>
+                                <ElPopover :content="stripTags(get(param, 'description'))" placement="top" width="200px">
+                                    <template #reference>
+                                        <span style="position: relative;top:2px;left:2px;"><XIcon type="chat-line-round"/></span>
+                                    </template>
+                                </ElPopover>
+                            </template>
+                        </ElInput>
                         <template #label>
-                    <span class="text-ellipsis">
-                        <span class="required" v-if="!get(param, 'optional', false)">{{ !get(param, 'optional', false) ? '*' : '' }}</span>
-                       {{ get(param, 'field') }}  ({{ get(param, 'type') }}) {{ get(param, 'title') }} <em
-                        v-html="stripTags(get(param, 'description'))"/> </span>
+                            <span class="text-ellipsis">
+                                <span class="required" v-if="!get(param, 'optional', false)">{{ !get(param, 'optional', false) ? '*' : '' }}</span>
+                               {{ get(param, 'field') }}  ({{ get(param, 'type') }}) {{ get(param, 'title') }}
+                                <em v-html="stripTags(get(param, 'description'))"/>
+                            </span>
                         </template>
                     </ElFormItem>
                     <ElDivider v-if="api.queries.length">查询</ElDivider>
                     <ElFormItem v-for="query in api.queries" :key="query" class="apidoc-request_label">
-                        <ElInput v-model="apiQueryRef[get(query, 'field')]"/>
+                        <ElInput v-model="apiQueryRef[get(query, 'field')]">
+                            <template #suffix>
+                                <ElPopover :content="stripTags(get(query, 'description'))" placement="top" width="200px">
+                                    <template #reference>
+                                        <span style="position: relative;top:2px;left:2px;"><XIcon type="chat-line-round"/></span>
+                                    </template>
+                                </ElPopover>
+                            </template>
+                        </ElInput>
                         <template #label>
                             <span class="text-ellipsis">
                                 <span class="required" v-if="!get(query, 'optional', false)">{{ !get(query, 'optional', false) ? '*' : '' }}</span>
-                                {{ get(query, 'field') }}({{ get(query, 'type') }}) {{ get(query, 'title') }} <em
-                                v-html="stripTags(get(query, 'description'))"/> </span>
+                                {{ get(query, 'field') }}({{ get(query, 'type') }}) {{ get(query, 'title') }}
+
+                                <em v-html="stripTags(get(query, 'description'))"/>
+                                <ElPopover content="{{ stripTags(get(query, 'description')) }}" placement="top">
+                                    <XIcon type="question-circle-o"/>
+                                </ElPopover>
+                            </span>
                         </template>
                     </ElFormItem>
                     <div class="request">

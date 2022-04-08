@@ -1,5 +1,5 @@
 <template>
-    <ElIcon :class="get(props, 'className')" v-if="props.type">
+    <ElIcon :class="get(props, 'className')" :style="style" v-if="props.type">
         <SvgIcon v-if="hasSvg()" :name="svgType()"/>
         <component v-else :is="get(icon, iconType)"/>
     </ElIcon>
@@ -14,6 +14,10 @@ import SvgIcon from "@/components/element/SvgIcon.vue";
 const props = defineProps({
     type: {
         type: String,
+        default: "",
+    },
+    style: {
+        type: [String, Array],
         default: "",
     },
     className: {
