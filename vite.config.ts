@@ -38,17 +38,8 @@ export default defineConfig(({ mode }) => {
             'import.meta.env.PY_APP_VERSION': JSON.stringify(pkgJson.version)
         },
         build: {
-            outDir: `build/wulicode-${mode}`,
-            sourcemap: false,
-            rollupOptions: {
-                output: {
-                    manualChunks: {
-                        lodash: ['lodash-es'],
-                        element: ['element-plus'],
-                        crypto: ['crypto-js']
-                    }
-                }
-            }
+            outDir: `build/${mode}`,
+            sourcemap: false
         },
         server: {
             port: 9241, // 设置服务启动端口号
