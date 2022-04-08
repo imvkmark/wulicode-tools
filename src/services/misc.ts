@@ -44,12 +44,12 @@ export async function apiMiscApidocJson(params: object) {
 }
 
 /**
- * 保存凭证
+ * 保存
  * @param params
  */
-export async function apiMiscApidocSaveCert(params: object) {
+export async function apiMiscApidocSave(params: object) {
     return request({
-        url: '/api/misc/apidoc/save_cert',
+        url: '/api/misc/apidoc/save',
         params
     });
 }

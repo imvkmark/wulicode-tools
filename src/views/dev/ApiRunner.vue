@@ -151,12 +151,12 @@ import { each, filter, find, first, get, groupBy, isEmpty, isEqual, map, merge, 
 import { base64Decode, base64Encode, stripTags } from "@/utils/helper";
 import { ElForm } from "element-plus/es";
 import DevApiDocCert from "@/components/dev/DevApiDocCerts.vue";
-import { pyStorageDevApidocApiCurrentKey, pyStorageDevApidocApiLastSavedCertsKey, pyStorageDevApidocCertsKey } from "@/utils/conf";
+import { pyStorageDevApidocApiCurrentKey, pyStorageDevApidocApiLastSavedKey, pyStorageDevApidocCertsKey, pyStorageDevApidocQueryParamKey } from "@/utils/conf";
 import { localStore, toast } from "@/utils/util";
 import XIcon from "@/components/element/XIcon.vue";
 import { emitter } from "@/bus/mitt";
 import DevApiDocSource from "@/components/dev/DevApiDocSources.vue";
-import { apiMiscApidocJson, apiMiscApidocSaveCert } from "@/services/misc";
+import { apiMiscApidocJson, apiMiscApidocSave } from "@/services/misc";
 
 const store = useStore();
 const router = useRouter();
@@ -291,19 +291,39 @@ const manageCert = () => {
 }
 
 const saveCert = () => {
-    let lastSaved = localStore(pyStorageDevApidocApiLastSavedCertsKey());
+    let lastSaved = localStore(pyStorageDevApidocApiLastSavedKey('certs'));
     if (isEqual(lastSaved, apiCerts.value)) {
         return;
     }
     apiUploading.value = true;
-    apiMiscApidocSaveCert({
-        cert: apiCerts.value
+    apiMiscApidocSave({
+        content: JSON.stringify(apiCerts.value),
+        type: 'cert'
     }).then(({ success }) => {
         if (success) {
             setTimeout(() => {
                 apiUploading.value = false;
             }, 1000);
-            localStore(pyStorageDevApidocApiLastSavedCertsKey(), apiCerts.value);
+            localStore(pyStorageDevApidocApiLastSavedKey('certs'), apiCerts.value);
+        }
+    });
+}
+const saveParamQuery = () => {
+    let lastSaved = localStore(pyStorageDevApidocApiLastSavedKey('param_query'));
+    let paramQuery = localStore(pyStorageDevApidocQueryParamKey())
+    if (isEqual(lastSaved, paramQuery)) {
+        return;
+    }
+    apiUploading.value = true;
+    apiMiscApidocSave({
+        content: JSON.stringify(paramQuery),
+        type: 'param_query'
+    }).then(({ success }) => {
+        if (success) {
+            setTimeout(() => {
+                apiUploading.value = false;
+            }, 1000);
+            localStore(pyStorageDevApidocApiLastSavedKey('param_query'), paramQuery);
         }
     });
 }
@@ -315,6 +335,28 @@ const manageSource = () => {
 }
 
 const selectUrl = (clk: string = '') => {
+    // 保留当前 Url 参数 & 查询
+    let currentUrl = get(apiRef.value, 'url');
+    let sourceKey = get(source.active, 'key');
+    let pqs = localStore(pyStorageDevApidocQueryParamKey()) || [];
+    if (currentUrl) {
+        let item: any = find(pqs, { source: sourceKey, url: currentUrl }) || {};
+        if (!isEmpty(item)) {
+            set(item, 'query', apiQueryRef.value);
+            set(item, 'params', apiQueryRef.value);
+        } else {
+            pqs.push({
+                source: sourceKey,
+                url: currentUrl,
+                query: apiQueryRef.value,
+                params: apiQueryRef.value
+            });
+        }
+        localStore(pyStorageDevApidocQueryParamKey(), pqs);
+        saveParamQuery();
+    }
+
+    // 切换 || 恢复 Url
     let url = clk ? clk : (get(router.currentRoute.value.query, 'url', '') ? base64Decode(String(get(router.currentRoute.value.query, 'url', ''))) : '');
     apiRef.value = find(source.content, (item: any) => {
         return get(item, 'url') === url;
@@ -322,6 +364,13 @@ const selectUrl = (clk: string = '') => {
     if (isEmpty(apiRef.value)) {
         apiRef.value = first(source.content);
         url = get(apiRef.value, 'url');
+    }
+
+    // 恢复 Url 参数 & 查询
+    let pqCurrent = find(pqs, { source: sourceKey, url: currentUrl });
+    if (!isEmpty(pqCurrent)) {
+        apiQueryRef.value = get(pqCurrent, 'query');
+        apiParamsRef.value = get(pqCurrent, 'params');
     }
     result.tab = 'result';
     resultResp.value = {};
@@ -353,6 +402,10 @@ const fetchApiDoc = () => {
         // load activated certs
         apiCerts.value = get(data, 'certs');
         localStore(pyStorageDevApidocCertsKey(), get(data, 'certs'))
+
+        // load params
+        apiCerts.value = get(data, 'param_query');
+        localStore(pyStorageDevApidocQueryParamKey(), get(data, 'param_query'))
 
         // list domain
         sourcesDomainRef.value = get(data, 'domains');

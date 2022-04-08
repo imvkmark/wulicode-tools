@@ -36,13 +36,18 @@ export const pyStorageTokenKey = () => {
     return `x-token`
 }
 
-export const pyStorageDevApidocApiLastSavedCertsKey = () => {
-    return `x-dev-apidoc-api-last-saved-certs`
-}
 export const pyStorageDevApidocApiCurrentKey = () => {
     return `x-dev-apidoc-api-current`
 }
 
 export const pyStorageDevApidocCertsKey = () => {
     return `x-dev-apidoc-certs`
+}
+
+export const pyStorageDevApidocQueryParamKey = () => {
+    return `x-dev-apidoc-query_params`
+}
+
+export const pyStorageDevApidocApiLastSavedKey = (type: any) => {
+    return `x-dev-apidoc-api-last-saved:${type}`;
 }

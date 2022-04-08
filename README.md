@@ -32,4 +32,6 @@ $ yarn build:<env>
 
 ![](https://file.wulicode.com/note/2022/4-5/1649088359548.png)
 
+## ChangeLog
+
 MIT Copyright © 2021-2022 duoli zhaody901@126.com
