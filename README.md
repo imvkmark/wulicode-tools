@@ -27,7 +27,7 @@ $ yarn build:<env>
 
 接口来源说明
 
-![](https://file.wulicode.com/note/2022/4-5/1649088180432.png)
+![](https://file.wulicode.com/note/2022/4-5/1649088180433.png)
 
 凭证说明
 
