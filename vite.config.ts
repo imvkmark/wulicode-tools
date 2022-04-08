@@ -38,7 +38,7 @@ export default defineConfig(({ mode }) => {
             'import.meta.env.PY_APP_VERSION': JSON.stringify(pkgJson.version)
         },
         build: {
-            outDir: `build/${mode}`,
+            outDir: `build/wulicode-${mode}`,
             sourcemap: false
         },
         server: {
