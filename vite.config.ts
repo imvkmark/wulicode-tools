@@ -39,7 +39,16 @@ export default defineConfig(({ mode }) => {
         },
         build: {
             outDir: `build/wulicode-${mode}`,
-            sourcemap: false
+            sourcemap: false,
+            rollupOptions: {
+                output: {
+                    manualChunks: {
+                        lodash: ['lodash-es'],
+                        element: ['element-plus'],
+                        crypto: ['crypto-js']
+                    }
+                }
+            }
         },
         server: {
             port: 9241, // 设置服务启动端口号
