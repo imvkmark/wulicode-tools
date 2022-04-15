@@ -3,7 +3,7 @@ import { PyNavTypes, PyRootStateTypes } from "@/store/types";
 import { clone, get, merge } from "lodash-es";
 import { navConvertNav, navs as defaultNavs } from "@/utils/navs";
 import { pyStorageKey } from "@/utils/conf";
-import { localStore } from "@/utils/util";
+import { appLocalStore } from "@/utils/util";
 
 // Create a new store Modules.
 const nav: Module<PyNavTypes, PyRootStateTypes> = {
@@ -40,7 +40,7 @@ const nav: Module<PyNavTypes, PyRootStateTypes> = {
             state.menus = get(state.navs, `${prefix}.children`, []);
         },
         Destruct({ commit, dispatch }) {
-            localStore(pyStorageKey.navs, null);
+            appLocalStore(pyStorageKey.navs, null);
             commit('CLEAR_NAVS');
             dispatch('Init');
         },

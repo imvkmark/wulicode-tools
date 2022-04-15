@@ -32,8 +32,8 @@ import { trimEnd, trimStart } from 'lodash-es';
 import { onMounted, reactive, watch } from 'vue';
 import { copyText } from 'vue3-clipboard';
 import PxMain from '@/components/base/PxMain.vue';
-import { pyAppUrl } from "@/utils/conf";
 import { toast } from "@/utils/util";
+import { appUrl } from "@/utils/conf";
 
 
 const trans = reactive({
@@ -50,9 +50,9 @@ const value = reactive({
 const onCopy = function () {
     copyText(value.url, undefined, (error: any) => {
         if (error) {
-            toast('无法复制:' + error, false)
+            toast('无法复制:' + error)
         } else {
-            toast('已复制 URL')
+            toast('已复制 URL', true)
         }
     })
 }
@@ -69,7 +69,7 @@ const toNumber = function (val) {
 }
 
 const onChange = function () {
-    let url = pyAppUrl;
+    let url = appUrl;
     let hwSpec = toNumber(trans.width) ? toNumber(trans.width) : '428';
     let width = toNumber(trans.width) ? toNumber(trans.width) : '428';
     let height = toNumber(trans.height) ? toNumber(trans.height) : '214';

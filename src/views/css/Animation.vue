@@ -15,20 +15,7 @@
 </template>
 
 <script lang="ts" setup>
-import { onMounted, reactive, ref } from 'vue'
 import PxMain from '@/components/base/PxMain.vue';
-
-const refList: any = ref(null);
-const trans = reactive({
-    refList: null,
-    top: 0,
-    height: 0
-})
-
-const initValue = function () {
-    trans.height = refList.value.scrollHeight;
-}
-onMounted(initValue);
 </script>
 
 <style scoped lang="less">

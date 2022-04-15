@@ -35,8 +35,7 @@ import { useRouter } from 'vue-router';
 import { ElForm } from 'element-plus';
 import useUserUtil from '@/composables/useUserUtil';
 import { toast } from "@/utils/util";
-import request from "@/utils/request";
-import { sizeGte } from "@/utils/helper";
+import { sizeGte } from "../../../pkg/core/utils/helper";
 import { apiPySystemAuthLogin } from "@/services/poppy";
 
 const store = useStore();
@@ -70,7 +69,7 @@ const onSubmit = () => {
                 passport: value.passport,
                 password: value.password,
             }).then(({ success, message, data }) => {
-                toast(message, !success)
+                toast(message, success)
                 if (success) {
                     userLogin({
                         token: get(data, 'token'),
@@ -85,7 +84,7 @@ const onSubmit = () => {
 
 <style scoped lang="less">
 .dev--login {
-    background: url('../../assets/app/bg-develop.jpg');
+    background: url('../../assets/app/bg-develop.svg');
 }
 
 .login {

@@ -67,8 +67,8 @@ import { reactive } from 'vue'
 import { find, get } from "lodash-es";
 import { toast } from "@/utils/util";
 import XIcon from "@/components/element/XIcon.vue";
-import { isUrl } from "@/utils/helper";
 import { apiMiscApidocAdd, apiMiscApidocDelete, apiMiscApidocRefresh } from "@/services/misc";
+import { isUrl } from "../../../pkg/core/utils/validate";
 
 
 const props = defineProps({
@@ -120,15 +120,15 @@ const refreshDomain = (row: any) => {
 
 const addSource = () => {
     if (!trans.title || !trans.url) {
-        toast('请完善输入数据', false);
+        toast('请完善输入数据');
         return;
     }
     if (!isUrl(trans.url)) {
-        toast('请输入正确的地址', false);
+        toast('请输入正确的地址');
         return;
     }
     if (find(props.sources, { title: trans.title })) {
-        toast('已存在标识, 无法添加', false);
+        toast('已存在标识, 无法添加');
         return;
     }
     apiMiscApidocAdd({

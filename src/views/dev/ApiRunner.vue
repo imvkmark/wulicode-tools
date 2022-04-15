@@ -42,6 +42,9 @@
                         <XIcon type="clock" v-if="apiUploading"/>
                         <XIcon type="cloudy" v-else @click="saveCert"/>
                     </span>
+                    <span class="form-login">
+                        <XIcon type="user" @click="certLogin"/>
+                    </span>
                 </h3>
                 <h4>{{ api.title }}</h4>
                 <p v-if="api.description">
@@ -49,18 +52,16 @@
                 </p>
                 <p>
                     <ElTag type="info">{{ api.method }}</ElTag>
-                    <ElTag type="warning"> {{ api.urlReplaced }}</ElTag>
+                    <ElTag type="warning" @click="onCopyUrl" style="cursor:pointer;"> {{ api.urlReplaced }}</ElTag>
                 </p>
                 <ElForm label-position="top" class="form-form" @keyup.enter="onRequest">
                     <ElDivider v-if="api.parameters.length">参数</ElDivider>
                     <ElFormItem v-for="param in api.parameters" :key="param">
                         <ElInput v-model="apiParamsRef[get(param, 'field')]">
                             <template #suffix>
-                                <ElPopover :content="stripTags(get(param, 'description'))" placement="top" width="200px">
-                                    <template #reference>
-                                        <span style="position: relative;top:2px;left:2px;"><XIcon type="chat-line-round"/></span>
-                                    </template>
-                                </ElPopover>
+                                <ElTooltip :content="stripTags(get(param, 'description'))" placement="top" width="200px">
+                                    <span style="position: relative;top:2px;left:2px;cursor: pointer"><XIcon type="chat-line-round"/></span>
+                                </ElTooltip>
                             </template>
                         </ElInput>
                         <template #label>
@@ -75,22 +76,21 @@
                     <ElFormItem v-for="query in api.queries" :key="query" class="apidoc-request_label">
                         <ElInput v-model="apiQueryRef[get(query, 'field')]">
                             <template #suffix>
-                                <ElPopover :content="stripTags(get(query, 'description'))" placement="top" width="200px">
-                                    <template #reference>
-                                        <span style="position: relative;top:2px;left:2px;"><XIcon type="chat-line-round"/></span>
-                                    </template>
-                                </ElPopover>
+                                <ElTooltip :content="stripTags(get(query, 'description'))" placement="top" width="200px">
+                                    <span style="position: relative;top:2px;left:2px;cursor: pointer"><XIcon type="chat-line-round"/></span>
+                                </ElTooltip>
                             </template>
+                            <!-- 预留给刷新 & 生成工具
+                            <template #prefix>
+                                <span style="position: relative;top:2px;left:2px;cursor: pointer"><XIcon type="refresh"/></span>
+                            </template>
+                            -->
                         </ElInput>
                         <template #label>
                             <span class="text-ellipsis">
                                 <span class="required" v-if="!get(query, 'optional', false)">{{ !get(query, 'optional', false) ? '*' : '' }}</span>
                                 {{ get(query, 'field') }}({{ get(query, 'type') }}) {{ get(query, 'title') }}
-
                                 <em v-html="stripTags(get(query, 'description'))"/>
-                                <ElPopover content="{{ stripTags(get(query, 'description')) }}" placement="top">
-                                    <XIcon type="question-circle-o"/>
-                                </ElPopover>
                             </span>
                         </template>
                     </ElFormItem>
@@ -140,23 +140,58 @@
             :sources="sourcesRef" :domains="sourcesDomainRef"
         />
     </ElDrawer>
+    <ElDialog v-model="trans.login" title="登录" width="400px">
+        <ElForm label-position="top" @keyup.enter="onRequest">
+            <ElTabs tab-position="top" v-model="apiLogin.type">
+                <ElTabPane label="通行证登录" name="passport">
+                    <ElFormItem>
+                        <ElInput v-model="apiLogin.passport" placeholder="请输入通行证"/>
+                    </ElFormItem>
+                    <ElFormItem>
+                        <ElInput v-model="apiLogin.password" placeholder="请输入密码"/>
+                    </ElFormItem>
+                </ElTabPane>
+                <ElTabPane label="验证码登录" name="captcha">
+                    <ElFormItem>
+                        <ElInput v-model="apiLogin.passport" placeholder="请输入通行证"/>
+                    </ElFormItem>
+                    <ElFormItem>
+                        <ElRow :gutter="8">
+                            <ElCol :span="12">
+                                <ElInput v-model="apiLogin.captcha" placeholder="请输入验证码"/>
+                            </ElCol>
+                            <ElCol :span="12">
+                                <ElButton type="primary" plain @click="onCertLoginSendCaptcha">发送验证码</ElButton>
+                            </ElCol>
+                        </ElRow>
+                    </ElFormItem>
+                </ElTabPane>
+            </ElTabs>
+
+        </ElForm>
+        <template #footer>
+            <el-button type="primary" @click="onCertLogin">登录</el-button>
+        </template>
+    </ElDialog>
 </template>
 
 <script lang="ts" setup>
 import { computed, onMounted, onUnmounted, reactive, ref } from 'vue'
 import { useStore } from '@/store';
 import { useRouter } from 'vue-router';
-import apiRequest from "@/utils/dev/request";
 import { each, filter, find, first, get, groupBy, isEmpty, isEqual, map, merge, set } from "lodash-es";
-import { base64Decode, base64Encode, stripTags } from "@/utils/helper";
+import { strAfter, stripTags } from "../../../pkg/core/utils/helper";
 import { ElForm } from "element-plus/es";
 import DevApiDocCert from "@/components/dev/DevApiDocCerts.vue";
 import { pyStorageDevApidocApiCurrentKey, pyStorageDevApidocApiLastSavedKey, pyStorageDevApidocCertsKey, pyStorageDevApidocQueryParamKey } from "@/utils/conf";
-import { localStore, toast } from "@/utils/util";
+import { appLocalStore, toast } from "@/utils/util";
 import XIcon from "@/components/element/XIcon.vue";
-import { emitter } from "@/bus/mitt";
+import { emitter } from "../../../pkg/core/bus/mitt";
 import DevApiDocSource from "@/components/dev/DevApiDocSources.vue";
 import { apiMiscApidocJson, apiMiscApidocSave } from "@/services/misc";
+import { base64Decode, base64Encode } from "../../../pkg/core/utils/str";
+import { appRequest } from "@/utils/request";
+import { copyText } from 'vue3-clipboard'
 
 const store = useStore();
 const router = useRouter();
@@ -164,6 +199,7 @@ const router = useRouter();
 emitter.on('dev:apidoc-certs-update', (certs) => {
     apiCerts.value = certs;
 })
+
 
 // sources
 const source = reactive({
@@ -208,7 +244,7 @@ const activeSource = (key: any) => {
         }
         return item;
     });
-    localStore(pyStorageDevApidocApiCurrentKey(), key);
+    appLocalStore(pyStorageDevApidocApiCurrentKey(), key);
     let activated = find(sourcesRef.value, { active: true });
     source.content = eval(get(activated, 'content'));
 }
@@ -220,6 +256,15 @@ const apiParamsRef = ref({});
 const apiQueryRef = ref({});
 const apiCerts: any = ref([]);
 const apiUploading = ref(false);
+const onCopyUrl = function () {
+    copyText(api.urlReplaced, undefined, (error: any) => {
+        if (error) {
+            toast('无法复制:' + error)
+        } else {
+            toast('已复制', true)
+        }
+    })
+}
 let apiSaveHandler: any = null;
 const api = reactive({
     url: computed(() => {
@@ -228,7 +273,6 @@ const api = reactive({
     urlReplaced: computed(() => {
         let url: string = get(apiRef.value, 'url');
         map(apiParamsRef.value, (value, key) => {
-            console.log(value, key);
             if (value) {
                 url = url.replace(`:${key}`, value);
             }
@@ -283,15 +327,98 @@ const deleteSource = () => {
 const trans = reactive({
     visible: false,
     drawer: '',
+    login: false,
+});
+const apiLogin = reactive({
+    passport: '',
+    password: '',
+    captcha: '',
+    type: 'captcha'
 });
 
 const manageCert = () => {
     trans.visible = true;
     trans.drawer = 'cert';
 }
+const certLogin = () => {
+    if (isEmpty(api.cert)) {
+        toast('请选择凭证');
+        return;
+    }
+    let url = get(api.cert, 'url');
+    if (!url) {
+        toast('需要完善请求地址');
+        return;
+    }
+
+    trans.login = true;
+}
+const onCertLogin = () => {
+    let url = get(api.cert, 'url');
+    let query = {};
+    if (!isEmpty(get(api.cert, 'params', []))) {
+        each(get(api.cert, 'params', []), (value) => {
+            set(query, get(value, 'key'), get(value, 'value'));
+        })
+    }
+    set(query, 'passport', apiLogin.passport);
+    if (apiLogin.type === 'captcha') {
+        set(query, 'captcha', apiLogin.captcha);
+    } else{
+        set(query, 'password', apiLogin.password);
+    }
+    appRequest({
+        url: `${url}/api_v1/system/auth/login`,
+        data: query,
+        method: 'post',
+    }).then(({ data, message, success }) => {
+        if (success) {
+            let { token } = data;
+            console.log(api.cert);
+            api.cert.headers = filter(api.cert.headers, (value) => {
+                return get(value, 'key') !== 'Authorization';
+            })
+            api.cert.headers.push({
+                key: 'Authorization',
+                value: `Bearer ${token}`
+            });
+            appLocalStore(pyStorageDevApidocCertsKey(), apiCerts.value);
+            trans.login = false;
+        }
+        toast(message, success);
+    }).catch(({ message }) => {
+        toast(message);
+    })
+}
+
+const onCertLoginSendCaptcha = () => {
+    let url = get(api.cert, 'url');
+    let query = {};
+    if (!isEmpty(get(api.cert, 'params', []))) {
+        each(get(api.cert, 'params', []), (value) => {
+            set(query, get(value, 'key'), get(value, 'value'));
+        })
+    }
+    set(query, 'passport', apiLogin.passport);
+    appRequest({
+        url: `${url}/api_v1/system/captcha/send`,
+        data: query,
+        method: 'post',
+    }).then(({ message, success }) => {
+        if (success) {
+            let captcha = strAfter(message, '验证码:');
+            if (captcha) {
+                apiLogin.captcha = captcha;
+            }
+        }
+        toast(message, success);
+    }).catch(({ message }) => {
+        toast(message);
+    })
+}
 
 const saveCert = () => {
-    let lastSaved = localStore(pyStorageDevApidocApiLastSavedKey('certs'));
+    let lastSaved = appLocalStore(pyStorageDevApidocApiLastSavedKey('certs'));
     if (isEqual(lastSaved, apiCerts.value)) {
         return;
     }
@@ -304,13 +431,13 @@ const saveCert = () => {
             setTimeout(() => {
                 apiUploading.value = false;
             }, 1000);
-            localStore(pyStorageDevApidocApiLastSavedKey('certs'), apiCerts.value);
+            appLocalStore(pyStorageDevApidocApiLastSavedKey('certs'), apiCerts.value);
         }
     });
 }
 const saveParamQuery = () => {
-    let lastSaved = localStore(pyStorageDevApidocApiLastSavedKey('param_query'));
-    let paramQuery = localStore(pyStorageDevApidocQueryParamKey())
+    let lastSaved = appLocalStore(pyStorageDevApidocApiLastSavedKey('param_query'));
+    let paramQuery = appLocalStore(pyStorageDevApidocQueryParamKey())
     if (isEqual(lastSaved, paramQuery)) {
         return;
     }
@@ -323,7 +450,7 @@ const saveParamQuery = () => {
             setTimeout(() => {
                 apiUploading.value = false;
             }, 1000);
-            localStore(pyStorageDevApidocApiLastSavedKey('param_query'), paramQuery);
+            appLocalStore(pyStorageDevApidocApiLastSavedKey('param_query'), paramQuery);
         }
     });
 }
@@ -338,21 +465,21 @@ const selectUrl = (clk: string = '') => {
     // 保留当前 Url 参数 & 查询
     let currentUrl = get(apiRef.value, 'url');
     let sourceKey = get(source.active, 'key');
-    let pqs = localStore(pyStorageDevApidocQueryParamKey()) || [];
+    let pqs = appLocalStore(pyStorageDevApidocQueryParamKey()) || [];
     if (currentUrl) {
         let item: any = find(pqs, { source: sourceKey, url: currentUrl }) || {};
-        if (!isEmpty(item)) {
-            set(item, 'query', apiQueryRef.value);
-            set(item, 'params', apiQueryRef.value);
-        } else {
+        if (isEmpty(item)) {
             pqs.push({
                 source: sourceKey,
                 url: currentUrl,
                 query: apiQueryRef.value,
                 params: apiQueryRef.value
             });
+        } else {
+            set(item, 'query', apiQueryRef.value);
+            set(item, 'params', apiParamsRef.value);
         }
-        localStore(pyStorageDevApidocQueryParamKey(), pqs);
+        appLocalStore(pyStorageDevApidocQueryParamKey(), pqs);
         saveParamQuery();
     }
 
@@ -367,7 +494,7 @@ const selectUrl = (clk: string = '') => {
     }
 
     // 恢复 Url 参数 & 查询
-    let pqCurrent = find(pqs, { source: sourceKey, url: currentUrl });
+    let pqCurrent = find(pqs, { source: sourceKey, url: url });
     if (!isEmpty(pqCurrent)) {
         apiQueryRef.value = get(pqCurrent, 'query');
         apiParamsRef.value = get(pqCurrent, 'params');
@@ -383,12 +510,12 @@ const selectUrl = (clk: string = '') => {
 }
 
 const fetchApiDoc = () => {
-    let current = localStore(pyStorageDevApidocApiCurrentKey());
+    let current = appLocalStore(pyStorageDevApidocApiCurrentKey());
     apiMiscApidocJson({
         current: current
     }).then(({ data }) => {
         sourcesRef.value = get(data, 'sources');
-        let activatedKey = localStore(pyStorageDevApidocApiCurrentKey());
+        let activatedKey = appLocalStore(pyStorageDevApidocApiCurrentKey());
         let activated = find(sourcesRef.value, { key: activatedKey });
         if (isEmpty(activated)) {
             activated = first(sourcesRef.value);
@@ -397,15 +524,14 @@ const fetchApiDoc = () => {
         source.content = eval(get(activated, 'content'));
 
         // save to local activated
-        localStore(pyStorageDevApidocApiCurrentKey(), get(activated, 'key'));
+        appLocalStore(pyStorageDevApidocApiCurrentKey(), get(activated, 'key'));
 
         // load activated certs
         apiCerts.value = get(data, 'certs');
-        localStore(pyStorageDevApidocCertsKey(), get(data, 'certs'))
+        appLocalStore(pyStorageDevApidocCertsKey(), get(data, 'certs'))
 
         // load params
-        apiCerts.value = get(data, 'param_query');
-        localStore(pyStorageDevApidocQueryParamKey(), get(data, 'param_query'))
+        appLocalStore(pyStorageDevApidocQueryParamKey(), get(data, 'param_query'))
 
         // list domain
         sourcesDomainRef.value = get(data, 'domains');
@@ -418,13 +544,13 @@ const onRequest = () => {
     let query = {};
     let url = '';
     if (isEmpty(api.cert)) {
-        toast('请选择凭证', false);
+        toast('请选择凭证');
         return;
     }
 
     url = get(api.cert, 'url');
     if (!url) {
-        toast('需要完善请求地址', false);
+        toast('需要完善请求地址');
         return;
     }
     // 复写 params
@@ -449,9 +575,9 @@ const onRequest = () => {
     if (api.urlReplaced.indexOf('/') !== 0) {
         path = `/${api.urlReplaced}`;
     }
-    apiRequest({
+    appRequest({
         url: `${url}${path}`,
-        params: merge(apiQueryRef.value, query),
+        data: merge(apiQueryRef.value, query),
         method: api.method,
         headers: headers
     }).then(({ status, data, message }) => {
@@ -573,6 +699,15 @@ onUnmounted(() => {
         .form-setting {
             position: absolute;
             right: 0.3rem;
+            top: 0.5rem;
+            cursor: pointer;
+            &:hover {
+                color: var(--wc-color-primary);
+            }
+        }
+        .form-login {
+            position: absolute;
+            right: 3.3rem;
             top: 0.5rem;
             cursor: pointer;
             &:hover {

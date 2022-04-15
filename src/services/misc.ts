@@ -1,13 +1,10 @@
-import request from "@/utils/request";
+import { appPost } from "@/utils/request";
 
 /**
  * ApiDoc 添加
  */
 export async function apiMiscApidocAdd(params: object) {
-    return request({
-        url: '/api/misc/apidoc/add',
-        params
-    });
+    return appPost('/api/misc/apidoc/add', params);
 }
 
 /**
@@ -15,10 +12,7 @@ export async function apiMiscApidocAdd(params: object) {
  * @param params
  */
 export async function apiMiscApidocDelete(params: object) {
-    return request({
-        url: '/api/misc/apidoc/delete',
-        params
-    });
+    return appPost('/api/misc/apidoc/delete', params);
 }
 
 /**
@@ -26,10 +20,7 @@ export async function apiMiscApidocDelete(params: object) {
  * @param params
  */
 export async function apiMiscApidocRefresh(params: object) {
-    return request({
-        url: '/api/misc/apidoc/refresh',
-        params
-    });
+    return appPost('/api/misc/apidoc/refresh', params);
 }
 
 /**
@@ -37,10 +28,7 @@ export async function apiMiscApidocRefresh(params: object) {
  * @param params
  */
 export async function apiMiscApidocJson(params: object) {
-    return request({
-        url: '/api/misc/apidoc/json',
-        params
-    });
+    return appPost('/api/misc/apidoc/json', params);
 }
 
 /**
@@ -48,8 +36,5 @@ export async function apiMiscApidocJson(params: object) {
  * @param params
  */
 export async function apiMiscApidocSave(params: object) {
-    return request({
-        url: '/api/misc/apidoc/save',
-        params
-    });
+    return appPost('/api/misc/apidoc/save', params);
 }

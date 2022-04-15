@@ -23,7 +23,7 @@
 import { computed, onMounted, reactive } from 'vue';
 import { useRouter } from 'vue-router';
 import { useStore } from '@/store';
-import { sizeGt } from "@/utils/helper";
+import { sizeGt } from "../../../pkg/core/utils/helper";
 import { first, get } from "lodash-es";
 import { Search } from "@element-plus/icons-vue";
 import PxSearch from "@/components/base/PxSearch.vue";

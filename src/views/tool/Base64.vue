@@ -32,7 +32,7 @@ import { ElForm } from 'element-plus';
 import { copyText } from 'vue3-clipboard'
 import { debounce, get } from 'lodash-es';
 import PxMain from '@/components/base/PxMain.vue';
-import { localStore, toast } from "@/utils/util";
+import { appLocalStore, toast } from "@/utils/util";
 
 const store = useStore();
 const router = useRouter();
@@ -81,7 +81,7 @@ const onInput = debounce(function () {
     }
 
     // 这里保存原始输入
-    localStore(trans.key, {
+    appLocalStore(trans.key, {
         type: trans.type,
         text: value.text
     })
@@ -94,9 +94,9 @@ const onInput = debounce(function () {
 const onCopy = function () {
     copyText(trans.result, undefined, (error: any) => {
         if (error) {
-            toast('无法复制:' + error, false)
+            toast('无法复制:' + error)
         } else {
-            toast('已复制')
+            toast('已复制', true)
         }
     })
 }
@@ -104,7 +104,7 @@ const onCopy = function () {
 onMounted(onInput);
 onMounted(() => {
     // recovery
-    let content = localStore(trans.key);
+    let content = appLocalStore(trans.key);
     if (content) {
         value.text = get(content, 'text');
         trans.type = get(content, 'type');

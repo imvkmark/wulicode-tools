@@ -4,15 +4,14 @@
 |--------------------------------------------------------------------------
 |
 */
-
 // 访问接口URL
-export const pyAppUrl: string = String(import.meta.env.VITE_APP_URL);
+export const appUrl: string = String(import.meta.env.VITE_APP_URL);
 
 // App 环境
-export const pyAppMode = String(import.meta.env.MODE);
+export const appMode = String(import.meta.env.MODE);
 
 // App 版本号
-export const pyAppVersion = import.meta.env.PY_APP_VERSION;
+export const appVersion = String(import.meta.env.PY_APP_VERSION);
 
 // 是否是生产环境
 export const pyAppIsProd = import.meta.env.PROD;

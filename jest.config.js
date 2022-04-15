@@ -13,7 +13,8 @@ module.exports = {
     coverageDirectory: 'coverage',
     moduleNameMapper: {
         '^lodash-es$': 'lodash',
-        '^@/(.*)$': '<rootDir>/src/$1'
+        '^@/(.*)$': '<rootDir>/src/$1',
+        '^@pkg/(.*)$': '<rootDir>/pkg/$1'
     },
 
     // js slow

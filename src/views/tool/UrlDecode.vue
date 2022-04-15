@@ -30,7 +30,7 @@ import { copyText } from 'vue3-clipboard'
 import { debounce, each, get } from 'lodash-es';
 import qs from 'qs';
 import PxMain from '@/components/base/PxMain.vue';
-import { localStore, toast } from "@/utils/util";
+import { appLocalStore, toast } from "@/utils/util";
 
 
 const store = useStore();
@@ -76,7 +76,7 @@ const onInput = debounce(function () {
         })
         trans.result = parsed;
         // 这里保存原始输入
-        localStore(trans.key, {
+        appLocalStore(trans.key, {
             text: value.text
         })
     }
@@ -91,9 +91,9 @@ const onInput = debounce(function () {
 const onCopy = function () {
     copyText(trans.result, undefined, (error: any) => {
         if (error) {
-            toast('无法复制:' + error, false)
+            toast('无法复制:' + error)
         } else {
-            toast('已复制')
+            toast('已复制', true)
         }
     })
 }
@@ -101,7 +101,7 @@ const onCopy = function () {
 onMounted(onInput);
 onMounted(() => {
     // recovery
-    let content = localStore(trans.key);
+    let content = appLocalStore(trans.key);
     if (content) {
         value.text = get(content, 'text');
     }

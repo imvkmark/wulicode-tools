@@ -70,10 +70,10 @@
 <script lang="ts" setup>
 import { computed, onMounted, reactive, ref, watch } from 'vue'
 import { filter, find, get, indexOf, map, set } from "lodash-es";
-import { localStore, toast } from "@/utils/util";
+import { appLocalStore, toast } from "@/utils/util";
 import XIcon from "@/components/element/XIcon.vue";
 import { pyStorageDevApidocCertsKey } from "@/utils/conf";
-import { emitter } from "@/bus/mitt";
+import { emitter } from "../../../pkg/core/bus/mitt";
 
 const props = defineProps({
     keyName: {
@@ -175,14 +175,14 @@ const addParam = (cert: any) => {
 
 const addCert = () => {
     if (!trans.cert) {
-        toast('请输入凭证', true);
+        toast('请输入凭证');
         return;
     }
     let allCerts = filter(certsRef.value, function (cert) {
         return cert.label === trans.cert && cert.key === props.keyName
     })
     if (allCerts.length > 0) {
-        toast('已存在凭证, 无需添加', true);
+        toast('已存在凭证, 无需添加');
         return;
     }
     certsRef.value.push({
@@ -196,7 +196,7 @@ const addCert = () => {
 
 // 同步Certs
 watch(() => certsRef.value, () => {
-    localStore(pyStorageDevApidocCertsKey(), certsRef.value);
+    appLocalStore(pyStorageDevApidocCertsKey(), certsRef.value);
     emitter.emit('dev:apidoc-certs-update', certsRef.value);
 }, { deep: true })
 
@@ -210,7 +210,7 @@ onMounted(() => {
             params: [{ key: '', value: '' }]
         }
     ]
-    let storeHeaders: any = localStore(pyStorageDevApidocCertsKey())
+    let storeHeaders: any = appLocalStore(pyStorageDevApidocCertsKey())
     if (storeHeaders) {
         hds = storeHeaders
     }

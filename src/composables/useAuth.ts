@@ -3,9 +3,9 @@ import { get } from 'lodash-es';
 import { useRouter } from 'vue-router';
 import { onMounted, onUnmounted, watch } from 'vue';
 import useUserUtil from '@/composables/useUserUtil';
-import { emitter, PY_USER_LOGIN, PY_USER_LOGOUT } from '@/bus/mitt';
+import { emitter, PY_USER_LOGIN, PY_USER_LOGOUT } from '../../pkg/core/bus/mitt';
 import { pyStorageTokenKey } from "@/utils/conf";
-import { localStore } from "@/utils/util";
+import { appLocalStore } from "@/utils/util";
 
 /**
  * 登录和 Token 的保存以及跳转
@@ -16,10 +16,10 @@ export default function useAuth() {
     const { userToLogin, userOnLogin } = useUserUtil();
 
     // 处理 token, 存在 qs Token , 则覆盖本地的 token, 否则用户登录之后的token 也是可以使用的
-    let token = localStore(pyStorageTokenKey()) ? localStore(pyStorageTokenKey()) : '';
+    let token = appLocalStore(pyStorageTokenKey()) ? appLocalStore(pyStorageTokenKey()) : '';
     const qsToken = get(router.currentRoute.value, 'query.token', '');
     if (qsToken) {
-        localStore(pyStorageTokenKey(), qsToken);
+        appLocalStore(pyStorageTokenKey(), qsToken);
         token = qsToken;
     }
 
@@ -28,10 +28,8 @@ export default function useAuth() {
 
     // 尝试另外方法来触发 event
     emitter.on(PY_USER_LOGIN, () => {
-        store.dispatch('poppy/Fetch').then(() => {
-            // 如果是在登录页面
-            userOnLogin();
-        })
+        // 如果是在登录页面
+        userOnLogin();
     })
 
     emitter.on(PY_USER_LOGOUT, () => {

@@ -1,12 +1,9 @@
+import { appPost } from "@/utils/request";
 
-import request from "@/utils/request";
 
 /**
  * Api Tool 转换
  */
 export async function apiOpToolApidoc(params: object) {
-    return request({
-        url: '/api_v1/op/tool/apidoc',
-        params
-    });
+    return appPost('/api_v1/op/tool/apidoc', params);
 }

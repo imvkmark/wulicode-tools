@@ -71,11 +71,11 @@ const onInput = debounce(function () {
             store.dispatch('Loading')
             apiOpToolApidoc({
                 content: value.text
-            }).then(({ data, success, message, resp }) => {
+            }).then(({ data, success, message }) => {
                 if (success) {
                     trans.comment = get(data, 'comment');
                 } else {
-                    toast(message, false)
+                    toast(message)
                 }
             })
         }
@@ -89,9 +89,9 @@ const onInput = debounce(function () {
 const onCopy = function () {
     copyText(trans.comment, undefined, (error: any) => {
         if (error) {
-            toast('无法复制:' + error, false)
+            toast('无法复制:' + error)
         } else {
-            toast('已复制')
+            toast('已复制', true)
         }
     })
 }

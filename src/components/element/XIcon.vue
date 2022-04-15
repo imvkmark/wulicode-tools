@@ -8,7 +8,7 @@
 import { icon } from "@/utils/icon";
 import { get } from "lodash-es"
 import { toRef } from "vue";
-import { upperCamelCase } from "@/utils/helper";
+import { upperCamelCase } from "../../../pkg/core/utils/helper";
 import SvgIcon from "@/components/element/SvgIcon.vue";
 
 const props = defineProps({

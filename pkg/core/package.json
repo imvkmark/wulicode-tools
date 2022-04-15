@@ -1,0 +1,19 @@
+{
+    "name": "popjs-core",
+    "version": "0.4.3",
+    "description": "Poppy Js Framework Core Library",
+    "sideEffects": false,
+    "author": "imvkmark",
+    "license": "MIT",
+    "files": [
+        "**/*.ts"
+    ],
+    "devDependencies": {},
+    "dependencies": {
+        "axios": "^0.26.1",
+        "ua-parser-js": "^1.0.2"
+    },
+    "directories": {
+        "test": "test"
+    }
+}

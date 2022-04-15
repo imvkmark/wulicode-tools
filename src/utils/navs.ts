@@ -30,7 +30,8 @@ export const navs: object = {
                 children: [
                     { name: 'js.sentry', title: '异常' },
                     { name: 'js.scroll', title: '滚动' },
-                    { name: 'js.info', title: '基本信息' }
+                    { name: 'js.info', title: '基本信息' },
+                    { name: 'js.axios', title: 'Axios' },
                 ]
             },
             {

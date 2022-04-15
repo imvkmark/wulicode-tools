@@ -49,7 +49,7 @@ const doRequest = () => {
     // total: 3662
     apiPyRequest(trans.url, {}, 'get').then(({ data, success, message }) => {
         if (!success) {
-            toast(message, false)
+            toast(message)
             return;
         }
         let percent = get(data, 'percentage', 0);

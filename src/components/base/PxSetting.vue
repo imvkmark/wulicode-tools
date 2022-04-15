@@ -1,32 +1,38 @@
 <template>
     <ElIcon @click="onSwitchDrawer" class="theme">
-        <Operation/>
+        <ElBadge :is-dot="trans.tip">
+            <Operation/>
+        </ElBadge>
     </ElIcon>
     <ElDrawer v-model="trans.visible" title="用户设定" :size="sizePercent(trans.media)">
         <ElForm class="py--form">
-            <ElDivider content-position="left">主题</ElDivider>
-            <ElFormItem label="主题">
-                <ElRadioGroup :model-value="trans.style" @update:model-value="onUpdateStyle">
-                    <ElRadioButton label="light">浅色</ElRadioButton>
-                    <ElRadioButton label="dark">深色</ElRadioButton>
-                </ElRadioGroup>
-            </ElFormItem>
             <ElDivider content-position="left">用户信息</ElDivider>
             <ElFormItem label="退出登录">
                 <ElButton @click="onLogout" type="danger" plain>退出</ElButton>
             </ElFormItem>
+            <ElDivider content-position="left">更新记录</ElDivider>
+            <ElScrollbar>
+                <div class="changelog">
+                    <p>
+                        <span>2022-04-15</span>
+                        支持切换保存参数, 支持参数保存到服务端 <br> 支持版本更新提示 <br> 支持显示更多说明 <br> 支持登录/可自动获取验证码
+                    </p>
+                </div>
+            </ElScrollbar>
         </ElForm>
     </ElDrawer>
 </template>
 
 <script lang="ts" setup>
-import { computed, reactive } from 'vue';
+import { computed, onMounted, reactive } from 'vue';
 import { useRouter } from 'vue-router';
 import { useStore } from '@/store';
 import { Operation } from "@element-plus/icons-vue";
-import { sizePercent } from "@/utils/helper";
+import { sizePercent } from "../../../pkg/core/utils/helper";
 import { ElMessageBox } from "element-plus";
-import { emitter, PY_USER_LOGOUT } from "@/bus/mitt";
+import { emitter, PY_USER_LOGOUT } from "../../../pkg/core/bus/mitt";
+import { appVersion } from "@/utils/conf";
+import { localStore } from "../../../pkg/core/utils/util";
 
 
 // 监听路由前缀的变化
@@ -35,15 +41,14 @@ let store = useStore();
 const trans = reactive({
     style: computed(() => store.state.poppy.style),
     media: computed(() => store.state.poppy.media),
+    tip: false,
     visible: false,
 });
 
-const onUpdateStyle = (value: string) => {
-    store.dispatch('poppy/SetStyle', value)
-}
-
 const onSwitchDrawer = () => {
     trans.visible = !trans.visible;
+    localStore("version", appVersion);
+    trans.tip = false
 }
 
 const onLogout = () => {
@@ -59,9 +64,34 @@ const onLogout = () => {
     })
 }
 
+const checkVersion = () => {
+    let version = localStore('version');
+    if (version !== appVersion) {
+        trans.tip = true;
+    }
+}
+
+onMounted(() => {
+    checkVersion();
+})
 </script>
 
 <style lang="less" scoped>
+.changelog {
+    max-height: 400px;
+    p {
+        color: gray;
+        line-height: 1.4;
+        margin: 0.2rem 0;
+        font-size: 13px;
+        span {
+            color: darken(gray, 10%);
+            font-size: 14px;
+            display: block;
+        }
+    }
+}
+
 .theme {
     cursor: pointer;
     color: #fff;
