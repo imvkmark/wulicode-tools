@@ -1,8 +1,8 @@
-import { get, isObject, keys } from 'lodash-es';
+import { get, isEmpty, isObject } from 'lodash-es';
 import UAParser from "ua-parser-js";
 import axios, { AxiosInstance } from "axios";
 import { emitter, REQUEST_LOADED } from "../bus/mitt";
-import { deviceId } from "./util";
+import { deviceId } from "./helper";
 
 /**
  * 拦截器 : https://axios-http.com/zh/docs/interceptors
@@ -14,7 +14,7 @@ if (!url) {
 let controller: any;
 const instance: AxiosInstance = axios.create({
     baseURL: url,
-    timeout: 5000 // 请求超时 20s
+    timeout: 10000 // 请求超时 10s
 });
 // 添加请求拦截器
 instance.interceptors.request.use(
@@ -44,12 +44,21 @@ instance.interceptors.response.use(
         let url = config.url;
         emitter.emit(REQUEST_LOADED, { url });
 
-        // 正确的响应
+        // 正确的响应, 但是没有任何数据返回
+        if (isEmpty(data)) {
+            return Promise.reject({ status: 204, message: '服务正确响应, 但未发送任何数据' });
+        }
+
+        // 按照结构正确返回数据
         const { data: resp = {}, status, message } = data;
-        console.info(url, status, message, resp);
+        console.info(url, status, message, resp, data);
         return response;
     },
     (error) => {
+        if (get(error, 'message') === 'canceled') {
+            console.warn('canceled', 400, '请求被取消');
+            return Promise.reject({ status: 400, message: '请求被取消' });
+        }
         const { config } = error;
         let url = config.url;
         emitter.emit(REQUEST_LOADED, { url });

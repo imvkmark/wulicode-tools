@@ -42,7 +42,6 @@ const store = useStore();
 const trans = reactive({
     title: computed(() => get(store.state.poppy.core, 'py-system.title')),
     logo: computed(() => get(store.state.poppy.core, 'py-system.logo')),
-    loginUrl: computed(() => get(store.state.poppy.core, 'py-mgr-app.auth_url')),
     media: computed(() => store.state.poppy.media),
 })
 const form: any = ref<InstanceType<typeof ElForm>>();

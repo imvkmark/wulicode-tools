@@ -1,13 +1,12 @@
 import { Module } from 'vuex'
 import { get, set } from 'lodash-es';
 import { apiPySystemCoreInfo } from '@/services/poppy';
-import { emitter, PY_USER_LOGIN } from '../../pkg/core/bus/mitt'
+import { emitter } from '../../pkg/core/bus/mitt'
 import { PyRequestOptions } from "@/utils/types";
 import { appLocalStore, appSessionStore } from "@/utils/util";
 import { PyPoppyTypes, PyRootStateTypes } from "@/store/types";
-import { pyStorageKey, pyStorageTokenKey } from "@/utils/conf";
-import { deviceId } from "../../pkg/core/utils/util";
-import { base64Encode } from "../../pkg/core/utils/str";
+import { storageKey, storageTokenKey, USER_LOGIN } from "@/utils/conf";
+import { base64Encode, deviceId } from "../../pkg/core/utils/helper";
 
 const poppy: Module<PyPoppyTypes, PyRootStateTypes> = {
     namespaced: true,
@@ -47,7 +46,7 @@ const poppy: Module<PyPoppyTypes, PyRootStateTypes> = {
             // 设备ID
             state.appId = deviceId();
             // 系统信息
-            let info: any = appSessionStore(pyStorageKey.core);
+            let info: any = appSessionStore(storageKey.core);
             if (info) {
                 state.core = info;
             } else {
@@ -55,7 +54,7 @@ const poppy: Module<PyPoppyTypes, PyRootStateTypes> = {
                     if (!success) {
                         return;
                     }
-                    appSessionStore(pyStorageKey.core, data);
+                    appSessionStore(storageKey.core, data);
                     state.core = data;
                 })
             }
@@ -67,18 +66,18 @@ const poppy: Module<PyPoppyTypes, PyRootStateTypes> = {
          */
         Login({ commit, state, dispatch }, { token }) {
             // 保存用户的Token
-            appLocalStore(pyStorageTokenKey(), token);
+            appLocalStore(storageTokenKey(), token);
 
             state.token = token;
             // 另一种方式触发事件
-            emitter.emit(PY_USER_LOGIN, { token });
+            emitter.emit(USER_LOGIN, { token });
         },
 
         /**
          * 退出登录
          */
         Logout({ state }) {
-            appLocalStore(pyStorageTokenKey(), null);
+            appLocalStore(storageTokenKey(), null);
             state.token = '';
             state.user = {};
         },
@@ -103,9 +102,9 @@ const poppy: Module<PyPoppyTypes, PyRootStateTypes> = {
          * 设定组件规格大小
          */
         SetSize({ state }, size) {
-            let theme: any = appLocalStore(pyStorageKey.theme) ? appLocalStore(pyStorageKey.theme) : {};
+            let theme: any = appLocalStore(storageKey.theme) ? appLocalStore(storageKey.theme) : {};
             set(theme, 'size', size);
-            appLocalStore(pyStorageKey.theme, theme)
+            appLocalStore(storageKey.theme, theme)
             state.size = size;
         },
 
@@ -113,9 +112,9 @@ const poppy: Module<PyPoppyTypes, PyRootStateTypes> = {
          * 设置页面主题风格
          */
         SetStyle({ state }, val) {
-            let theme: any = appLocalStore(pyStorageKey.theme) ? appLocalStore(pyStorageKey.theme) : {};
+            let theme: any = appLocalStore(storageKey.theme) ? appLocalStore(storageKey.theme) : {};
             set(theme, 'style', val);
-            appLocalStore(pyStorageKey.theme, theme);
+            appLocalStore(storageKey.theme, theme);
             document.documentElement.setAttribute('theme', val);
             state.style = val;
         },
@@ -139,7 +138,7 @@ const poppy: Module<PyPoppyTypes, PyRootStateTypes> = {
          * 设置页面的标题
          */
         ClearCache() {
-            appSessionStore(pyStorageKey.core, null);
+            appSessionStore(storageKey.core, null);
         },
 
         /**

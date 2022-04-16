@@ -2,10 +2,6 @@ import mitt from 'mitt'
 
 export const emitter = mitt();
 
-export const PY_USER_LOGIN = 'user:login'
-export const PY_USER_LOGOUT = 'user:logout'
-
-
 //region 请求事件定义
 export const REQUEST_LOADED = 'request:loaded'
 export const REQUEST_LOADING = 'request:loading'

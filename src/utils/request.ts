@@ -1,6 +1,6 @@
 import { each, forEach, get, isNaN, isNil, isObject, keys, merge, set, trim } from 'lodash-es';
 import { pyRequest } from "../../pkg/core/utils/request";
-import { appUrl, appVersion, pyStorageTokenKey } from "@/utils/conf";
+import { appUrl, appVersion, storageTokenKey } from "@/utils/conf";
 import { MD5 } from "crypto-js";
 import { appLocalStore } from "@/utils/util";
 import { AxiosRequestConfig } from "axios";
@@ -27,7 +27,7 @@ pyRequest.interceptors.request.use(
 );
 
 const appPost = (url: string, data?: any, config?: AxiosRequestConfig) => {
-    let token = appLocalStore(pyStorageTokenKey());
+    let token = appLocalStore(storageTokenKey());
     let oriConfig = config;
     if (token) {
         oriConfig = {
@@ -136,7 +136,7 @@ let appParams = (data: any = null) => {
         })
     }
 
-    let token = appLocalStore(pyStorageTokenKey());
+    let token = appLocalStore(storageTokenKey());
     set(params, 'timestamp', Math.round(new Date().getTime() / 1000));
     const sign = appSign(params, token ? token : '');
     set(params, 'sign', sign);

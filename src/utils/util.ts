@@ -1,8 +1,8 @@
-import { httpBuildQuery } from "../../pkg/core/utils/helper";
+import { httpBuildQuery, localStore, sessionStore } from "../../pkg/core/utils/helper";
 import { ElMessage } from "element-plus/es";
 import { appMode, appUrl } from "@/utils/conf";
-import { localStore, sessionStore } from "../../pkg/core/utils/util";
 import { isInteger } from "../../pkg/core/utils/validate";
+import { get, isObject } from "lodash-es";
 
 
 /**
@@ -48,6 +48,24 @@ export const toast = (resp: any, success: any = false) => {
     if (isInteger(success)) {
         type = Boolean(success);
     }
+
+    // 不使用第二个参数
+    if (isObject(resp)) {
+        let status = get(resp, 'status');
+        let message = get(resp, 'message');
+        if (status === 0) {
+            ElMessage.success(message);
+            return;
+        }
+        if (status > 200 && status < 1000) {
+            ElMessage.error(message);
+            return;
+        }
+        ElMessage.warning(message);
+        return;
+    }
+
+    // string
     if (type === true) {
         ElMessage.success(resp);
     } else if (type === false) {

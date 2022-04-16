@@ -4,6 +4,7 @@
 |--------------------------------------------------------------------------
 |
 */
+//region Vite 定义
 // 访问接口URL
 export const appUrl: string = String(import.meta.env.VITE_APP_URL);
 
@@ -14,12 +15,12 @@ export const appMode = String(import.meta.env.MODE);
 export const appVersion = String(import.meta.env.PY_APP_VERSION);
 
 // 是否是生产环境
-export const pyAppIsProd = import.meta.env.PROD;
+export const appIsProd = import.meta.env.PROD;
+//endregion
 
+//region 存储KEY
 // 存储KEY
-export const pyStorageKey = {
-    deviceId: 'x-device-id',
-    localCache: 'x-local-cache',
+export const storageKey = {
     core: 'x-core',
     theme: 'x-theme',
     navs: 'x-navs',
@@ -31,22 +32,29 @@ export const pyFileExtensions = {
     video: ['mp4', 'rm', 'rmvb', 'wmv']
 }
 
-export const pyStorageTokenKey = () => {
+export const storageTokenKey = () => {
     return `x-token`
 }
 
-export const pyStorageDevApidocApiCurrentKey = () => {
+export const storageDevApidocApiCurrentKey = () => {
     return `x-dev-apidoc-api-current`
 }
 
-export const pyStorageDevApidocCertsKey = () => {
+export const storageDevApidocCertsKey = () => {
     return `x-dev-apidoc-certs`
 }
 
-export const pyStorageDevApidocQueryParamKey = () => {
+export const storageDevApidocQueryParamKey = () => {
     return `x-dev-apidoc-query_params`
 }
 
-export const pyStorageDevApidocApiLastSavedKey = (type: any) => {
+export const storageDevApidocApiLastSavedKey = (type: any) => {
     return `x-dev-apidoc-api-last-saved:${type}`;
 }
+//endregion
+
+
+//region EMITTERS
+export const USER_LOGIN = 'user:login'
+export const USER_LOGOUT = 'user:logout'
+//endregion

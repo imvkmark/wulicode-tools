@@ -18,7 +18,8 @@
                         支持本地开发 <br>
                         支持主页快速刷新文档 <br>
                         支持凭证复制 <br>
-                        修复凭证更名隐藏, 修复 401 无法退出, 增加接口说明
+                        修复凭证更名隐藏, 修复 401 无法退出, 增加接口说明 <br>
+                        Json 预览, 取消KEY显示, 3级展开
                         <span>2022-04-15</span>
                         支持切换保存参数, 支持参数保存到服务端 <br>
                         支持版本更新提示 <br>
@@ -41,11 +42,10 @@ import { computed, onMounted, reactive } from 'vue';
 import { useRouter } from 'vue-router';
 import { useStore } from '@/store';
 import { Operation } from "@element-plus/icons-vue";
-import { sizePercent } from "../../../pkg/core/utils/helper";
+import { localStore, sizePercent } from "../../../pkg/core/utils/helper";
 import { ElMessageBox } from "element-plus";
-import { emitter, PY_USER_LOGOUT } from "../../../pkg/core/bus/mitt";
-import { appVersion } from "@/utils/conf";
-import { localStore } from "../../../pkg/core/utils/util";
+import { emitter } from "../../../pkg/core/bus/mitt";
+import { appVersion, USER_LOGOUT } from "@/utils/conf";
 
 
 // 监听路由前缀的变化
@@ -73,7 +73,7 @@ const onLogout = () => {
             type: 'warning',
         }
     ).then(() => {
-        emitter.emit(PY_USER_LOGOUT)
+        emitter.emit(USER_LOGOUT)
     })
 }
 

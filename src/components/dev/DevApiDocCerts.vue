@@ -75,7 +75,7 @@ import { computed, onMounted, reactive, ref, watch } from 'vue'
 import { clone, filter, find, get, indexOf, map, set } from "lodash-es";
 import { appLocalStore, toast } from "@/utils/util";
 import XIcon from "@/components/element/XIcon.vue";
-import { pyStorageDevApidocCertsKey } from "@/utils/conf";
+import { storageDevApidocCertsKey } from "@/utils/conf";
 import { emitter } from "../../../pkg/core/bus/mitt";
 
 const props = defineProps({
@@ -206,7 +206,7 @@ const addCert = () => {
 
 // 同步Certs
 watch(() => certsRef.value, () => {
-    appLocalStore(pyStorageDevApidocCertsKey(), certsRef.value);
+    appLocalStore(storageDevApidocCertsKey(), certsRef.value);
     emitter.emit('dev:apidoc-certs-update', certsRef.value);
 }, { deep: true })
 
@@ -220,7 +220,7 @@ onMounted(() => {
             params: [{ key: '', value: '' }]
         }
     ]
-    let storeHeaders: any = appLocalStore(pyStorageDevApidocCertsKey())
+    let storeHeaders: any = appLocalStore(storageDevApidocCertsKey())
     if (storeHeaders) {
         hds = storeHeaders
     }
