@@ -613,12 +613,18 @@ const onRequest = () => {
     if (api.urlReplaced.indexOf('/') !== 0) {
         path = `/${api.urlReplaced}`;
     }
-    appRequest({
+    let params = {
         url: `${url}${path}`,
-        data: merge(apiQueryRef.value, query),
         method: api.method,
         headers: headers
-    }).then(({ status, data, message }) => {
+    };
+    if (api.method === 'get'){
+        set(params, 'params', merge(apiQueryRef.value, query));
+    }
+    if (api.method === 'post'){
+        set(params, 'data', merge(apiQueryRef.value, query));
+    }
+    appRequest(params).then(({ status, data, message }) => {
         let end = (new Date()).getTime();
         let resp = {
             status,
