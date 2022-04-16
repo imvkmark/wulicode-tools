@@ -100,6 +100,7 @@ const appSign = (params: any, token = '') => {
     return v1Md5.charAt(1) + v1Md5.charAt(3) + v1Md5.charAt(15) + v1Md5.charAt(31)
 };
 
+
 let appParams = (data: any = null) => {
     let oriData = data || {};
 

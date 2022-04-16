@@ -3,21 +3,25 @@
         <div class="main-content">
             <ElForm :inline="true">
                 <ElFormItem label="背景色">
-                    <ElColorPicker v-model="trans.bg" size="small"/>
+                    <ElColorPicker v-model="trans.bg"/>
                 </ElFormItem>
                 <ElFormItem label="文字色">
-                    <ElColorPicker v-model="trans.fc" size="small"/>
+                    <ElColorPicker v-model="trans.fc"/>
                 </ElFormItem>
                 <ElFormItem label="宽度">
-                    <ElInput type="text" placeholder="宽度" style="width: 80px" v-model="trans.width" size="small"/>
+                    <ElInput type="text" placeholder="宽度" style="width: 80px" v-model="trans.width"/>
                 </ElFormItem>
                 <ElFormItem label="高度">
-                    <ElInput type="text" placeholder="高度" style="width: 80px" v-model="trans.height" size="small"/>
+                    <ElInput type="text" placeholder="高度" style="width: 80px" v-model="trans.height"/>
                 </ElFormItem>
                 <ElFormItem label="文字">
-                    <ElInput type="text" placeholder="说明" style="width: 160px" v-model="trans.text" size="small" clearable/>
+                    <ElInput type="text" placeholder="说明"  v-model="trans.text" clearable/>
                 </ElFormItem>
             </ElForm>
+            <ElRadioGroup v-model="trans.type">
+                <ElRadioButton label="jd">京东</ElRadioButton>
+                <ElRadioButton label="self">Wulicode</ElRadioButton>
+            </ElRadioGroup>
         </div>
         <div v-if="value.url" class="img-wrapper">
             <img :src="value.url" :alt="trans.text"> <br>
@@ -38,6 +42,7 @@ import { appUrl } from "@/utils/conf";
 
 const trans = reactive({
     bg: '#282828',
+    type: 'jd',
     fc: '#EAE0D0',
     width: '428',
     height: '280',
@@ -69,7 +74,6 @@ const toNumber = function (val) {
 }
 
 const onChange = function () {
-    let url = appUrl;
     let hwSpec = toNumber(trans.width) ? toNumber(trans.width) : '428';
     let width = toNumber(trans.width) ? toNumber(trans.width) : '428';
     let height = toNumber(trans.height) ? toNumber(trans.height) : '214';
@@ -78,22 +82,35 @@ const onChange = function () {
     }
     let textSpec = trans.text ? trans.text : '';
 
-    // /
-    let append = `?`;
-    if (trans.bg !== '#282828') {
-        append += `_bg=${trimStart(trans.bg, '#')}&`;
+    if (trans.type === 'self') {
+        let append = `?`;
+        if (trans.bg !== '#282828') {
+            append += `_bg=${trimStart(trans.bg, '#')}&`;
+        }
+        if (trans.fc !== '#EAE0D0') {
+            append += `_fc=${trimStart(trans.fc, '#')}&`;
+        }
+        let resultUrl = `${appUrl}/img/${hwSpec}`;
+        if (textSpec) {
+            resultUrl += `/${textSpec}`
+        }
+        if (append !== '?') {
+            resultUrl += append;
+        }
+        value.url = trimEnd(resultUrl, '&');
+    } else {
+        let append = `?`;
+            append += `color=${trimStart(trans.bg, '#')}&`;
+            append += `textColor=${trimStart(trans.fc, '#')}&`;
+        let resultUrl = `https://jdc.jd.com/img/${hwSpec}`;
+        if (textSpec) {
+            append += `text=${textSpec}`
+        }
+        if (append !== '?') {
+            resultUrl += append;
+        }
+        value.url = trimEnd(resultUrl, '&');
     }
-    if (trans.fc !== '#EAE0D0') {
-        append += `_fc=${trimStart(trans.fc, '#')}&`;
-    }
-    let resultUrl = `${url}/img/${hwSpec}`;
-    if (textSpec) {
-        resultUrl += `/${textSpec}`
-    }
-    if (append !== '?') {
-        resultUrl += append;
-    }
-    value.url = trimEnd(resultUrl, '&');
 }
 
 
@@ -112,7 +129,8 @@ onMounted(onChange);
     max-height: 620px;
     text-align: center;
     img {
-        display: block;
+        max-width: 800px;
+        max-height: 600px;
     }
     p {
         cursor: pointer;
