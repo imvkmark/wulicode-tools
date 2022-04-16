@@ -6,6 +6,9 @@
                     <h3>
                         接口查询
                         <ElTag>{{ get(source.active, 'title') }}</ElTag>
+                        <span class="group-refresh">
+                            <XIcon type="refresh" @click="refreshActive"/>
+                        </span>
                         <span class="group-setting">
                             <XIcon type="setting" @click="manageSource"/>
                         </span>
@@ -188,7 +191,7 @@ import { appLocalStore, toast } from "@/utils/util";
 import XIcon from "@/components/element/XIcon.vue";
 import { emitter } from "../../../pkg/core/bus/mitt";
 import DevApiDocSource from "@/components/dev/DevApiDocSources.vue";
-import { apiMiscApidocJson, apiMiscApidocSave } from "@/services/misc";
+import { apiMiscApidocJson, apiMiscApidocLocal, apiMiscApidocRefresh, apiMiscApidocSave } from "@/services/misc";
 import { base64Decode, base64Encode } from "../../../pkg/core/utils/str";
 import { appRequest } from "@/utils/request";
 import { copyText } from 'vue3-clipboard'
@@ -247,6 +250,41 @@ const activeSource = (key: any) => {
     appLocalStore(pyStorageDevApidocApiCurrentKey(), key);
     let activated = find(sourcesRef.value, { active: true });
     source.content = eval(get(activated, 'content'));
+}
+
+// 刷新本地Source
+const refreshActive = () => {
+    let active = source.active;
+    if (get(active, 'type') === 'local') {
+        appRequest({
+            method: 'post',
+            url: get(active, 'url')
+        }).then(({ success, message, data }) => {
+            if (!success) {
+                toast(message, success)
+            } else {
+                apiMiscApidocLocal({
+                    title: get(active, 'title'),
+                    url: get(active, 'url'),
+                    content: get(data, 'content')
+                }).then(({ success, message }) => {
+                    toast(message, success);
+                    fetchApiDoc();
+                })
+            }
+        }).catch(({ success, message }) => {
+            toast(success, message)
+        })
+    } else {
+        apiMiscApidocRefresh({
+            url: get(active, 'url')
+        }).then(({ success, message }) => {
+            toast(message, success);
+            if (success) {
+                fetchApiDoc();
+            }
+        })
+    }
 }
 
 /* Api
@@ -364,7 +402,7 @@ const onCertLogin = () => {
     set(query, 'passport', apiLogin.passport);
     if (apiLogin.type === 'captcha') {
         set(query, 'captcha', apiLogin.captcha);
-    } else{
+    } else {
         set(query, 'password', apiLogin.password);
     }
     appRequest({
@@ -634,6 +672,15 @@ onUnmounted(() => {
         background: #fff;
         .el-input {
             width: 96%;
+        }
+        .group-refresh {
+            position: absolute;
+            right: 2.3rem;
+            top: 0.2rem;
+            cursor: pointer;
+            &:hover {
+                color: var(--wc-color-primary);
+            }
         }
         .group-setting {
             position: absolute;

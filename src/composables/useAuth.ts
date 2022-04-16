@@ -3,7 +3,7 @@ import { get } from 'lodash-es';
 import { useRouter } from 'vue-router';
 import { onMounted, onUnmounted, watch } from 'vue';
 import useUserUtil from '@/composables/useUserUtil';
-import { emitter, PY_USER_LOGIN, PY_USER_LOGOUT } from '../../pkg/core/bus/mitt';
+import { emitter, PY_USER_LOGIN, PY_USER_LOGOUT, REQUEST_401 } from '../../pkg/core/bus/mitt';
 import { pyStorageTokenKey } from "@/utils/conf";
 import { appLocalStore } from "@/utils/util";
 
@@ -36,6 +36,9 @@ export default function useAuth() {
         store.dispatch('poppy/Logout').then(() => {
             userToLogin()
         })
+    })
+    emitter.on(REQUEST_401, () => {
+        userToLogin()
     })
 
     // 监听 token 的变化

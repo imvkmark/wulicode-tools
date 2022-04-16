@@ -59,7 +59,10 @@
                             </ElTableColumn>
                         </ElTable>
                         <ElButton style="margin-top: 0.2rem;" type="primary" :disabled="get(cert, 'active')" @click="setDefault(cert)">
-                            {{ get(cert, 'active') ? '当前默认凭证' : '使用此凭证作为默认凭证' }}
+                            {{ get(cert, 'active') ? '已设置' : '设置默认' }}
+                        </ElButton>
+                        <ElButton style="margin-top: 0.2rem;" type="warning" @click="copyCert(cert)">
+                            复制凭证
                         </ElButton>
                     </ElTabPane>
                 </ElTabs>
@@ -69,7 +72,7 @@
 </template>
 <script lang="ts" setup>
 import { computed, onMounted, reactive, ref, watch } from 'vue'
-import { filter, find, get, indexOf, map, set } from "lodash-es";
+import { clone, filter, find, get, indexOf, map, set } from "lodash-es";
 import { appLocalStore, toast } from "@/utils/util";
 import XIcon from "@/components/element/XIcon.vue";
 import { pyStorageDevApidocCertsKey } from "@/utils/conf";
@@ -116,10 +119,17 @@ const updateCertLabel = (value: any) => {
     }
     let current = fetchCurrent()
     current.label = value;
+    trans.current = value;
 }
 const updateCertUrl = (value: any) => {
     let current = fetchCurrent()
     current.url = value;
+}
+const copyCert = (value: any) => {
+    let newVal = clone(value);
+    set(newVal, 'active', false);
+    set(newVal, 'label', newVal.label + '-copy');
+    certsRef.value.push(newVal);
 }
 
 const removeParam = (param: any) => {

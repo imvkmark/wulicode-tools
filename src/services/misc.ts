@@ -16,6 +16,14 @@ export async function apiMiscApidocDelete(params: object) {
 }
 
 /**
+ * Local
+ * @param params
+ */
+export async function apiMiscApidocLocal(params: object) {
+    return appPost('/api/misc/apidoc/local', params);
+}
+
+/**
  * 刷新文档
  * @param params
  */
