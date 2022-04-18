@@ -45,7 +45,7 @@
 </template>
 <script lang="ts" setup>
 import PxMain from '@/components/base/PxMain.vue';
-import { pyAbort } from "../../../pkg/core/utils/request";
+import { pyAbort } from "../../../core/utils/request";
 import { appRequest } from "@/utils/request";
 import { toast } from "@/utils/util";
 

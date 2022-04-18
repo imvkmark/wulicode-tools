@@ -90,7 +90,7 @@ import { find, get } from "lodash-es";
 import { toast } from "@/utils/util";
 import XIcon from "@/components/element/XIcon.vue";
 import { apiMiscApidocAdd, apiMiscApidocDelete, apiMiscApidocLocal, apiMiscApidocRefresh } from "@/services/misc";
-import { isUrl } from "../../../pkg/core/utils/validate";
+import { isUrl } from "../../../core/utils/validate";
 import { appRequest } from "@/utils/request";
 
 

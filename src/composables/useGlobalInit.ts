@@ -2,10 +2,10 @@ import { onMounted, onUnmounted, watch } from 'vue'
 import { useStore } from '@/store';
 import { useRouter } from "vue-router";
 import { each, get, keys, split } from "lodash-es";
-import { emitter, REQUEST_EXCEPTION, REQUEST_LOADED, REQUEST_LOADING } from "../../pkg/core/bus/mitt";
+import { emitter, REQUEST_EXCEPTION, REQUEST_LOADED, REQUEST_LOADING } from "../../core/bus/mitt";
 import { appLocalStore } from "@/utils/util";
 import { ElMessageBox } from "element-plus";
-import { pyStorageDeviceIdKey } from "../../pkg/core/utils/conf";
+import { pyStorageDeviceIdKey } from "../../core/utils/conf";
 
 /**
  * 初始化

@@ -10,7 +10,7 @@
 import useAuth from '@/composables/useAuth';
 import useGlobalInit from '@/composables/useGlobalInit';
 import PxSidebar from '@/components/base/PxSidebar.vue';
-import { sizeGt, sizeLte } from "../../pkg/core/utils/helper";
+import { sizeGt, sizeLte } from "../../core/utils/helper";
 import { computed, reactive } from "vue";
 import { useStore } from "@/store";
 import useNav from "@/composables/useNav";

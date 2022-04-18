@@ -1,10 +1,10 @@
 import { each, forEach, get, isNaN, isNil, isObject, keys, merge, set, trim } from 'lodash-es';
-import { pyRequest } from "../../pkg/core/utils/request";
+import { pyRequest } from "../../core/utils/request";
 import { appUrl, appVersion, storageTokenKey } from "@/utils/conf";
 import { MD5 } from "crypto-js";
 import { appLocalStore } from "@/utils/util";
 import { AxiosRequestConfig } from "axios";
-import { emitter, REQUEST_401, REQUEST_EXCEPTION } from "../../pkg/core/bus/mitt";
+import { emitter, REQUEST_401, REQUEST_EXCEPTION } from "../../core/bus/mitt";
 
 let url = appUrl;
 if (!url) {

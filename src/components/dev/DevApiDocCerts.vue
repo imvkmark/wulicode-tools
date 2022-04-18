@@ -76,7 +76,7 @@ import { clone, filter, find, get, indexOf, map, set } from "lodash-es";
 import { appLocalStore, toast } from "@/utils/util";
 import XIcon from "@/components/element/XIcon.vue";
 import { storageDevApidocCertsKey } from "@/utils/conf";
-import { emitter } from "../../../pkg/core/bus/mitt";
+import { emitter } from "../../../core/bus/mitt";
 
 const props = defineProps({
     keyName: {

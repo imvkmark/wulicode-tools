@@ -1,7 +1,7 @@
-import { httpBuildQuery, localStore, sessionStore } from "../../pkg/core/utils/helper";
+import { httpBuildQuery, localStore, sessionStore } from "../../core/utils/helper";
 import { ElMessage } from "element-plus/es";
 import { appMode, appUrl } from "@/utils/conf";
-import { isInteger } from "../../pkg/core/utils/validate";
+import { isInteger } from "../../core/utils/validate";
 import { get, isObject } from "lodash-es";
 
 

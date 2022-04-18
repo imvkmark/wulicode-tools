@@ -1,12 +1,12 @@
 import { Module } from 'vuex'
 import { get, set } from 'lodash-es';
 import { apiPySystemCoreInfo } from '@/services/poppy';
-import { emitter } from '../../pkg/core/bus/mitt'
+import { emitter } from '../../core/bus/mitt'
 import { PyRequestOptions } from "@/utils/types";
 import { appLocalStore, appSessionStore } from "@/utils/util";
 import { PyPoppyTypes, PyRootStateTypes } from "@/store/types";
 import { storageKey, storageTokenKey, USER_LOGIN } from "@/utils/conf";
-import { base64Encode, deviceId } from "../../pkg/core/utils/helper";
+import { base64Encode, deviceId } from "../../core/utils/helper";
 
 const poppy: Module<PyPoppyTypes, PyRootStateTypes> = {
     namespaced: true,

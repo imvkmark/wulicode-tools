@@ -183,16 +183,16 @@ import { computed, onMounted, onUnmounted, reactive, ref } from 'vue'
 import { useStore } from '@/store';
 import { useRouter } from 'vue-router';
 import { each, filter, find, first, get, groupBy, isEmpty, isEqual, map, merge, set } from "lodash-es";
-import { stripTags } from "../../../pkg/core/utils/helper";
+import { stripTags } from "../../../core/utils/helper";
 import { ElForm } from "element-plus/es";
 import DevApiDocCert from "@/components/dev/DevApiDocCerts.vue";
 import { storageDevApidocApiCurrentKey, storageDevApidocApiLastSavedKey, storageDevApidocCertsKey, storageDevApidocQueryParamKey } from "@/utils/conf";
 import { appLocalStore, toast } from "@/utils/util";
 import XIcon from "@/components/element/XIcon.vue";
-import { emitter } from "../../../pkg/core/bus/mitt";
+import { emitter } from "../../../core/bus/mitt";
 import DevApiDocSource from "@/components/dev/DevApiDocSources.vue";
 import { apiMiscApidocJson, apiMiscApidocLocal, apiMiscApidocRefresh, apiMiscApidocSave } from "@/services/misc";
-import { base64Decode, base64Encode, strAfter } from "../../../pkg/core/utils/helper";
+import { base64Decode, base64Encode, strAfter } from "../../../core/utils/helper";
 import { appRequest } from "@/utils/request";
 import { copyText } from 'vue3-clipboard'
 

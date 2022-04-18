@@ -20,7 +20,7 @@
 <script lang="ts" setup>
 import { useStore } from '@/store';
 import { computed, reactive } from 'vue';
-import { sizeGt, sizeLte } from "../../../pkg/core/utils/helper";
+import { sizeGt, sizeLte } from "../../../core/utils/helper";
 import PxNav from "@/components/base/PxNav.vue";
 import { DArrowRight } from "@element-plus/icons-vue";
 import { useRouter } from "vue-router";

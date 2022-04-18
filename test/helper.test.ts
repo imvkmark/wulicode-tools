@@ -1,7 +1,7 @@
 // @ts-ignore
 import assert from 'assert';
-import { sprintf } from '../pkg/core/utils/helper';
-import { isSimplePwd, regexTest } from "../pkg/core/utils/validate";
+import { sprintf } from '../core/utils/helper';
+import { isSimplePwd, regexTest } from "../core/utils/validate";
 
 describe('regex', function () {
     it('test-number', function () {

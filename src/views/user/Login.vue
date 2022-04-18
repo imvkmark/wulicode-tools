@@ -35,7 +35,7 @@ import { useRouter } from 'vue-router';
 import { ElForm } from 'element-plus';
 import useUserUtil from '@/composables/useUserUtil';
 import { toast } from "@/utils/util";
-import { sizeGte } from "../../../pkg/core/utils/helper";
+import { sizeGte } from "../../../core/utils/helper";
 import { apiPySystemAuthLogin } from "@/services/poppy";
 
 const store = useStore();

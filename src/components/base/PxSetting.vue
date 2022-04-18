@@ -42,9 +42,9 @@ import { computed, onMounted, reactive } from 'vue';
 import { useRouter } from 'vue-router';
 import { useStore } from '@/store';
 import { Operation } from "@element-plus/icons-vue";
-import { localStore, sizePercent } from "../../../pkg/core/utils/helper";
+import { localStore, sizePercent } from "../../../core/utils/helper";
 import { ElMessageBox } from "element-plus";
-import { emitter } from "../../../pkg/core/bus/mitt";
+import { emitter } from "../../../core/bus/mitt";
 import { appVersion, USER_LOGOUT } from "@/utils/conf";
 
 

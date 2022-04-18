@@ -1,7 +1,7 @@
 import { useStore } from '@/store';
 import { get } from 'lodash-es';
 import { useRouter } from 'vue-router';
-import { isUrl } from "../../pkg/core/utils/validate";
+import { isUrl } from "../../core/utils/validate";
 
 /**
  * 登录和 Token 的保存以及跳转

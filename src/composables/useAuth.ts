@@ -3,7 +3,7 @@ import { get } from 'lodash-es';
 import { useRouter } from 'vue-router';
 import { onMounted, onUnmounted, watch } from 'vue';
 import useUserUtil from '@/composables/useUserUtil';
-import { emitter, REQUEST_401 } from '../../pkg/core/bus/mitt';
+import { emitter, REQUEST_401 } from '../../core/bus/mitt';
 import { storageTokenKey, USER_LOGIN, USER_LOGOUT } from "@/utils/conf";
 import { appLocalStore } from "@/utils/util";
 
