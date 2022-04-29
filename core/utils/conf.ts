@@ -5,6 +5,4 @@
 |
 */
 
-export const pyStorageDeviceIdKey = () => {
-    return `x-id`
-}
+export const pyStorageDeviceIdKey = 'x-id';

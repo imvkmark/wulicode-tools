@@ -1,12 +1,13 @@
 {
     "name": "@popjs/core",
-    "version": "0.4.5",
+    "version": "0.4.11",
     "description": "Poppy Js Framework Core Library",
     "sideEffects": false,
     "author": "imvkmark",
     "license": "MIT",
     "files": [
-        "**/*.ts"
+        "**/*.ts",
+        "**/*.less"
     ],
     "devDependencies": {},
     "dependencies": {

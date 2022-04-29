@@ -24,7 +24,7 @@ export default function useGlobalInit() {
         let lsKeys = keys(localStorage);
         each(lsKeys, function (key) {
             // 设备ID | Token 不清除
-            if (key.indexOf(pyStorageDeviceIdKey()) >= 0 || key.indexOf(pyStorageDeviceIdKey()) >= 0) {
+            if (key.indexOf(pyStorageDeviceIdKey) >= 0 || key.indexOf(pyStorageDeviceIdKey) >= 0) {
                 return;
             }
             let ks = split(key, ':')

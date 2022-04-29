@@ -5,7 +5,7 @@
 |
 */
 
-import { camelCase, each, forEach, get, indexOf, isObject, map, random, round, set, upperFirst } from "lodash-es";
+import { camelCase, each, forEach, get, indexOf, isObject, map, round, set, upperFirst } from "lodash-es";
 import { pyStorageDeviceIdKey } from "./conf";
 import { MD5 } from "crypto-js";
 
@@ -288,12 +288,12 @@ export const isWechat = () => {
  * 返回设备ID, 如果本地存在则取本地
  */
 export const deviceId = (): string => {
-    const val = localStore(pyStorageDeviceIdKey())
+    const val = localStore(pyStorageDeviceIdKey)
     if (val) {
         return val;
     } else {
         let id = 'p-' + MD5(uniqueId('popjs-core')) + '-c'
-        localStore(pyStorageDeviceIdKey(), id);
+        localStore(pyStorageDeviceIdKey, id);
         return id;
     }
 }
@@ -310,7 +310,7 @@ export const base64ToFile = (url: string) => {
     if (!extension) {
         extension = 'png';
     }
-    let filename = random() + '.' + extension
+    let filename = strRandom(8) + '.' + extension
     let mimeType = 'image/' + extension;
 
     return (fetch(url)
@@ -377,6 +377,7 @@ export const queryDecode: any = (data: object) => {
     return decode
 }
 
+
 /**
  * 格式化
  * @param args
@@ -410,6 +411,25 @@ export const stripTags = (str: string) => {
     return str.replace(/(<([^>]+)>)/gi, "");
 }
 
+/**
+ * 生成随机字符
+ * @param {number|string} length 长度
+ * @param {boolean} use_upper 使用大写字母
+ * @returns {string}
+ */
+
+export const strRandom = (length: Number = 16, use_upper: boolean = false) => {
+    let chars = 'abcdefhjmnpqrstuvwxyz123456789';
+    if (use_upper) {
+        chars += 'ABCDEFGHJKLMNPQRSTUVWYXZ';
+    }
+    let str = '';
+    for (let i = 0; i < length; i++) {
+        str += chars.charAt(Math.floor(Math.random() * chars.length));
+    }
+
+    return str;
+}
 
 /**
  * 字串之前

@@ -2,6 +2,7 @@ import { useStore } from '@/store';
 import { get } from 'lodash-es';
 import { useRouter } from 'vue-router';
 import { isUrl } from "../../core/utils/validate";
+import { base64Decode } from "../../core/utils/helper";
 
 /**
  * 登录和 Token 的保存以及跳转
@@ -19,7 +20,7 @@ export default function useUserUtil() {
             let name = 'dev.cp';
             router.push({ name }).then()
         } else {
-            let to = window.atob(go);
+            let to = base64Decode(go);
             if (isUrl(to)) {
                 window.location.href = to;
             } else {
