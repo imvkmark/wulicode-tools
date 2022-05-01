@@ -39,7 +39,8 @@ export const navs: object = {
                 children: [
                     { name: 'css.custom-box', title: '自定义Checkbox' },
                     { name: 'css.dash-middle', title: '居中线' },
-                    { name: 'css.animation', title: '动画' }
+                    { name: 'css.animation', title: '动画' },
+                    { name: 'css.global', title: '全局样式' },
                 ]
             },
         ]

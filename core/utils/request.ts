@@ -1,6 +1,6 @@
 import { get, isEmpty, isObject } from 'lodash-es';
 import UAParser from "ua-parser-js";
-import axios, { AxiosInstance } from "axios";
+import axios, { AxiosInstance, AxiosRequestConfig } from "axios";
 import { emitter, REQUEST_LOADED } from "../bus/mitt";
 import { deviceId } from "./helper";
 
@@ -19,15 +19,7 @@ const instance: AxiosInstance = axios.create({
 // 添加请求拦截器
 instance.interceptors.request.use(
     (config) => {
-        let ua = new UAParser();
         controller = new AbortController();
-        if (config.headers) {
-            config.headers['x-id'] = deviceId();
-            config.headers['x-sys-name'] = String(ua.getOS().name);
-            config.headers['x-sys-version'] = String(ua.getOS().version);
-            config.headers['x-sys-device'] = `${get(ua.getDevice(), 'type', '')}/${get(ua.getDevice(), 'vendor', '')}/${get(ua.getDevice(), 'model', '')}`;
-            config.headers['x-sys-cpu'] = get(ua.getCPU(), 'architecture', '');
-        }
         config.signal = controller.signal;
         return config;
     },
@@ -36,6 +28,7 @@ instance.interceptors.request.use(
         return Promise.reject(error);
     }
 );
+
 
 instance.interceptors.response.use(
     (response) => {
@@ -129,3 +122,14 @@ export const pyHead = instance.head;
 export const pyDelete = instance.delete;
 export const pyPatch = instance.patch;
 export const pyOptions = instance.options;
+export const pyBasicRequestHeader = (config: AxiosRequestConfig) => {
+    let ua = new UAParser();
+    if (config.headers) {
+        config.headers['x-id'] = deviceId();
+        config.headers['x-sys-name'] = String(ua.getOS().name);
+        config.headers['x-sys-version'] = String(ua.getOS().version);
+        config.headers['x-sys-device'] = `${get(ua.getDevice(), 'type', '')}/${get(ua.getDevice(), 'vendor', '')}/${get(ua.getDevice(), 'model', '')}`;
+        config.headers['x-sys-cpu'] = get(ua.getCPU(), 'architecture', '');
+    }
+    return config;
+};

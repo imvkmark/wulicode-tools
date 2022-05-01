@@ -162,6 +162,9 @@ export const httpBuildQuery = (url: string, params: any) => {
     return `${urlComp}${queryStr}`;
 }
 
+/**
+ * 返回 Debug 的时间
+ */
 export const debugTime = () => {
     const d = new Date();
     return '🕊 🕊 🕊 [' + d.getHours() + ':' + d.getMinutes() + ':' + d.getSeconds() + ' ' + d.getMilliseconds() + '] ';
@@ -323,6 +326,30 @@ export const base64ToFile = (url: string) => {
     );
 }
 
+/**
+ * 获取系统操作平台
+ */
+export const sysOs = () => {
+    let userAgent = window.navigator.userAgent,
+        platform = get(window.navigator, 'platform'),
+        macosPlatforms = ['Macintosh', 'MacIntel', 'MacPPC', 'Mac68K'],
+        windowsPlatforms = ['Win32', 'Win64', 'Windows', 'WinCE'],
+        iosPlatforms = ['iPhone', 'iPad', 'iPod'],
+        os = null;
+
+    if (macosPlatforms.indexOf(platform) !== -1) {
+        os = 'Mac OS';
+    } else if (iosPlatforms.indexOf(platform) !== -1) {
+        os = 'iOS';
+    } else if (windowsPlatforms.indexOf(platform) !== -1) {
+        os = 'Windows';
+    } else if (/Android/.test(userAgent)) {
+        os = 'Android';
+    } else if (/Linux/.test(platform)) {
+        os = 'Linux';
+    }
+    return os;
+}
 //endregion
 
 

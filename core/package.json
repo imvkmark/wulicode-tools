@@ -1,6 +1,6 @@
 {
     "name": "@popjs/core",
-    "version": "0.4.11",
+    "version": "0.5.0",
     "description": "Poppy Js Framework Core Library",
     "sideEffects": false,
     "author": "imvkmark",

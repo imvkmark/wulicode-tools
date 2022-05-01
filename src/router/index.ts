@@ -21,6 +21,7 @@ const routes: Array<RouteRecordRaw> = [
             { path: 'css/custom-box', component: () => import('@/views/css/CustomBox.vue'), name: 'css.custom-box' },
             { path: 'css/dash-middle', component: () => import('@/views/css/DashMiddle.vue'), name: 'css.dash-middle' },
             { path: 'css/animation', component: () => import('@/views/css/Animation.vue'), name: 'css.animation' },
+            { path: 'css/global', component: () => import('@/views/css/Global.vue'), name: 'css.global' },
             { path: 'js/sentry', component: () => import('@/views/js/Sentry.vue'), name: 'js.sentry' },
             { path: 'js/scroll', component: () => import('@/views/js/Scroll.vue'), name: 'js.scroll' },
             { path: 'js/info', component: () => import('@/views/js/Info.vue'), name: 'js.info' },
